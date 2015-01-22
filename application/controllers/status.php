@@ -15,6 +15,7 @@ class Status extends Baseline_controller {
   }
   
   public function index(){
+    $this->load->view('emsl_mgmt_view',$this->page_data);
   }
   
 }
