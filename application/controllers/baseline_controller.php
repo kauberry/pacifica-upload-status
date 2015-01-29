@@ -13,7 +13,7 @@ class Baseline_controller extends CI_Controller {
     $this->page_address = implode('/',$this->uri->rsegments);
     $this->load->model('User_operations_model', 'user_model');
     $this->load->model('Navigation_info_model', 'nav_info_model');
-    $this->site_info = $this->nav_info_model->get_site_identifier($this->site_id);
+    //$this->site_info = $this->nav_info_model->get_site_identifier($this->site_id);
     $this->user_model->refresh_user_info($this->user_id,$this->site_id);
         
     $user_info = get_user_details_opw($this->user_id);
@@ -27,7 +27,7 @@ class Baseline_controller extends CI_Controller {
 //    echo $this->admin_access_level;
     $this->username = $user_info['first_name'] != null ? $user_info['first_name'] : "Anonymous Stranger";
     $this->fullname = $this->username." ".$user_info['last_name'];
-    $this->site_color = $this->config->item('site_color');
+    //$this->site_color = $this->config->item('site_color');
     
     
     $user_info['full_name'] = $this->fullname;
@@ -36,7 +36,7 @@ class Baseline_controller extends CI_Controller {
       $user_info['last_name'].", ".$user_info['first_name']." ".$user_info['middle_initial']."." : 
       $user_info['last_name'].", ".$user_info['first_name'];
     $current_path_info = isset($_SERVER['PATH_INFO']) ? ltrim($_SERVER['PATH_INFO'],'/') : "./";
-    $this->nav_info = $this->nav_info_model->generate_navigation_entries($current_path_info);
+    //$this->nav_info = $this->nav_info_model->generate_navigation_entries($current_path_info);
     $perm_description = $this->user_model->get_permission_level_info($this->admin_access_level);
     $this->nav_info['current_page_info']['logged_in_user'] = "{$this->fullname}<br /><span class='tiny'>{$perm_description}</span>";
     
