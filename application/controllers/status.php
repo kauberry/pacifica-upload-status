@@ -8,13 +8,15 @@ class Status extends Baseline_controller {
     if($this->admin_access_level < 400){
       $this->page_data['message'] = "You must have at least 'Power User' status to use these pages";
       $this->load->view('insufficient_privileges', $this->page_data);
+      // $this->load->model('status_model','status');
     }
-    $this->load->helper(array('inflector','url','opwhse_search','form','network','edit_equipment'));
+    $this->load->helper(array('inflector','url','opwhse_search','form'));
     $this->load->library(array('table'));
-    $this->load->model('Inventory_model','inv_model');
   }
   
   public function index(){
+    $this->page_data['page_header'] = "MyEMSL Status Reporting";
+    $this->page_data['title'] = "Overview";
     $this->load->view('emsl_mgmt_view',$this->page_data);
   }
   

@@ -48,6 +48,20 @@ class User_operations_model extends CI_Model {
     $retval = $DB_info->affected_rows() > 0 ? true : false;
     return $retval;
   }
+
+
+  function get_permission_level_info($admin_access_level){
+    $DB_data = $this->load->database('default',TRUE);
+    $query = $DB_data->get_where("user_privilege_levels",array('privilege_level' => $admin_access_level),1);
+    if($query && $query->num_rows()>0){
+      $desc = $query->row()->privilege_name;
+    }else{
+      $desc = 'Guest';
+    }
+    return $desc;
+  }
+  
+  
   
   function get_user_permissions_level($group_list){
     $DB_info = $this->load->database('ws_info',TRUE);

@@ -6,7 +6,7 @@
   $title = isset($title) ? $title : $page_header;
   $rss_link = isset($rss_link) ? $rss_link : "";  
 ?>  
-    <title>PRISM Archive Access - <?= $title ?></title>
+    <title>MyEMSL Status - <?= $title ?></title>
       <?= $rss_link ?>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta  name="description" content="" />

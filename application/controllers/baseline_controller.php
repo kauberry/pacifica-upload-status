@@ -27,7 +27,7 @@ class Baseline_controller extends CI_Controller {
 //    echo $this->admin_access_level;
     $this->username = $user_info['first_name'] != null ? $user_info['first_name'] : "Anonymous Stranger";
     $this->fullname = $this->username." ".$user_info['last_name'];
-    //$this->site_color = $this->config->item('site_color');
+    $this->site_color = $this->config->item('site_color');
     
     
     $user_info['full_name'] = $this->fullname;
@@ -46,10 +46,10 @@ class Baseline_controller extends CI_Controller {
     $this->page_data['infoData'] = array('current_credentials' => $this->user_id,'full_name' => $this->fullname);
     $this->page_data['username'] = $this->username;
     $this->page_data['fullname'] = $this->fullname;
-    $this->page_data['title'] = $this->nav_info['current_page_info']['name'];
-    $this->page_data['page_header'] = $this->page_data['title'];
-    $this->page_data['load_prototype'] = true;
-    $this->page_data['load_jquery'] = false;
+    // $this->page_data['title'] = $this->nav_info['current_page_info']['name'];
+    // $this->page_data['page_header'] = $this->page_data['title'];
+    $this->page_data['load_prototype'] = false;
+    $this->page_data['load_jquery'] = true;
     $this->controller_name = $this->uri->rsegment(1);
     // $data_array = array(
       // 'user_id' => $this->user_id

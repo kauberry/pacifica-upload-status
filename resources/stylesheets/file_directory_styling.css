@@ -1,0 +1,27 @@
+/* Directory page styling */
+#folders, #files {
+	margin-left:15px;
+}
+
+.folder_entry {
+	background-image: url(../images/orange_folder-16.png);
+	background-repeat:no-repeat;
+	padding-left: 22px;
+	height: 22px;
+}
+
+.file_entry {
+	background-image: url(../images/document-16.png);
+	background-repeat:no-repeat;
+	padding-left: 22px;
+	height: 22px;
+}
+
+.underline {
+  border-bottom: 2px solid #aaa;
+  padding-bottom: 0.25em;
+}
+
+small {
+	font-size:smaller;
+}
