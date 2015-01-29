@@ -20,4 +20,4 @@ These views will likely include...
   
 - Some kind of different view for EMSL Users (external and internal) that is some mix of the above
 
-The development version of the site will be hosted at [http://wfdev30w.pnl.gov/myemsl_status](http://wfdev30w.pnl.gov/myemsl_status)
+The development version of the site will (eventually) be hosted at [http://wfdev30w.pnl.gov/myemsl_status](http://wfdev30w.pnl.gov/myemsl_status)
