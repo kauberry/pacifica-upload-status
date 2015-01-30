@@ -9,7 +9,7 @@
   <script type="text/javascript" src="<?=base_url()?>resources/scripts/jquery-ui/jquery-ui.js"></script>
   <script type="text/javascript" src="<?=base_url()?>resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js"></script>
   <link rel="stylesheet" type="text/css" href="<?=base_url()?>resources/scripts/jquery-ui/jquery-ui.css" />
-  <!-- <script type="text/javascript" src="<?= base_url() ?>scripts/utility_functions.js"; /> -->
+  <script type="text/javascript" src="<?=base_url()?>resources/scripts/utility_functions.js"></script>
   <!--[if gte IE 5.5]>
   <link rel="stylesheet" type="text/css" href="<?=base_url();?>stylesheets/ie-specific.css" />
   <![endif]-->
