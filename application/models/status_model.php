@@ -59,8 +59,8 @@ class Status_model extends CI_Model {
     }
     $files_json_string = file_get_contents(FCPATH."resources/json_files/files_{$group_id}.json");
     $files_list = array();
-    $files_list_raw = json_decode($json_string,TRUE);
-    foreach($files_list_raw as $file){
+    $files_list_raw = json_decode($files_json_string,TRUE);
+    foreach($files_list_raw['RECORDS'] as $file){
       $files_list[$file['transaction']][$file['item_id']] = $file;
     }
     
