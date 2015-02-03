@@ -63,8 +63,37 @@ class Status_model extends CI_Model {
     foreach($files_list_raw['RECORDS'] as $file){
       $files_list[$file['transaction']][$file['item_id']] = $file;
     }
+    $status_json_string = file_get_contents(FCPATH."resources/json_files/ingest_states_group_{$group_id}.json");
+    $status_list = array();
+    $status_list_raw = json_decode($status_json_string, TRUE);
+    foreach($status_list_raw['RECORDS'] as $status){
+      $status_list[$status['trans_id']][$status['step']] = $status;
+    }
     
     
+    $results = array();
+    
+    foreach($transaction_list as $transaction){
+      if(array_key_exists($transaction,$files_list)){
+        $results['transactions'][$transaction]['files'] = $files_list[$transaction];
+        if(array_key_exists($transaction, $status_list)){
+          $results['transactions'][$transaction]['status'] = $status_list[$transaction];
+        }else{
+          $results['transaction'][$transaction]['status'] = "Unknown";
+        }
+        foreach($files_list[$transaction] as $item){
+          $sub_time = new DateTime($item['stime']);
+          break;
+        }
+        $time_string = $sub_time->format('Y-m-d H:i:s');
+
+        $results['times'][$time_string] = $transaction;
+      }
+    }
+    
+    arsort($results['times']);
+    
+    return $results;
   }
   
 }

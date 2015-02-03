@@ -10,7 +10,7 @@ class Status extends Baseline_controller {
       $this->load->view('insufficient_privileges', $this->page_data);
     }
     $this->load->model('status_model','status');
-    $this->load->helper(array('inflector','url','opwhse_search','form'));
+    $this->load->helper(array('inflector','item','url','opwhse_search','form'));
     $this->load->library(array('table'));
   }
   
@@ -31,11 +31,11 @@ class Status extends Baseline_controller {
     
     $transaction_list = $this->status->get_transactions_for_group("156858");
     
-    
     // echo "<pre>";
-    // var_dump($instrument_group_xref);
+    // var_dump($transaction_list);
     // echo "</pre>";
     $this->page_data['instrument_list'] = $instrument_group_xref;
+    $this->page_data['transaction_data'] = $transaction_list;
     $this->load->view('emsl_mgmt_view',$this->page_data);
   }
   

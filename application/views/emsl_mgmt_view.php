@@ -42,7 +42,36 @@
             <fieldset>
               <legend>Most Recent Upload</legend>
               <div class="full_width_block">
-                
+                <div class="left_block">
+                  <?php $latest_transaction_item = array_slice($transaction_data['times'], 0,1,true); ?>
+                  <?php $latest_transaction_time = array_slice(array_keys($latest_transaction_item),0,1); ?>
+                  <?php $latest_transaction_time = array_pop($latest_transaction_time); ?>
+                  <?php $latest_transaction_id = $latest_transaction_item[$latest_transaction_time]; ?>
+                  <?php $formatted_transaction_time = new DateTime($latest_transaction_time); ?>
+                  <h3>Transaction Info</h3>
+                  Transaction #<span class="transaction_id"><?= $latest_transaction_id ?></span> - 
+                  <time datetime="<?= $formatted_transaction_time->format('c') ?>" class="transaction_time"><?= $formatted_transaction_time->format(DATE_RFC2822); ?></span>
+                </div>
+                <div class="right_block">
+                  <h3>Status Info</h3>
+                  <ul>
+                    <?php $last_status_step = array_pop(array_keys($transaction_data['transactions'][$latest_transaction_id]['status'])) ?>
+                    <?php $last_status_data = $transaction_data['transactions'][$latest_transaction_id]['status'][$last_status_step]; ?>
+                    <li>Last Observed Status => <?= $last_status_data['status'] ?></li>
+                    <li>Message => <?= $last_status_data['message'] ?></li>
+                    <li>Job ID => <?= $last_status_data['jobid'] ?></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="full_width_block">
+                <h3>Files List</h3>
+                <ul>
+                <?php foreach($transaction_data['transactions'][$latest_transaction_id]['files'] as $file_item): ?>
+                  <?php $combined_path = !empty($file_item['subdir']) ? $file_item['subdir']."/" : "" ?>
+                  <?php $combined_path .= $file_item['name']; ?>
+                  <li id="<?= $file_item['item_id'] ?>"><?= $combined_path ?></li>
+                <?php endforeach; ?>
+                </ul>
               </div>
             </fieldset>
           </div>
