@@ -17,7 +17,7 @@
                 <legend>Instrument Selection</legend>
                 <div class="full_width_block">
                   <div class="left_block">
-                    <select>
+                    <select id="instrument_selector" name="instrument_selector" style="width:100%;">
                       <option value>Select an Instrument...</option>
                     <?php foreach($instrument_list as $inst_id => $inst_name): ?>
                       <option value="<?= $inst_id ?>"><?= $inst_name ?></option>
@@ -25,7 +25,7 @@
                     </select>
                   </div>
                   <div class="right_block">
-                    <select style="width:100%;">
+                    <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
                       <option value>Select a Time Frame...</option>
                       <option value="-1 day">Last 24 Hours</option>
                       <option value="-7 days">Last 7 Days</option>
@@ -37,6 +37,7 @@
               </fieldset>
             </form>
           </div>
+          <br />
           <div class="themed">
             <fieldset>
               <legend>Most Recent Upload</legend>

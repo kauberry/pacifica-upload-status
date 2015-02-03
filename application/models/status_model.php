@@ -50,5 +50,22 @@ class Status_model extends CI_Model {
     return $inst_list;
   }
   
+  function get_transactions_for_group($group_id){
+    $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
+    $transaction_list = array();
+    $transaction_list_raw = json_decode($json_string, TRUE);
+    foreach($transaction_list_raw['RECORDS'] as $trans){
+      $transaction_list[] = $trans['transaction_id'];
+    }
+    $files_json_string = file_get_contents(FCPATH."resources/json_files/files_{$group_id}.json");
+    $files_list = array();
+    $files_list_raw = json_decode($json_string,TRUE);
+    foreach($files_list_raw as $file){
+      $files_list[$file['transaction']][$file['item_id']] = $file;
+    }
+    
+    
+  }
+  
 }
 ?>

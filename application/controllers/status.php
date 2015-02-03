@@ -17,9 +17,20 @@ class Status extends Baseline_controller {
   public function index(){
     $this->page_data['page_header'] = "MyEMSL Status Reporting";
     $this->page_data['title'] = "Overview";
-    $this->page_data['css_uris'] = array(base_url()."resources/stylesheets/status.css");
-    
+    $this->page_data['css_uris'] = array(
+      base_url()."resources/stylesheets/status.css",
+      base_url()."resources/scripts/select2/select2.css"
+    );
+    $this->page_data['script_uris'] = array(
+      base_url()."resources/scripts/emsl_mgmt_view.js",
+      base_url()."resources/scripts/select2/select2.js"
+    );
+    $this->page_data['load_prototype'] = false;
+    $this->page_data['load_jquery'] = true;
     $instrument_group_xref = $this->status->get_instrument_group_list();
+    
+    $transaction_list = $this->status->get_transactions_for_group("156858");
+    
     
     // echo "<pre>";
     // var_dump($instrument_group_xref);
@@ -28,5 +39,12 @@ class Status extends Baseline_controller {
     $this->load->view('emsl_mgmt_view',$this->page_data);
   }
   
+  public function get_uploads_by_group_id_ajax(){
+    //receives a json block containing a list of group id's and a start_date,
+    // returns a set of transactions and summaries sorted by time
+    
+  }
+  
 }
+
 ?>

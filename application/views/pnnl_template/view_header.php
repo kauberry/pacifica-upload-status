@@ -27,7 +27,7 @@
       echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"{$css}\" />";
     }
     echo "\n";
-    $this->load->view('pnnl_template/modalbox_setup');
+    // $this->load->view('pnnl_template/modalbox_setup');
   }  
 ?>
     <script type="text/javascript">
