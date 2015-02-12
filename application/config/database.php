@@ -48,6 +48,40 @@
 $active_group = 'default';
 $active_record = TRUE;
 
+$db['default']['hostname'] = 'sqlite:'.APPPATH.'config/database/myemsl_status_site_info.sqlite:';
+$db['default']['username'] = '';
+$db['default']['password'] = '';
+$db['default']['database'] = '';
+$db['default']['dbdriver'] = 'PDO';
+$db['default']['dbprefix'] = '';
+$db['default']['pconnect'] = TRUE;
+$db['default']['db_debug'] = TRUE;
+$db['default']['cache_on'] = FALSE;
+$db['default']['cachedir'] = '';
+$db['default']['char_set'] = 'utf8';
+$db['default']['dbcollat'] = 'utf8_general_ci';
+$db['default']['swap_pre'] = '';
+$db['default']['autoinit'] = TRUE;
+$db['default']['stricton'] = FALSE;
+
+
+$db['ws_info']['hostname'] = 'sqlite:'.APPPATH.'config/database/myemsl_status_site_info.sqlite:';
+$db['ws_info']['username'] = '';
+$db['ws_info']['password'] = '';
+$db['ws_info']['database'] = '';
+$db['ws_info']['dbdriver'] = 'PDO';
+$db['ws_info']['dbprefix'] = '';
+$db['ws_info']['pconnect'] = TRUE;
+$db['ws_info']['db_debug'] = TRUE;
+$db['ws_info']['cache_on'] = FALSE;
+$db['ws_info']['cachedir'] = '';
+$db['ws_info']['char_set'] = 'utf8';
+$db['ws_info']['dbcollat'] = 'utf8_general_ci';
+$db['ws_info']['swap_pre'] = '';
+$db['ws_info']['autoinit'] = TRUE;
+$db['ws_info']['stricton'] = FALSE;
+
+
 // $db['default']['hostname'] = 'localhost';
 // $db['default']['username'] = '';
 // $db['default']['password'] = '';
@@ -64,16 +98,16 @@ $active_record = TRUE;
 // $db['default']['autoinit'] = TRUE;
 // $db['default']['stricton'] = FALSE;
 
-$db['ws_info']['hostname'] = "localhost";
-$db['ws_info']['username'] = "myemsl_reader";
-$db['ws_info']['password'] = "myemsl4fun";
-$db['ws_info']['database'] = "myemsl_status_site_info";
-$db['ws_info']['dbdriver'] = "mysql";
-$db['ws_info']['dbprefix'] = "";
-$db['ws_info']['pconnect'] = TRUE;
-$db['ws_info']['db_debug'] = TRUE;
-$db['ws_info']['cache_on'] = FALSE;
-$db['ws_info']['cachedir'] = "";
+// $db['ws_info']['hostname'] = "localhost";
+// $db['ws_info']['username'] = "myemsl_reader";
+// $db['ws_info']['password'] = "myemsl4fun";
+// $db['ws_info']['database'] = "myemsl_status_site_info";
+// $db['ws_info']['dbdriver'] = "mysql";
+// $db['ws_info']['dbprefix'] = "";
+// $db['ws_info']['pconnect'] = TRUE;
+// $db['ws_info']['db_debug'] = TRUE;
+// $db['ws_info']['cache_on'] = FALSE;
+// $db['ws_info']['cachedir'] = "";
 
 
 $db['opwhse']['hostname'] = "OPWHSE";
@@ -89,16 +123,16 @@ $db['opwhse']['cache_on'] = FALSE;
 $db['opwhse']['cachedir'] = "";
 
 
-$db['default']['hostname'] = "localhost";
-$db['default']['username'] = "myemsl_reader";
-$db['default']['password'] = "myemsl4fun";
-$db['default']['database'] = "myemsl_status_site_info";
-$db['default']['dbdriver'] = "mysql";
-$db['default']['dbprefix'] = "";
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
-$db['default']['cachedir'] = "";
+// $db['default']['hostname'] = "localhost";
+// $db['default']['username'] = "myemsl_reader";
+// $db['default']['password'] = "myemsl4fun";
+// $db['default']['database'] = "myemsl_status_site_info";
+// $db['default']['dbdriver'] = "mysql";
+// $db['default']['dbprefix'] = "";
+// $db['default']['pconnect'] = TRUE;
+// $db['default']['db_debug'] = TRUE;
+// $db['default']['cache_on'] = FALSE;
+// $db['default']['cachedir'] = "";
 
 $db['eus_for_myemsl']['hostname'] = "eusi.emsl.pnl.gov";
 $db['eus_for_myemsl']['username'] = "myemsl";
