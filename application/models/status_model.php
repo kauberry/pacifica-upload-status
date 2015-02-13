@@ -40,15 +40,15 @@ class Status_model extends CI_Model {
     
   }
   
-  function get_instrument_group_list_static($filter = ""){
-    $json_string = file_get_contents(FCPATH."resources/json_files/instrument_group_list.json");
-    $inst_list = array();
-    $inst_list_raw = json_decode($json_string,TRUE);
-    foreach($inst_list_raw['RECORDS'] as $item){
-      $inst_list[$item['group_id']] = $item['name'];
-    }
-    return $inst_list;
-  }
+  // function get_instrument_group_list_static($filter = ""){
+    // $json_string = file_get_contents(FCPATH."resources/json_files/instrument_group_list.json");
+    // $inst_list = array();
+    // $inst_list_raw = json_decode($json_string,TRUE);
+    // foreach($inst_list_raw['RECORDS'] as $item){
+      // $inst_list[$item['group_id']] = $item['name'];
+    // }
+    // return $inst_list;
+  // }
   
   
   function get_instrument_group_list($filter = ""){
@@ -56,15 +56,63 @@ class Status_model extends CI_Model {
     
     $DB_myemsl->select(array('group_id','name'));
     $DB_myemsl->where("(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo')");
-    $query = $DB_myemsl->order_by('name')->get('myemsl.groups');
+    $query = $DB_myemsl->order_by('name')->get('groups');
+    
+    $results = array();
+    if($query && $query->num_rows() > 0){
+      foreach($query->result() as $row){
+        $results[$row->group_id] = $row->name;
+      }
+    }
+    return $results;
+  }
+  
+  
+  function get_transactions_for_group($group_id, $num_days_back){
+    $transaction_list = array();
+    $DB_myemsl = $this->load->database('default',TRUE);
+    
+    $select_array = array(
+      'max(f.transaction) as transaction_id',
+      'max(gi.group_id) as group_id'
+    );
+    
+    $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
+    $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
+    $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
     echo $DB_myemsl->last_query();
-    var_dump($query->result_array());
+    
+    if($query && $query->num_rows()>0){
+      foreach($query->result() as $row){
+        $transaction_list[] = $row->transaction_id;
+      }
+      
+      $file_select_array = array(
+        'f.item_id','f.name','f.subdir','t.stime','f.transaction','f.size'
+      );
+      
+      $DB_myemsl->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
+      $DB_myemsl->where('t.stime is not null')->where_in('f.transaction',$transaction_list);
+      $DB_myemsl->where('t.stime >= now() + INTERVAL "-{$num_days_back} days"');
+      $DB_myemsl->order_by('f.transaction desc, t.stime desc');
+      $files_query = $DB_myemsl->get();
+      
+      echo $DB_myemsl->last_query();
+      $files_list = array();
+      
+      if($files_query && $file_query->num_rows()>0){
+        foreach($files_query->result_array() as $row){
+          $files_list[$row['transaction']][$row['item_id']] = $row;
+        }
+      }
+      
+    }
     
   }
   
   
-  function get_transactions_for_group($group_id){
+  function get_transactions_for_group_static($group_id){
     $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
     $transaction_list = array();
     $transaction_list_raw = json_decode($json_string, TRUE);

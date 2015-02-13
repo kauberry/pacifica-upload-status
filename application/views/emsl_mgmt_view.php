@@ -20,17 +20,23 @@
                     <select id="instrument_selector" name="instrument_selector" style="width:100%;">
                       <option value>Select an Instrument...</option>
                     <?php foreach($instrument_list as $inst_id => $inst_name): ?>
-                      <option value="<?= $inst_id ?>"><?= $inst_name ?></option>
+                      <?php $selected_state = $inst_id == $instrument_id ? ' selected="selected"' : ''; ?>
+                      <option value="<?= $inst_id ?>"<?= $selected_state ?>><?= $inst_name ?></option>
                     <?php endforeach; ?>
                     </select>
                   </div>
                   <div class="right_block">
                     <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
+                      <?php $period_list = array(
+                        '1' => "Last 24 Hours",
+                        '7' => "Last 7 Days",
+                        '30' => "Last Month",
+                        '365' => "Last Year"); ?>
                       <option value>Select a Time Frame...</option>
-                      <option value="-1 day">Last 24 Hours</option>
-                      <option value="-7 days">Last 7 Days</option>
-                      <option value="-1 month">Last Month</option>
-                      <option value="-1 year">Last Year</option>
+                      <?php foreach($period_list as $period => $desc): ?>
+                        <?php $selected_state = $period == $time_period ? ' selected="selected"' : ''; ?>
+                      <option value="<?= $period ?>"<?= $selected_state ?>><?= $desc ?></option>
+                      <?php endforeach; ?>
                     </select>
                   </div>
                 </div>

@@ -14,7 +14,11 @@ class Status extends Baseline_controller {
     $this->load->library(array('table'));
   }
   
-  public function index(){
+  // public function test(){
+    // echo phpinfo();
+  // }
+  
+  public function index($instrument_id = 156858, $time_period = 30){
     $this->page_data['page_header'] = "MyEMSL Status Reporting";
     $this->page_data['title'] = "Overview";
     $this->page_data['css_uris'] = array(
@@ -29,11 +33,14 @@ class Status extends Baseline_controller {
     $this->page_data['load_jquery'] = true;
     $instrument_group_xref = $this->status->get_instrument_group_list();
     
-    $transaction_list = $this->status->get_transactions_for_group("156858");
+    // $transaction_list = $this->status->get_transactions_for_group_static($instrument_id,$time_period);
+        $transaction_list = $this->status->get_transactions_for_group_static($instrument_id);
     
     // echo "<pre>";
     // var_dump($transaction_list);
     // echo "</pre>";
+    $this->page_data['time_period'] = $time_period;
+    $this->page_data['instrument_id'] = $instrument_id;
     $this->page_data['instrument_list'] = $instrument_group_xref;
     $this->page_data['transaction_data'] = $transaction_list;
     $this->load->view('emsl_mgmt_view',$this->page_data);
