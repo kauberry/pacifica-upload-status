@@ -25,12 +25,12 @@ class Status_model extends CI_Model {
     if(is_string($instrument_list)){
       $instrument_list = explode(',',$instrument_list);
     }
-    
-    
-    
-    
-    
+ 
   }
+  
+  
+
+
   
   function get_status_for_instrument_over_range($instrument_list, $time_period = "1 day"){
     $current_time_obj = new DateTime();
@@ -40,7 +40,7 @@ class Status_model extends CI_Model {
     
   }
   
-  function get_instrument_group_list($filter = ""){
+  function get_instrument_group_list_static($filter = ""){
     $json_string = file_get_contents(FCPATH."resources/json_files/instrument_group_list.json");
     $inst_list = array();
     $inst_list_raw = json_decode($json_string,TRUE);
@@ -49,6 +49,12 @@ class Status_model extends CI_Model {
     }
     return $inst_list;
   }
+  
+  
+  function get_instrument_group_list($filter = ""){
+    
+  }
+  
   
   function get_transactions_for_group($group_id){
     $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
