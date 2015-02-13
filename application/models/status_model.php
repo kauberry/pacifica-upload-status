@@ -52,6 +52,14 @@ class Status_model extends CI_Model {
   
   
   function get_instrument_group_list($filter = ""){
+    $DB_myemsl = $this->load->database('default',TRUE);
+    
+    $DB_myemsl->select(array('group_id','name'));
+    $DB_myemsl->where("(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo')");
+    $query = $DB_myemsl->order_by('name')->get('myemsl.groups');
+    
+    echo $DB_myemsl->last_query();
+    var_dump($query->result_array());
     
   }
   
