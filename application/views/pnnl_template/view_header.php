@@ -1,4 +1,8 @@
 <?= doctype('html5'); ?>
+<?php
+  $form_object = isset($form_object) ? $form_object : '';
+  $table_object = isset($table_object) ? $table_object : "";
+?>
 <html>
   <head>
 <?php
@@ -11,25 +15,19 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta  name="description" content="" />
     <meta name="keywords" content="" />
-<?php
-  $form_object = isset($form_object) ? $form_object : '';
-  $table_object = isset($table_object) ? $table_object : "";
-  $this->load->view('pnnl_template/globals');
-  if(isset($script_uris) && sizeof($script_uris) > 0){
-    foreach($script_uris as $uri) {
-      echo "  <script type=\"text/javascript\" src=\"{$uri}\"></script>\n";
-    }
-    echo "\n";
-  }
-  
-   if(isset($css_uris) && sizeof($css_uris) > 0){
-    foreach($css_uris as $css) {
-      echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"{$css}\" />";
-    }
-    echo "\n";
-    // $this->load->view('pnnl_template/modalbox_setup');
-  }  
-?>
+<?php $this->load->view('pnnl_template/globals'); ?>
+  <?php if(isset($script_uris) && sizeof($script_uris) > 0): ?>
+    <?php foreach($script_uris as $uri): ?>
+    <script type="text/javascript" src="<?= $uri ?>"></script>
+    <?php endforeach; ?>
+    
+  <?php endif; ?>
+  <?php if(isset($css_uris) && sizeof($css_uris) > 0): ?>
+    <?php foreach($css_uris as $css): ?>
+    <link rel="stylesheet" type="text/css" href="<?= $css ?>" />
+    <?php endforeach; ?>
+    
+  <?php endif; ?>
     <script type="text/javascript">
       var base_url = "<?= base_url() ?>";
     </script>

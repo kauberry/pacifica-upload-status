@@ -52,7 +52,7 @@ $db['default']['hostname'] = 'sqlite:'.APPPATH.'config/database/myemsl_status_si
 $db['default']['username'] = '';
 $db['default']['password'] = '';
 $db['default']['database'] = '';
-$db['default']['dbdriver'] = 'PDO';
+$db['default']['dbdriver'] = 'pdo';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
 $db['default']['db_debug'] = TRUE;
@@ -69,7 +69,7 @@ $db['ws_info']['hostname'] = 'sqlite:'.APPPATH.'config/database/myemsl_status_si
 $db['ws_info']['username'] = '';
 $db['ws_info']['password'] = '';
 $db['ws_info']['database'] = '';
-$db['ws_info']['dbdriver'] = 'PDO';
+$db['ws_info']['dbdriver'] = 'pdo';
 $db['ws_info']['dbprefix'] = '';
 $db['ws_info']['pconnect'] = TRUE;
 $db['ws_info']['db_debug'] = TRUE;
@@ -110,17 +110,17 @@ $db['ws_info']['stricton'] = FALSE;
 // $db['ws_info']['cachedir'] = "";
 
 
-$db['opwhse']['hostname'] = "OPWHSE";
-$db['opwhse']['username'] = "PRISM";
-$db['opwhse']['password'] = "5GigYawn";
-$db['opwhse']['database'] = "opwhse";
-$db['opwhse']['dbdriver'] = "mssql";
-$db['opwhse']['dbprefix'] = "";
-$db['opwhse']['active_r'] = TRUE;
-$db['opwhse']['pconnect'] = FALSE;
-$db['opwhse']['db_debug'] = FALSE;
-$db['opwhse']['cache_on'] = FALSE;
-$db['opwhse']['cachedir'] = "";
+// $db['opwhse']['hostname'] = "OPWHSE";
+// $db['opwhse']['username'] = "PRISM";
+// $db['opwhse']['password'] = "5GigYawn";
+// $db['opwhse']['database'] = "opwhse";
+// $db['opwhse']['dbdriver'] = "mssql";
+// $db['opwhse']['dbprefix'] = "";
+// $db['opwhse']['active_r'] = TRUE;
+// $db['opwhse']['pconnect'] = FALSE;
+// $db['opwhse']['db_debug'] = FALSE;
+// $db['opwhse']['cache_on'] = FALSE;
+// $db['opwhse']['cachedir'] = "";
 
 
 // $db['default']['hostname'] = "localhost";

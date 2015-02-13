@@ -5,10 +5,10 @@ class Status extends Baseline_controller {
 
   function __construct() {
     parent::__construct();
-    if($this->admin_access_level < 400){
-      $this->page_data['message'] = "You must have at least 'Power User' status to use these pages";
-      $this->load->view('insufficient_privileges', $this->page_data);
-    }
+    // if($this->admin_access_level < 400){
+      // $this->page_data['message'] = "You must have at least 'Power User' status to use these pages";
+      // $this->load->view('insufficient_privileges', $this->page_data);
+    // }
     $this->load->model('status_model','status');
     $this->load->helper(array('inflector','item','url','opwhse_search','form'));
     $this->load->library(array('table'));

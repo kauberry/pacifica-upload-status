@@ -1,7 +1,7 @@
 <div id="footer">
-  <div id="footerBar">
-    <span id="tagline"></span>
-    <a id="officeOfScience" href="http://www.er.doe.gov/">Enabled by the Office of Science</a>
+  <div class="banner_bar_background">
+    <div class="banner_bar banner_bar_left banner_bar_<?= $this->site_color ?>" style="border-radius:0px 0px 0px 4px;">&nbsp;</div>
+    <div class="banner_bar banner_bar_right banner_bar_grey" style="border-radius:0px 0px 4px 0px;">&nbsp;</div>
   </div>
   <div id="footerLinks">
     <a href="http://www.pnl.gov/disclaimer.asp">Security &amp; Privacy</a>
