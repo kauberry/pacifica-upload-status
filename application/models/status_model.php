@@ -103,6 +103,44 @@ class Status_model extends CI_Model {
         foreach($files_query->result_array() as $row){
           $files_list[$row['transaction']][$row['item_id']] = $row;
         }
+        
+        $status_list = array();
+        $select_array = array(
+          'jobid','trans_id','person_id','step','message','status'
+        );
+        $DB_myemsl->select($select_array)->where_in('trans_id',$transaction_list);
+        $ingest_query = $DB_myemsl->get('ingest_state');
+        if($ingest_query && $ingest_query->num_rows()>0){
+          foreach($ingest_query->result_array() as $row){
+            $status_list[$row['trans_id']][$row['step']] = $row;
+          }
+
+          $results = array();
+          
+          foreach($transaction_list as $transaction){
+            if(array_key_exists($transaction,$files_list)){
+              $results['transactions'][$transaction]['files'] = $files_list[$transaction];
+              if(array_key_exists($transaction, $status_list)){
+                $results['transactions'][$transaction]['status'] = $status_list[$transaction];
+              }else{
+                $results['transaction'][$transaction]['status'] = "Unknown";
+              }
+              foreach($files_list[$transaction] as $item){
+                $sub_time = new DateTime($item['stime']);
+                break;
+              }
+              $time_string = $sub_time->format('Y-m-d H:i:s');
+      
+              $results['times'][$time_string] = $transaction;
+            }
+          }
+
+        }
+        
+        arsort($results['times']);
+    
+        return $results;
+        
       }
       
     }

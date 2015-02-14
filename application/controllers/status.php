@@ -36,9 +36,9 @@ class Status extends Baseline_controller {
     $transaction_list = $this->status->get_transactions_for_group($instrument_id,$time_period);
         // $transaction_list = $this->status->get_transactions_for_group_static($instrument_id);
     
-    // echo "<pre>";
-    // var_dump($transaction_list);
-    // echo "</pre>";
+    echo "<pre>";
+    var_dump($transaction_list);
+    echo "</pre>";
     $this->page_data['time_period'] = $time_period;
     $this->page_data['instrument_id'] = $instrument_id;
     $this->page_data['instrument_list'] = $instrument_group_xref;
