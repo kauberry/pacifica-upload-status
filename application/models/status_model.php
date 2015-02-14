@@ -81,8 +81,7 @@ class Status_model extends CI_Model {
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
-    echo $DB_myemsl->last_query();
-    
+   
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
         $transaction_list[] = $row->transaction_id;
@@ -94,14 +93,13 @@ class Status_model extends CI_Model {
       
       $DB_myemsl->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
       $DB_myemsl->where('t.stime is not null')->where_in('f.transaction',$transaction_list);
-      $DB_myemsl->where('t.stime >= now() + INTERVAL "-{$num_days_back} days"');
+      $DB_myemsl->where("t.stime >= now() + INTERVAL '-{$num_days_back} days'");
       $DB_myemsl->order_by('f.transaction desc, t.stime desc');
       $files_query = $DB_myemsl->get();
       
-      echo $DB_myemsl->last_query();
       $files_list = array();
       
-      if($files_query && $file_query->num_rows()>0){
+      if($files_query && $files_query->num_rows()>0){
         foreach($files_query->result_array() as $row){
           $files_list[$row['transaction']][$row['item_id']] = $row;
         }
