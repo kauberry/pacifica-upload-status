@@ -33,6 +33,31 @@ function format_files_object($files_object){
     // var_dump($tree);
   // }
 }
+
+function build_folder_structure(&$dirs, $path_array) {
+    if (count($path_array) > 1) {
+        if (!isset($dirs[$path_array[0]])) {
+            $dirs[$path_array[0]] = array();
+        }
+
+        build_folder_structure($dirs[$path_array[0]], array_splice($path_array, 1));
+    } else {
+        $dirs[] = $path_array[0];
+    }
+}
+
+function format_folder_structure($ul_struct, $dir_name, &$directory){
+  $directory .= "<li>{$name}<ul >";
+  foreach($ul_struct as $name => $contents){
+    if(is_array($contents)){
+      format_folder_structure($contents, $name, $directory);
+    }else{
+      $directory .= "<li>{$contents}</li>";
+    }
+  }
+  $directory .= "</ul></li>";
+}
+
   
 function format_bytes($bytes) {
    if ($bytes < 1024) return $bytes.' B';

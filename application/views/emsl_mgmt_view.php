@@ -45,32 +45,69 @@
           </div>
           <br />
           <div class="themed">
+            <?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
+              <?php 
+                $upload_time = new DateTime($upload_time_string);
+                $transaction_info = $transaction_data['transactions'][$transaction_id];
+                $friendly_upload_time = $upload_time->format('g:ia \o\n D, M j Y');
+                $status_steps = $transaction_info['status'];
+                krsort($status_steps);
+                $latest_step_info =  array_pop(array_slice($status_steps, 0,1, true));
+                $latest_step = $latest_step_info['step'];
+              ?>
             <fieldset>
-              <legend>Most Recent Upload</legend>
-              <div class="full_width_block">
-                <div class="left_block">
-                  <?php $latest_transaction_item = array_slice($transaction_data['times'], 0,1,true); ?>
-                  <?php $latest_transaction_time = array_slice(array_keys($latest_transaction_item),0,1); ?>
-                  <?php $latest_transaction_time = array_pop($latest_transaction_time); ?>
-                  <?php $latest_transaction_id = $latest_transaction_item[$latest_transaction_time]; ?>
-                  <?php $formatted_transaction_time = new DateTime($latest_transaction_time); ?>
-                  <h3>Transaction Info</h3>
-                  Transaction #<span class="transaction_id"><?= $latest_transaction_id ?></span> - 
-                  <time datetime="<?= $formatted_transaction_time->format('c') ?>" class="transaction_time"><?= $formatted_transaction_time->format(DATE_RFC2822); ?></span>
-                </div>
-                <div class="right_block">
-                  <h3>Status Info</h3>
-                  <ul>
-                    <?php $last_status_step = array_pop(array_keys($transaction_data['transactions'][$latest_transaction_id]['status'])) ?>
-                    <?php $last_status_data = $transaction_data['transactions'][$latest_transaction_id]['status'][$last_status_step]; ?>
-                    <li>Last Observed Status => <?= $last_status_data['status'] ?></li>
-                    <li>Message => <?= $last_status_data['message'] ?></li>
-                    <li>Job ID => <?= $last_status_data['jobid'] ?></li>
-                  </ul>
+              <legend>Uploaded at <?= $friendly_upload_time ?></legend>
+              <div class="bar_holder">
+                <?php for($i=0;$i<=6;$i++): ?>
+                  <?php $classname = $i <= $latest_step ? 'green_bar_end' : 'orange_bar_end'; ?>
+                  <?php $relname = $i <= $latest_step ? 'Completed' : 'Unknown'; ?>
+                <span class="<?= $classname ?> block_<?= $i ?>" rel="<?= $relname ?>"><?= $status_list[$i] ?></span>
+                <?php endfor; ?>
+              </div>
+              <br />
+              <div class="full_width_block" style="margin-left:40px;">
+                <h2>Files List => Transaction #<?= $transaction_id ?></h2>
+                <div class="disclosure_block">
+                  <?php $ul_list = ""; ?>
+                  <?php //format_folder_structure($transaction_info['files'], $ul_list); ?>
+                  <?= $ul_list ?>
                 </div>
               </div>
-              <div class="full_width_block">
-                <h3>Files List</h3>
+              
+              
+            </fieldset>
+            <br />
+            <?php endforeach; ?>
+          </div>
+          <!-- <div class="themed">
+            <fieldset>
+              <legend>Most Recent Upload</legend>
+              <?php $latest_transaction_item = array_slice($transaction_data['times'], 0,1,true); ?>
+              <?php $latest_transaction_time = array_slice(array_keys($latest_transaction_item),0,1); ?>
+              <?php $latest_transaction_time = array_pop($latest_transaction_time); ?>
+              <?php $latest_transaction_id = $latest_transaction_item[$latest_transaction_time]; ?>
+              <?php $latest_transaction_info = $transaction_data['transactions'][$latest_transaction_id]; ?>
+              <?php $latest_transaction_steps = $latest_transaction_info['status']; ?>
+              <?php krsort($latest_transaction_steps); ?>
+              <?php $latest_step_info = array_pop(array_slice($latest_transaction_steps, 0,1, true)); ?>
+              <?php $latest_step = $latest_step_info['step']; ?>
+              <?php $formatted_transaction_time = new DateTime($latest_transaction_time); ?>
+                <div class="bar_holder">
+                  <?php for($i=0;$i<=6;$i++): ?>
+                    <?php $classname = $i <= $latest_step ? 'green_bar_end' : 'orange_bar_end'; ?>
+                    <?php $relname = $i <= $latest_step ? 'Completed' : 'Unknown'; ?>
+                  <span class="<?= $classname ?> block_<?= $i ?>" rel="<?= $relname ?>"><?= $status_list[$i] ?></span>
+                  <?php endfor; ?>
+                </div>
+                <br />
+              <div class="full_width_block" style="margin-left:40px;">
+                <h2>Upload Info</h2>
+                <?php $friendly_upload_time = $formatted_transaction_time->format('g:ia \o\n D, M j Y'); ?>
+                <div style="font-size:1.2em;">Completed <time datetime="<?= $formatted_transaction_time->format('c') ?>" class="transaction_time"><?= $friendly_upload_time ?></time></div>
+              </div>
+              <br />
+              <div class="full_width_block" style="margin-left:40px;">
+                <h2>Files List</h2>
                 <ul>
                 <?php foreach($transaction_data['transactions'][$latest_transaction_id]['files'] as $file_item): ?>
                   <?php $combined_path = !empty($file_item['subdir']) ? $file_item['subdir']."/" : "" ?>
@@ -80,8 +117,7 @@
                 </ul>
               </div>
             </fieldset>
-          </div>
-          
+          </div> -->          
         </div>
 
       </div>
