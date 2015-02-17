@@ -24,10 +24,11 @@ class Status extends Baseline_controller {
     $this->page_data['css_uris'] = array(
       base_url()."resources/stylesheets/status.css",
       base_url()."resources/stylesheets/status_style.css",
-      base_url()."resources/scripts/select2/select2.css"
+      base_url()."resources/scripts/select2/select2.css",
+      base_url()."resources/scripts/fancytree/skin-lion/ui.fancytree.css"
     );
     $this->page_data['script_uris'] = array(
-      base_url()."resources/scripts/fancytree/",
+      base_url()."resources/scripts/fancytree/jquery.fancytree-all.js",
       base_url()."resources/scripts/emsl_mgmt_view.js",
       base_url()."resources/scripts/select2/select2.js"
     );

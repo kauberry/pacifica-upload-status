@@ -86,12 +86,6 @@ class Status_model extends CI_Model {
       foreach($files_query->result_array() as $row){
         $files_list[$row['item_id']] = $row;
       }
-      
-      // echo "<pre>\n";
-      // var_dump($files_list);
-      // echo "</pre>";
-      //format by subdir
-      
       $file_tree = array();
       
       
@@ -100,7 +94,7 @@ class Status_model extends CI_Model {
       foreach($files_list as $item_id => $item_info){
         $subdir = $item_info['subdir'];
         $filename = $item_info['name'];
-        $path = "{$subdir}/{$filename}";
+        $path = !empty($subdir) ? "{$subdir}/{$filename}" : $filename;
         $path_array = explode('/',$path);
         build_folder_structure($dirs, $path_array);
       }
@@ -141,6 +135,7 @@ class Status_model extends CI_Model {
         $results['times'][$time_string] = $transaction_id;
         
         $results['transactions'][$transaction_id]['files'] = $file_tree;
+        $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
         if(sizeof($files_obj)>0){
           $status_list = $this->get_status_for_transaction($transaction_id);
           if(sizeof($status_list) > 0){

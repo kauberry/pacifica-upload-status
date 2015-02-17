@@ -46,11 +46,11 @@ function build_folder_structure(&$dirs, $path_array) {
     }
 }
 
-function format_folder_structure($ul_struct, $dir_name, &$directory){
-  $directory .= "<li>{$name}<ul >";
+function format_folder_structure($ul_struct, &$directory, $dir_name = ""){
+  $directory .= "<li class='folder'>{$dir_name}<ul>";
   foreach($ul_struct as $name => $contents){
     if(is_array($contents)){
-      format_folder_structure($contents, $name, $directory);
+      format_folder_structure($contents, $directory, $name);
     }else{
       $directory .= "<li>{$contents}</li>";
     }
