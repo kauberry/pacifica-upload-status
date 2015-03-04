@@ -115,13 +115,12 @@ class Status_model extends CI_Model {
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
-   
+    $results = array();
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
         $transaction_list[] = $row->transaction_id;
       }
       
-      $results = array();
       foreach($transaction_list as $transaction_id){
         $files_obj = $this->get_files_for_transaction($transaction_id);
         $file_tree = $files_obj['treelist'];
@@ -146,70 +145,9 @@ class Status_model extends CI_Model {
         }
       }
       arsort($results['times']);
-    
-      return $results;
-      
-      
-      // $file_select_array = array(
-        // 'f.item_id','f.name','f.subdir','t.stime','f.transaction','f.size'
-      // );
-//       
-      // $DB_myemsl->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
-      // $DB_myemsl->where('t.stime is not null')->where_in('f.transaction',$transaction_list);
-      // $DB_myemsl->where("t.stime >= now() + INTERVAL '-{$num_days_back} days'");
-      // $DB_myemsl->order_by('f.transaction desc, t.stime desc');
-      // $files_query = $DB_myemsl->get();
-//       
-      // $files_list = array();
-//       
-      // if($files_query && $files_query->num_rows()>0){
-        // foreach($files_query->result_array() as $row){
-          // $files_list[$row['transaction']][$row['item_id']] = $row;
-        // }
-//         
-        // $status_list = array();
-        // $select_array = array(
-          // 'jobid','trans_id','person_id','step','message','status'
-        // );
-        // $DB_myemsl->select($select_array)->where_in('trans_id',$transaction_list);
-        // $ingest_query = $DB_myemsl->get('ingest_state');
-        // if($ingest_query && $ingest_query->num_rows()>0){
-          // foreach($ingest_query->result_array() as $row){
-            // $status_list[$row['trans_id']][$row['step']] = $row;
-          // }
-// 
-          // $results = array();
-//           
-          // foreach($transaction_list as $transaction){
-            // if(array_key_exists($transaction,$files_list)){
-              // $results['transactions'][$transaction]['files'] = $files_list[$transaction];
-              // if(array_key_exists($transaction, $status_list)){
-                // $results['transactions'][$transaction]['status'] = $status_list[$transaction];
-              // }else{
-                // $results['transaction'][$transaction]['status'] = "Unknown";
-              // }
-              // foreach($files_list[$transaction] as $item){
-                // $sub_time = new DateTime($item['stime']);
-                // break;
-              // }
-              // $time_string = $sub_time->format('Y-m-d H:i:s');
-//       
-              // $results['times'][$time_string] = $transaction;
-            // }
-          // }
-// 
-        // }
-        
-        // arsort($results['times']);
-//     
-        // return $results;
-        
-      // }
-//       
-    // }
-    
+    }
+    return $results;       
   }
-}
 
   function get_status_for_transaction($transaction_id){
     $DB_myemsl = $this->load->database('default',TRUE);
