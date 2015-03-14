@@ -103,6 +103,7 @@ class Status_model extends CI_Model {
   }
   
   function get_transactions_for_group($group_id, $num_days_back){
+    $raw_transaction_list = array();
     $transaction_list = array();
     $DB_myemsl = $this->load->database('default',TRUE);
     
@@ -115,47 +116,73 @@ class Status_model extends CI_Model {
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
+    
+    //filter the transactions for date
     $results = array();
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
-        $transaction_list[] = $row->transaction_id;
+        $raw_transaction_list[] = $row->transaction_id;
       }
       
-      foreach($transaction_list as $transaction_id){
-        $files_obj = $this->get_files_for_transaction($transaction_id);
-        $file_tree = $files_obj['treelist'];
-        $flat_list = $files_obj['files'];
-        foreach($flat_list as $item){
-          $sub_time = new DateTime($item['stime']);
-          break;
-        }
-        $time_string = $sub_time->format('Y-m-d H:i:s');
-
-        $results['times'][$time_string] = $transaction_id;
-        
-        $results['transactions'][$transaction_id]['files'] = $file_tree;
-        $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
-        if(sizeof($files_obj)>0){
-          $status_list = $this->get_status_for_transaction($transaction_id);
-          if(sizeof($status_list) > 0){
-            $results['transactions'][$transaction_id]['status'] = $status_list;
-          }else{
-            $results['transactions'][$transaction_id]['status'] = "Unknown";
-          }
+      
+      $today = new DateTime();
+      $earliest_date = clone $today;
+      $earliest_date->modify("-{$num_days_back} days");
+      $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->where('stime >=',$earliest_date->format('Y-m-d'));
+      $trans_query = $DB_myemsl->get('transactions');
+      if($trans_query && $trans_query->num_rows()>0){
+        foreach($trans_query->result() as $row){
+          $transaction_list[] = $row->transaction;
         }
       }
-      arsort($results['times']);
+      
+      if(!empty($transaction_list)){
+        foreach($transaction_list as $transaction_id){
+          $files_obj = $this->get_files_for_transaction($transaction_id);
+          $file_tree = $files_obj['treelist'];
+          $flat_list = $files_obj['files'];
+          foreach($flat_list as $item){
+            $sub_time = new DateTime($item['stime']);
+            break;
+          }
+          $time_string = $sub_time->format('Y-m-d H:i:s');
+  
+          $results['times'][$time_string] = $transaction_id;
+          
+          $results['transactions'][$transaction_id]['files'] = $file_tree;
+          $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
+          if(sizeof($files_obj)>0){
+            $status_list = $this->get_status_for_transaction('transaction',$transaction_id);
+            if(sizeof($status_list) > 0){
+              $results['transactions'][$transaction_id]['status'] = $status_list;
+            }else{
+              $results['transactions'][$transaction_id]['status'] = "Unknown";
+            }
+          }
+        }
+        arsort($results['times']);
+      }
+      
     }
-    return $results;       
+    return $results;
   }
 
-  function get_status_for_transaction($transaction_id){
+  function get_status_for_transaction($lookup_type, $id){
+    $lookup_types = array(
+      't' => 'trans_id', 'trans_id' => 'trans_id',
+      'j' => 'jobid', 'job' => 'jobid'
+    );
+    if(!array_key_exists($lookup_type,$lookup_types)){
+      $lookup_field = 'trans_id';
+    }else{
+      $lookup_field = $lookup_types[$lookup_type];
+    }
     $DB_myemsl = $this->load->database('default',TRUE);
     $status_list = array();
     $select_array = array(
       'jobid','trans_id','person_id','step','message','status'
     );
-    $DB_myemsl->select($select_array)->where('trans_id',$transaction_id);
+    $DB_myemsl->select($select_array)->where($lookup_field,$id);
     $ingest_query = $DB_myemsl->get('ingest_state');
     if($ingest_query && $ingest_query->num_rows()>0){
       foreach($ingest_query->result_array() as $row){
@@ -166,51 +193,53 @@ class Status_model extends CI_Model {
   }
   
   
-  function get_transactions_for_group_static($group_id){
-    $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
-    $transaction_list = array();
-    $transaction_list_raw = json_decode($json_string, TRUE);
-    foreach($transaction_list_raw['RECORDS'] as $trans){
-      $transaction_list[] = $trans['transaction_id'];
-    }
-    $files_json_string = file_get_contents(FCPATH."resources/json_files/files_{$group_id}.json");
-    $files_list = array();
-    $files_list_raw = json_decode($files_json_string,TRUE);
-    foreach($files_list_raw['RECORDS'] as $file){
-      $files_list[$file['transaction']][$file['item_id']] = $file;
-    }
-    $status_json_string = file_get_contents(FCPATH."resources/json_files/ingest_states_group_{$group_id}.json");
-    $status_list = array();
-    $status_list_raw = json_decode($status_json_string, TRUE);
-    foreach($status_list_raw['RECORDS'] as $status){
-      $status_list[$status['trans_id']][$status['step']] = $status;
-    }
-    
-    
-    $results = array();
-    
-    foreach($transaction_list as $transaction){
-      if(array_key_exists($transaction,$files_list)){
-        $results['transactions'][$transaction]['files'] = $files_list[$transaction];
-        if(array_key_exists($transaction, $status_list)){
-          $results['transactions'][$transaction]['status'] = $status_list[$transaction];
-        }else{
-          $results['transaction'][$transaction]['status'] = "Unknown";
-        }
-        foreach($files_list[$transaction] as $item){
-          $sub_time = new DateTime($item['stime']);
-          break;
-        }
-        $time_string = $sub_time->format('Y-m-d H:i:s');
-
-        $results['times'][$time_string] = $transaction;
-      }
-    }
-    
-    arsort($results['times']);
-    
-    return $results;
-  }
+  
+  
+  // function get_transactions_for_group_static($group_id){
+    // $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
+    // $transaction_list = array();
+    // $transaction_list_raw = json_decode($json_string, TRUE);
+    // foreach($transaction_list_raw['RECORDS'] as $trans){
+      // $transaction_list[] = $trans['transaction_id'];
+    // }
+    // $files_json_string = file_get_contents(FCPATH."resources/json_files/files_{$group_id}.json");
+    // $files_list = array();
+    // $files_list_raw = json_decode($files_json_string,TRUE);
+    // foreach($files_list_raw['RECORDS'] as $file){
+      // $files_list[$file['transaction']][$file['item_id']] = $file;
+    // }
+    // $status_json_string = file_get_contents(FCPATH."resources/json_files/ingest_states_group_{$group_id}.json");
+    // $status_list = array();
+    // $status_list_raw = json_decode($status_json_string, TRUE);
+    // foreach($status_list_raw['RECORDS'] as $status){
+      // $status_list[$status['trans_id']][$status['step']] = $status;
+    // }
+//     
+//     
+    // $results = array();
+//     
+    // foreach($transaction_list as $transaction){
+      // if(array_key_exists($transaction,$files_list)){
+        // $results['transactions'][$transaction]['files'] = $files_list[$transaction];
+        // if(array_key_exists($transaction, $status_list)){
+          // $results['transactions'][$transaction]['status'] = $status_list[$transaction];
+        // }else{
+          // $results['transaction'][$transaction]['status'] = "Unknown";
+        // }
+        // foreach($files_list[$transaction] as $item){
+          // $sub_time = new DateTime($item['stime']);
+          // break;
+        // }
+        // $time_string = $sub_time->format('Y-m-d H:i:s');
+// 
+        // $results['times'][$time_string] = $transaction;
+      // }
+    // }
+//     
+    // arsort($results['times']);
+//     
+    // return $results;
+  // }
   
 }
 ?>

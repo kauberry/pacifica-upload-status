@@ -1,0 +1,5 @@
+<?php for($i=0;$i<=6;$i++): ?>
+  <?php $classname = $i <= $latest_step ? 'green_bar_end' : 'orange_bar_end'; ?>
+  <?php $relname = $i <= $latest_step ? 'Completed' : 'Unknown'; ?>
+<span class="<?= $classname ?> block_<?= $i ?>" rel="<?= $relname ?>"><?= $status_list[$i] ?></span>
+<?php endfor; ?>
