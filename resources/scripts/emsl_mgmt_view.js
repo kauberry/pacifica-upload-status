@@ -22,23 +22,3 @@ $(function(){
   
 });
 
-var update_breadcrumbs = function(){
-  $('.bar_holder').each(function(index,el){
-    var pattern = /\w+_\w+_(\d+)/i;
-    var m = $(el).prop('id').match(pattern);
-    var trans_id = m[1];
-    var url = base_url + 'index.php/status/get_status/t/' + trans_id;
-    $.get(url, function(data){
-      $(el).html(data);
-    });
-  });
-};
-
-var update_content = function(){
-  var instrument_id = $('#instrument_selector').select2('val');
-  var time_frame = $('#timeframe_selector').select2('val');
-  var url = base_url + 'index.php/status/view/' + instrument_id + '/' + time_frame;
-  $.get(url, function(data){
-    $('#item_info_container').html(data);
-  });
-};

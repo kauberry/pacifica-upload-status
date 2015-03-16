@@ -22,7 +22,6 @@
       </div>
       <br />
       <div class="full_width_block" style="margin-left:40px;width:95%;">
-        <h2>Files List => Transaction #<?= $transaction_id ?></h2>
         <div class="disclosure_block">
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
             <ul id="treeData_<?= $transaction_id ?>" style="display:none;">
@@ -33,12 +32,10 @@
           </div>
         </div>
       </div>
-      
-      
     </fieldset>
     <br />
   <?php endforeach; ?>
 <?php else: ?>
-  <h2>No Uploads found in this time period</h2>
+  <h2 style="text-align:center;font-size:1.5em;">No Uploads for this instrument were found in this time period</h2>
 <?php endif; ?>
 

@@ -47,8 +47,11 @@
             
             
           </div>
-          <br />
-          <div class="themed" id="item_info_container">
+          <div class="loading_progress_container status_messages" id="loading_status" style="display:none;">
+            <span class="spinner">&nbsp;&nbsp;&nbsp;</span>
+            <span id="loading_status_text">Loading...</span>
+          </div>
+          <div class="themed" id="item_info_container" style="margin-top:20px;">
             <?=  $this->load->view('upload_item_view.html',$transaction_data); ?>
           </div>
         </div>
