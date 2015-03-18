@@ -24,9 +24,9 @@
       <div class="full_width_block" style="margin-left:40px;width:95%;">
         <div class="disclosure_block">
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
-            <ul id="treeData_<?= $transaction_id ?>" style="display:none;">
+            <ul id="treeData_<?= $transaction_id ?>" >
             <?php $ul_list = ""; ?>
-            <?php format_folder_structure($transaction_info['files'], $ul_list, "Root Directory"); ?>
+            <?php format_folder_structure($transaction_info['files'], $ul_list, ""); ?>
             <?= $ul_list ?>
             </ul>
           </div>

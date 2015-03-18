@@ -131,30 +131,6 @@ class Status_model extends CI_Model {
       
       if(!empty($transaction_list)){
         $results = $this->get_formatted_object_for_transactions($transaction_list);
-        // foreach($transaction_list as $transaction_id){
-          // $files_obj = $this->get_files_for_transaction($transaction_id);
-          // $file_tree = $files_obj['treelist'];
-          // $flat_list = $files_obj['files'];
-          // foreach($flat_list as $item){
-            // $sub_time = new DateTime($item['stime']);
-            // break;
-          // }
-          // $time_string = $sub_time->format('Y-m-d H:i:s');
-//   
-          // $results['times'][$time_string] = $transaction_id;
-//           
-          // $results['transactions'][$transaction_id]['files'] = $file_tree;
-          // $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
-          // if(sizeof($files_obj)>0){
-            // $status_list = $this->get_status_for_transaction('transaction',$transaction_id);
-            // if(sizeof($status_list) > 0){
-              // $results['transactions'][$transaction_id]['status'] = $status_list;
-            // }else{
-              // $results['transactions'][$transaction_id]['status'] = "Unknown";
-            // }
-          // }
-        // }
-        // arsort($results['times']);
       }
       
     }
@@ -175,7 +151,7 @@ class Status_model extends CI_Model {
       $results['times'][$time_string] = $transaction_id;
       
       $results['transactions'][$transaction_id]['files'] = $file_tree;
-      $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
+      // $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
       if(sizeof($files_obj)>0){
         $status_list = $this->get_status_for_transaction('transaction',$transaction_id);
         if(sizeof($status_list) > 0){

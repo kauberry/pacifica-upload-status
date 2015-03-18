@@ -46,9 +46,9 @@ class Status extends Baseline_controller {
     
     
     $transaction_info = $this->status->get_formatted_object_for_transactions($transaction_list);
-    var_dump($transaction_info);
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $transaction_info;
+        // var_dump($transaction_info);
     $this->page_data['show_instrument_data'] = true;
     $this->load->view('single_item_view',$this->page_data);
     
@@ -82,7 +82,6 @@ class Status extends Baseline_controller {
       $this->page_data['time_period'] = $time_period;
       $this->page_data['instrument_id'] = $instrument_id;
       $this->page_data['instrument_list'] = $instrument_group_xref;
-      $this->page_data['show_instrument_data'] = false;
     }else{
       $view_name = 'upload_item_view.html';
     }
@@ -91,7 +90,6 @@ class Status extends Baseline_controller {
     
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $transaction_list;
-    
     $this->load->view($view_name,$this->page_data);
   }
   
