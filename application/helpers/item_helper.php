@@ -46,9 +46,9 @@ function build_folder_structure(&$dirs, $path_array) {
     }
 }
 
-function format_folder_structure($ul_struct,&$directory, $dir_name = ""){
+function format_folder_structure($ul_struct,&$directory, $transaction_id, $dir_name = "Root"){
   var_dump($ul_struct);
-  $directory = "<li id='' class='lazy folder'>{$dir_name}</li>";
+  $directory = "<li id='transaction_id_{$transaction_id}' class='lazy folder'>{$dir_name}</li>";
 }
 
 function format_folder_structure_old($ul_struct, &$directory, $dir_name = "Root"){

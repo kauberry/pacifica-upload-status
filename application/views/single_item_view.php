@@ -28,7 +28,9 @@
 <script type="application/javascript">
 $(function(){      
   $('.tree_holder').each(function(index, el){
-    $(el).fancytree();
+    $(el).fancytree({
+      lazyLoad: get_tree_data
+    });
   });
   window.setInterval(update_breadcrumbs,5000);
 });

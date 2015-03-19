@@ -26,7 +26,7 @@
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
             <ul id="treeData_<?= $transaction_id ?>" >
             <?php $ul_list = ""; ?>
-            <?php format_folder_structure($transaction_info['files'], $ul_list, ""); ?>
+            <?php format_folder_structure($transaction_info['files'], $ul_list, $transaction_id); ?>
             <?= $ul_list ?>
             </ul>
           </div>
