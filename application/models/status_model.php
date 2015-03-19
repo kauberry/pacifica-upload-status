@@ -1,9 +1,8 @@
 <?php
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                             */
-/*     Navigation Info Model                                                   */
+/*     Status Model                                                            */
 /*                                                                             */
-/*             functionality for setting up left hand nav menu                 */
 /*                                                                             */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 class Status_model extends CI_Model {
@@ -33,16 +32,8 @@ class Status_model extends CI_Model {
     
   }
   
-  // function get_instrument_group_list_static($filter = ""){
-    // $json_string = file_get_contents(FCPATH."resources/json_files/instrument_group_list.json");
-    // $inst_list = array();
-    // $inst_list_raw = json_decode($json_string,TRUE);
-    // foreach($inst_list_raw['RECORDS'] as $item){
-      // $inst_list[$item['group_id']] = $item['name'];
-    // }
-    // return $inst_list;
-  // }
-  
+
+
   
   function get_instrument_group_list($filter = ""){
     $DB_myemsl = $this->load->database('default',TRUE);
@@ -59,6 +50,9 @@ class Status_model extends CI_Model {
     }
     return $results;
   }
+  
+  
+  
   
   
   function get_files_for_transaction($transaction_id){
@@ -94,9 +88,12 @@ class Status_model extends CI_Model {
       return array('treelist' => $dirs, 'files' => $files_list);
     }
   }
+
+
+
+
   
-  function get_transactions_for_group($group_id, $num_days_back){
-    $raw_transaction_list = array();
+  function get_transactions_for_group($group_id, $num_days_back, $eus_proposal_id = ""){
     $transaction_list = array();
     $DB_myemsl = $this->load->database('default',TRUE);
     
@@ -109,6 +106,7 @@ class Status_model extends CI_Model {
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
+    echo $DB_myemsl->last_query();
     
     //filter the transactions for date
     $results = array();
@@ -137,6 +135,10 @@ class Status_model extends CI_Model {
     return $results;
   }
 
+
+
+
+
   function get_formatted_object_for_transactions($transaction_list){
     foreach($transaction_list as $transaction_id){
       $files_obj = $this->get_files_for_transaction($transaction_id);
@@ -164,6 +166,10 @@ class Status_model extends CI_Model {
     arsort($results['times']);
     return $results;
   }
+  
+  
+  
+  
 
   function get_status_for_transaction($lookup_type, $id){
     $lookup_types = array(
@@ -190,7 +196,11 @@ class Status_model extends CI_Model {
     return $status_list;
   }
   
-  public function get_transaction_id($job_id){
+  
+  
+  
+  
+  function get_transaction_id($job_id){
     $DB_myemsl = $this->load->database('default',TRUE);
     $query = $DB_myemsl->select('trans_id as transaction_id')->get_where('ingest_state',array('jobid' =>$job_id),1);
     $transaction_id = -1;
@@ -200,52 +210,6 @@ class Status_model extends CI_Model {
     return $transaction_id;
   }
   
-  
-  // function get_transactions_for_group_static($group_id){
-    // $json_string = file_get_contents(FCPATH."resources/json_files/transactions_{$group_id}.json");
-    // $transaction_list = array();
-    // $transaction_list_raw = json_decode($json_string, TRUE);
-    // foreach($transaction_list_raw['RECORDS'] as $trans){
-      // $transaction_list[] = $trans['transaction_id'];
-    // }
-    // $files_json_string = file_get_contents(FCPATH."resources/json_files/files_{$group_id}.json");
-    // $files_list = array();
-    // $files_list_raw = json_decode($files_json_string,TRUE);
-    // foreach($files_list_raw['RECORDS'] as $file){
-      // $files_list[$file['transaction']][$file['item_id']] = $file;
-    // }
-    // $status_json_string = file_get_contents(FCPATH."resources/json_files/ingest_states_group_{$group_id}.json");
-    // $status_list = array();
-    // $status_list_raw = json_decode($status_json_string, TRUE);
-    // foreach($status_list_raw['RECORDS'] as $status){
-      // $status_list[$status['trans_id']][$status['step']] = $status;
-    // }
-//     
-//     
-    // $results = array();
-//     
-    // foreach($transaction_list as $transaction){
-      // if(array_key_exists($transaction,$files_list)){
-        // $results['transactions'][$transaction]['files'] = $files_list[$transaction];
-        // if(array_key_exists($transaction, $status_list)){
-          // $results['transactions'][$transaction]['status'] = $status_list[$transaction];
-        // }else{
-          // $results['transaction'][$transaction]['status'] = "Unknown";
-        // }
-        // foreach($files_list[$transaction] as $item){
-          // $sub_time = new DateTime($item['stime']);
-          // break;
-        // }
-        // $time_string = $sub_time->format('Y-m-d H:i:s');
-// 
-        // $results['times'][$time_string] = $transaction;
-      // }
-    // }
-//     
-    // arsort($results['times']);
-//     
-    // return $results;
-  // }
-  
+
 }
 ?>

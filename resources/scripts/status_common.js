@@ -33,5 +33,6 @@ var update_content = function(){
 var get_tree_data = function(event, data){
   var id_matcher = /.+_(\d+)/i;
   var m = data.node.key.match(id_matcher);
-  debugger;
+  var trans_id = parseInt(m[1],10);
+  var url = 
 };
