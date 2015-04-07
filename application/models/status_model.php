@@ -8,7 +8,7 @@
 class Status_model extends CI_Model {
   function __construct(){
     parent::__construct();
-
+    $this->local_timezone = date_default_timezone_get();
   }
   
   
@@ -62,11 +62,14 @@ class Status_model extends CI_Model {
       'f.item_id','f.name','f.subdir','t.stime','f.transaction','f.size'
     );
     
+    $DB_myemsl->trans_start();
+    $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");
+    // echo $DB_myemsl->last_query();
     $DB_myemsl->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
     $DB_myemsl->where('f.transaction',$transaction_id);
     $DB_myemsl->order_by('t.stime desc');
     $files_query = $DB_myemsl->get();
-    
+    $DB_myemsl->trans_complete();
     $files_list = array();
     
     if($files_query && $files_query->num_rows()>0){
@@ -101,12 +104,12 @@ class Status_model extends CI_Model {
       'max(f.transaction) as transaction_id',
       'max(gi.group_id) as group_id'
     );
-    
+    $DB_myemsl->trans_start();
+    $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
     $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
-    
-    // echo $DB_myemsl->last_query();
+    $DB_myemsl->trans_complete();    
     
     //filter the transactions for date
     $results = array();
@@ -119,8 +122,12 @@ class Status_model extends CI_Model {
       $today = new DateTime();
       $earliest_date = clone $today;
       $earliest_date->modify("-{$num_days_back} days");
+      // $DB_myemsl->trans_start();
+      $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");
       $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->where('stime >=',$earliest_date->format('Y-m-d'));
       $trans_query = $DB_myemsl->get('transactions');
+      
+      // $DB_myemsl->trans_complete();
       if($trans_query && $trans_query->num_rows()>0){
         foreach($trans_query->result() as $row){
           $transaction_list[] = $row->transaction;
@@ -186,9 +193,11 @@ class Status_model extends CI_Model {
     $select_array = array(
       'jobid','trans_id','person_id','step','message','status'
     );
-    
+    $DB_myemsl->trans_start();
+    $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
     $DB_myemsl->select($select_array)->where_in($lookup_field,$id_list);
     $ingest_query = $DB_myemsl->get('ingest_state');
+    $DB_myemsl->trans_complete();
     if($ingest_query && $ingest_query->num_rows()>0){
       foreach($ingest_query->result_array() as $row){
         $status_list[$row[$lookup_field]][$row['step']] = $row;
@@ -203,7 +212,10 @@ class Status_model extends CI_Model {
   
   function get_transaction_id($job_id){
     $DB_myemsl = $this->load->database('default',TRUE);
+    $DB_myemsl->trans_start();
+    $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
     $query = $DB_myemsl->select('trans_id as transaction_id')->get_where('ingest_state',array('jobid' =>$job_id),1);
+    $DB_myemsl->trans_complete();
     $transaction_id = -1;
     if($query && $query->num_rows()>0){
       $transaction_id = $query->row()->transaction_id;
