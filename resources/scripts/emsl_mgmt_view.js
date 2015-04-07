@@ -14,9 +14,7 @@ $(function(){
     $(el).fancytree();
   });
   
-  window.setInterval(update_breadcrumbs,20000);
-  // $("#instrument_selector").select2("val","156858");
-  // $("#timeframe_selector").select2("val","-1 month");
+  //window.setInterval(update_breadcrumbs,20000);
   
   
   

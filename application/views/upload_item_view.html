@@ -1,25 +1,27 @@
+<?php $hash_list = array(); ?>
 <?php if(!empty($transaction_data)): ?>
-  <?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
-    <?php 
+<?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
+<?php
       $upload_time = new DateTime($upload_time_string);
       $transaction_info = $transaction_data['transactions'][$transaction_id];
       $friendly_upload_time = $upload_time->format('g:ia \o\n D, M j Y');
-      $status_steps = $transaction_info['status'];
+      $status_steps = array_pop($transaction_info['status']);
       krsort($status_steps);
       $latest_step_info =  array_pop(array_slice($status_steps, 0,1, true));
       $latest_step = $latest_step_info['step'];
-    ?>
+?>
     <fieldset>
       <legend>Uploaded at <?= $friendly_upload_time ?></legend>
-      <div class="bar_holder" id="bar_holder_<?= $transaction_id ?>">
-        <?php
-          $bar_info = array(
-            'latest_step' => $latest_step,
-            'status_list' => $status_list
-          ); 
-        ?>
-        <?= $this->load->view('status_breadcrumb_insert_view.html',$bar_info); ?>
-      </div>
+<?php
+  $bar_info = array(
+    'latest_step' => $latest_step,
+    'status_list' => $status_list,
+    'transaction_id' => $transaction_id
+  ); 
+?>
+<?php $bar_text = trim($this->load->view('status_breadcrumb_insert_view.html',$bar_info, true)); ?>
+<?php $hash_list[$transaction_id] = sha1($bar_text); ?>
+      <div class="bar_holder" id="bar_holder_<?= $transaction_id ?>"><?= $bar_text ?></div>
       <br />
       <div class="full_width_block" style="margin-left:40px;width:95%;">
         <div class="disclosure_block">
@@ -38,4 +40,6 @@
 <?php else: ?>
   <h2 style="text-align:center;font-size:1.5em;">No Uploads for this instrument were found in this time period</h2>
 <?php endif; ?>
-
+<script type="application/javascript">
+  var hash_list = <?=  json_encode($hash_list); ?>;
+</script>

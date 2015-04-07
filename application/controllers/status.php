@@ -58,8 +58,10 @@ class Status extends Baseline_controller {
 }
 
   
-  public function overview($instrument_id = 7777, $time_period = 30){
+  public function overview($instrument_id = 8029, $time_period = 1){
     $instrument_group_xref = $this->status->get_instrument_group_list();
+    $time_period = $this->input->cookie('myemsl_status_last_timeframe_selector') ? $this->input->cookie('myemsl_status_last_timeframe_selector') : $time_period;
+    $instrument_id = $this->input->cookie('myemsl_status_last_instrument_selector') ? $this->input->cookie('myemsl_status_last_instrument_selector') : $instrument_id;
     if(!$this->input->is_ajax_request()){
       $view_name = 'emsl_mgmt_view';
       $this->page_data['page_header'] = "MyEMSL Status Reporting";
@@ -104,19 +106,47 @@ class Status extends Baseline_controller {
     transmit_array_with_json_header($treelist);
   }
   
-  public function get_status($lookup_type, $id){
+  public function get_status($lookup_type, $id = 0){
     //lookup by (j)ob or (t)ransaction
-    $status_obj = $this->status->get_status_for_transaction($lookup_type,$id);
+    //check for list of transactions in post
+    if($this->input->post('transaction_list')){
+      $lookup_type = 't';
+      $item_list = $this->input->post('transaction_list');
+    }elseif($this->input->post('job_list')){
+      $lookup_type = 'j';
+      $item_list = $this->input->post('job_list');
+    }elseif($id > 0){
+      $item_list = array($id);
+    }
+    
+    $status_info = array();
+    
+    $status_obj = $this->status->get_status_for_transaction($lookup_type,array_keys($item_list));
     if(!empty($status_obj)){
-      $sortable = $status_obj;
-      krsort($sortable);
-      $latest_step_obj = array_shift($sortable);
-      $latest_step = intval($latest_step_obj['step']);
-      $status_info = array(
-        'latest_step' => $latest_step,
-        'status_list' => $this->status_list
-      );
-      $this->load->view('status_breadcrumb_insert_view.html',$status_info);
+      foreach($status_obj as $item_id => $item_info){
+        $sortable = $item_info;
+        krsort($sortable);
+        $latest_step_obj = array_shift($sortable);
+        $latest_step = intval($latest_step_obj['step']);
+        $status_info_temp = array(
+          'latest_step' => $latest_step,
+          'status_list' => $this->status_list,
+          'transaction_id' => $item_id
+        );
+        $item_text = trim($this->load->view('status_breadcrumb_insert_view.html',$status_info_temp, true));
+        // $item_text_hash = sha1($item_text);
+        if($item_list[$item_id] != sha1($item_text)){
+          $status_info[$item_id] = $item_text;
+        }
+      }
+      krsort($status_info);
+      if($this->input->is_ajax_request()){
+      // if(sizeof($status_info) > 1){
+        transmit_array_with_json_header($status_info);
+      }elseif(sizeof($status_info) == 1){
+        $this->load->view('status_breadcrumb_insert_view.html',$status_info[$id]);
+      }
+      
     }
   }
   

@@ -106,7 +106,7 @@ class Status_model extends CI_Model {
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
     
-    echo $DB_myemsl->last_query();
+    // echo $DB_myemsl->last_query();
     
     //filter the transactions for date
     $results = array();
@@ -171,7 +171,7 @@ class Status_model extends CI_Model {
   
   
 
-  function get_status_for_transaction($lookup_type, $id){
+  function get_status_for_transaction($lookup_type, $id_list){
     $lookup_types = array(
       't' => 'trans_id', 'trans_id' => 'trans_id',
       'j' => 'jobid', 'job' => 'jobid'
@@ -186,11 +186,12 @@ class Status_model extends CI_Model {
     $select_array = array(
       'jobid','trans_id','person_id','step','message','status'
     );
-    $DB_myemsl->select($select_array)->where($lookup_field,$id);
+    
+    $DB_myemsl->select($select_array)->where_in($lookup_field,$id_list);
     $ingest_query = $DB_myemsl->get('ingest_state');
     if($ingest_query && $ingest_query->num_rows()>0){
       foreach($ingest_query->result_array() as $row){
-        $status_list[$row['step']] = $row;
+        $status_list[$row[$lookup_field]][$row['step']] = $row;
       }
     }
     return $status_list;
