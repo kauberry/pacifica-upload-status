@@ -10,10 +10,8 @@ $(function(){
     placeholder: "Select a Time Frame..."
   });
       
-  $('.tree_holder').each(function(index, el){
-    $(el).fancytree();
-  });
-  
+  setup_tree_data();
+    
   //window.setInterval(update_breadcrumbs,20000);
   
   

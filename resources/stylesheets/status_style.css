@@ -13,6 +13,10 @@
         margin-left: -40px;
 }
 
+.transaction_container{
+  margin-bottom:1em;
+}
+
 .bar_holder {
   text-align:center;
 }

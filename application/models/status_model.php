@@ -8,7 +8,7 @@
 class Status_model extends CI_Model {
   function __construct(){
     parent::__construct();
-    $this->local_timezone = date_default_timezone_get();
+    $this->local_timezone = "US/Pacific";
   }
   
   
@@ -59,7 +59,7 @@ class Status_model extends CI_Model {
     $DB_myemsl = $this->load->database('default',TRUE);
     
     $file_select_array = array(
-      'f.item_id','f.name','f.subdir','t.stime','f.transaction','f.size'
+      'f.item_id','f.name','f.subdir',"t.stime AT TIME ZONE 'US/Eastern' as stime",'f.transaction','f.size'
     );
     
     $DB_myemsl->trans_start();
@@ -93,7 +93,32 @@ class Status_model extends CI_Model {
   }
 
 
-
+  function get_latest_transactions($group_id, $last_id){
+    $transaction_list = array();
+    $DB_myemsl = $this->load->database('default',TRUE);
+    $select_array = array(
+      'max(f.transaction) as transaction_id',
+      'max(gi.group_id) as group_id'
+    );
+    
+    $raw_transaction_list = array();
+    
+    $DB_myemsl->trans_start();
+    $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
+    $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
+    $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
+    $query = $DB_myemsl->where('gi.group_id',$group_id)->where('f.transaction >',$last_id)->get();
+    $DB_myemsl->trans_complete();
+    
+    if($query && $query->num_rows() > 0){
+      //must have some new transactions
+      foreach($query->result() as $row){
+        $raw_transaction_list[] = intval($row->transaction_id);
+      }
+    }
+    sort($raw_transaction_list);
+    return $raw_transaction_list;
+  }
 
   
   function get_transactions_for_group($group_id, $num_days_back, $eus_proposal_id = ""){
@@ -109,22 +134,21 @@ class Status_model extends CI_Model {
     $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
     $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
-    $DB_myemsl->trans_complete();    
     
+    $DB_myemsl->trans_complete();    
+    $results = array();
     //filter the transactions for date
     $results = array();
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
         $raw_transaction_list[] = $row->transaction_id;
       }
-      
-      
       $today = new DateTime();
       $earliest_date = clone $today;
       $earliest_date->modify("-{$num_days_back} days");
       // $DB_myemsl->trans_start();
       $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");
-      $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->where('stime >=',$earliest_date->format('Y-m-d'));
+      $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->where("stime AT TIME ZONE 'US/Eastern' >=",$earliest_date->format('Y-m-d'));
       $trans_query = $DB_myemsl->get('transactions');
       
       // $DB_myemsl->trans_complete();
@@ -137,8 +161,9 @@ class Status_model extends CI_Model {
       if(!empty($transaction_list)){
         $results = $this->get_formatted_object_for_transactions($transaction_list);
       }
-      
     }
+    
+
     return $results;
   }
 

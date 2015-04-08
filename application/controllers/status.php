@@ -90,20 +90,25 @@ class Status extends Baseline_controller {
     
     $transaction_list = $this->status->get_transactions_for_group($instrument_id,$time_period);
     
+    
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $transaction_list;
     $this->load->view($view_name,$this->page_data);
   }
   
-  public function get_uploads_by_group_id_ajax(){
-    //receives a json block containing a list of group id's and a start_date,
-    // returns a set of transactions and summaries sorted by time
-    
-  }
   
   public function get_files_by_transaction($transaction_id){
     $treelist = $this->status->get_files_for_transaction($transaction_id);
     transmit_array_with_json_header($treelist);
+  }
+  
+  public function get_latest_transactions($instrument_id,$latest_id){
+    $new_transactions = $this->status->get_latest_transactions($instrument_id,$latest_id);
+    $transaction_list = $this->status->get_formatted_object_for_transactions($new_transactions);
+    $this->page_data['status_list'] = $this->status_list;
+    $this->page_data['transaction_data'] = $transaction_list;
+    $view_name = 'upload_item_view.html';
+    $this->load->view($view_name, $this->page_data);
   }
   
   public function get_status($lookup_type, $id = 0){
@@ -118,7 +123,11 @@ class Status extends Baseline_controller {
     }elseif($id > 0){
       $item_list = array($id);
     }
-    
+
+    $item_keys = array_keys($item_list);
+    sort($item_keys);
+    $last_id = array_pop($item_keys);
+        
     $status_info = array();
     
     $status_obj = $this->status->get_status_for_transaction($lookup_type,array_keys($item_list));
@@ -134,7 +143,6 @@ class Status extends Baseline_controller {
           'transaction_id' => $item_id
         );
         $item_text = trim($this->load->view('status_breadcrumb_insert_view.html',$status_info_temp, true));
-        // $item_text_hash = sha1($item_text);
         if($item_list[$item_id] != sha1($item_text)){
           $status_info[$item_id] = $item_text;
         }
@@ -150,8 +158,9 @@ class Status extends Baseline_controller {
     }
   }
   
-  public function test_get_status($lookup_type,$transaction_id){
-    var_dump($this->status->get_status_for_transaction($lookup_type,$transaction_id));
+  
+  public function test_get_instrument_list(){
+    var_dump($this->status->get_instrument_group_list());
   }
   
 }
