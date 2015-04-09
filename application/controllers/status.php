@@ -72,6 +72,7 @@ class Status extends Baseline_controller {
       $view_name = 'emsl_mgmt_view';
       $this->page_data['page_header'] = "MyEMSL Status Reporting";
       $this->page_data['title'] = "Overview";
+      $this->page_data['informational_message'] = "";
       $this->page_data['css_uris'] = array(
         base_url()."resources/scripts/fancytree/skin-lion/ui.fancytree.css",
         base_url()."resources/stylesheets/status.css",
@@ -94,9 +95,14 @@ class Status extends Baseline_controller {
       $view_name = 'upload_item_view.html';
     }
     
-    $transaction_list = $this->status->get_transactions_for_group($instrument_id,$time_period);
+    $results = $this->status->get_transactions_for_group($instrument_id,$time_period);
     $this->page_data['status_list'] = $this->status_list;
-    $this->page_data['transaction_data'] = $transaction_list;
+    // $this->page_data['transaction_data'] = $transaction_list;
+    $this->page_data['transaction_data'] = $results['transaction_list'];
+    if($results['time_period_empty']){
+      $list_size = sizeof($results['transaction_list']['times']);
+      $this->page_data['informational_message'] = "No uploads were found during this time period.<br />The {$list_size} most recent entries for this instrument are below.";
+    }    
     $this->load->view($view_name,$this->page_data);
   }
   
@@ -108,11 +114,11 @@ class Status extends Baseline_controller {
   
   public function get_latest_transactions($instrument_id,$latest_id){
     $new_transactions = $this->status->get_latest_transactions($instrument_id,$latest_id);
-    $transaction_list = $this->status->get_formatted_object_for_transactions($new_transactions);
+    $results = $this->status->get_formatted_object_for_transactions($new_transactions);
     $this->page_data['status_list'] = $this->status_list;
-    $this->page_data['transaction_data'] = $transaction_list;
+    $this->page_data['transaction_data'] = $results;
     $view_name = 'upload_item_view.html';
-    if(!empty($transaction_list)){
+    if(!empty($results['times'])){
       $this->load->view($view_name, $this->page_data);
     }else{
       print "";

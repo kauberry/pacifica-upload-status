@@ -44,8 +44,10 @@ var update_breadcrumbs = function(){
 var get_latest_transactions = function(){
   var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
   $.get(new_tx_url, function(data){
-    $('#item_info_container').prepend(data);
-    setup_tree_data();
+    if(data.length > 0){
+      $('#item_info_container').prepend(data);
+      setup_tree_data();
+    }
   });  
 };
 
@@ -59,21 +61,24 @@ var update_content = function(event){
   $('#loading_status').fadeIn("slow", function(){
     var getting = $.get(url);
     getting.done(function(data){
-      $('#loading_status').fadeOut(200,function(){
-        $('#item_info_container').html(data);
-        $('#item_info_container').fadeIn('slow',function(){
-          $('.tree_holder').each(function(index, el){
-            $(el).fancytree();
+      if(data){
+        $('#loading_status').fadeOut(200,function(){
+          $('#item_info_container').html(data);
+          $('#item_info_container').fadeIn('slow',function(){
+            setup_tree_data();
+            $('#info_message_container h2').html();
           });
         });
-      });
+      }
     });
   });
 };
 
 var setup_tree_data = function(){
   $('.tree_holder').each(function(index, el){
-    $(el).fancytree();
+    if($(el).find('ul.ui-fancytree').length == 0){
+      $(el).fancytree();
+    }
   });
 };
 

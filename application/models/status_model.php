@@ -133,6 +133,7 @@ class Status_model extends CI_Model {
   
   function get_transactions_for_group($group_id, $num_days_back, $eus_proposal_id = ""){
     $transaction_list = array();
+    $is_empty = false;
     $DB_myemsl = $this->load->database('default',TRUE);
     
     $select_array = array(
@@ -169,14 +170,20 @@ class Status_model extends CI_Model {
       if(!empty($transaction_list)){
         $results = $this->get_formatted_object_for_transactions($transaction_list);
       }else{
-        // $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->order_by('f.transaction desc')->limit(1)->get();
-        // $trans_query = $DB_myemsl->get('transactions');
-        // // echo $DB_myemsl->last_query();
+        $DB_myemsl->select('transaction')->where_in('transaction',$raw_transaction_list)->order_by('transaction desc')->limit(3);
+        $trans_query = $DB_myemsl->get('transactions');
+        if($trans_query && $trans_query->num_rows()>0){
+          foreach($trans_query->result() as $row){
+            $transaction_list[] = $row->transaction;
+          }
+          $results = $this->get_formatted_object_for_transactions($transaction_list);
+        }
+        $is_empty = true;        
       }
     }
     
 
-    return $results;
+    return array('transaction_list' => $results, 'time_period_empty' => $is_empty);
   }
 
 
@@ -184,7 +191,7 @@ class Status_model extends CI_Model {
 
 
   function get_formatted_object_for_transactions($transaction_list){
-    $results = array();
+    $results = array('transactions' => array(),'times' => array());
     foreach($transaction_list as $transaction_id){
       $files_obj = $this->get_files_for_transaction($transaction_id);
       if(!empty($files_obj)){
