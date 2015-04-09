@@ -1,16 +1,22 @@
 var trans_id_list = {};
 var latest_tx_id = 0;
+var inst_id = 0;
+
+$(function(){
+  inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
+});
+
 var update_breadcrumbs = function(){
   $('.bar_holder').each(function(index,el){
     var pattern = /\w+_\w+_(\d+)/i;
     var m = $(el).prop('id').match(pattern);
-    latest_tx_id = m[1] > latest_tx_id ? m[1] : latest_tx_id;
-    if(!(m[1] in trans_id_list)){
+    var this_tx_id = parseInt(m[1],10);
+    latest_tx_id = this_tx_id > latest_tx_id ? this_tx_id : latest_tx_id;
+    if(!(this_tx_id in trans_id_list)){
       var hash = $(el).crypt({method:"sha1"});
-      trans_id_list[m[1]] = hash;
+      trans_id_list[this_tx_id] = hash;
     }
   });
-  var inst_id = $('#instrument_selector').val();
   var data_obj = {
     'transaction_list' : trans_id_list,
     'instrument_id' : inst_id
@@ -33,12 +39,14 @@ var update_breadcrumbs = function(){
     dataType: 'json'
   });
   
+};
+
+var get_latest_transactions = function(){
   var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
   $.get(new_tx_url, function(data){
     $('#item_info_container').prepend(data);
     setup_tree_data();
-  });
-  
+  });  
 };
 
 var update_content = function(event){

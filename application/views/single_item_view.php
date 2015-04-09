@@ -1,6 +1,12 @@
 <?php
   $table_object = !empty($table_object) ? $table_object : "";
   $this->load->view('pnnl_template/view_header'); 
+  $js = isset($js) ? 
+"<script type='text/javascript'>
+//<![CDATA[
+  {$js}
+//]]>
+</script>" : '';  
 ?>
 <body class="col1">
   <?php $this->load->view('pnnl_template/intranet_banner'); ?>
@@ -16,7 +22,11 @@
             <span id="loading_status_text">Loading...</span>
           </div>
           <div class="themed" id="item_info_container" style="margin-top:20px;">
+            <?php if(!empty($message)): ?>
+            <h2><?= $message ?></h2>
+            <?php else: ?>
             <?=  $this->load->view('upload_item_view.html',$transaction_data); ?>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -24,16 +34,6 @@
     </div>
     <?php $this->load->view('pnnl_template/view_footer'); ?>
   </div>
+<?= $js ?>  
 </body>
-<script type="application/javascript">
-$(function(){      
-  $('.tree_holder').each(function(index, el){
-    // $(el).fancytree({
-      // lazyLoad: get_tree_data
-    // });
-  });
-  window.setInterval(update_breadcrumbs,5000);
-});
-  
-</script>
 </html>

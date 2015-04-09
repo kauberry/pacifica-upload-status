@@ -12,8 +12,8 @@ $(function(){
       
   setup_tree_data();
     
-  //window.setInterval(update_breadcrumbs,20000);
-  
+  window.setInterval(update_breadcrumbs,3000);
+  window.setInterval(get_latest_transactions,5000);
   
   
 });

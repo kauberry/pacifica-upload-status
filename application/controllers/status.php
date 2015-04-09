@@ -30,7 +30,8 @@ class Status extends Baseline_controller {
     );
     $this->page_data['script_uris'] = array(
       base_url()."resources/scripts/fancytree/jquery.fancytree-all.js",
-      base_url()."resources/scripts/status_common.js"
+      base_url()."resources/scripts/status_common.js",
+      base_url()."resources/scripts/single_item_view.js"
     );
     $this->page_data['load_prototype'] = false;
     $this->page_data['load_jquery'] = true;  
@@ -40,14 +41,19 @@ class Status extends Baseline_controller {
       $lookup_type = 't';
       $id = $this->status->get_transaction_id($id);
     }
-    
+    $inst_id = $this->status->get_instrument_for_id('t',$id);
+    $lookup_type_description = $lookup_type = 't' ? 'transaction' : 'job';
     $transaction_list = array();
     $transaction_list[] = $id;
     
-    
     $transaction_info = $this->status->get_formatted_object_for_transactions($transaction_list);
     $this->page_data['status_list'] = $this->status_list;
+    if(empty($transaction_info)){
+      $this->page_data['message'] = "No {$lookup_type_description} with an identifier of {$id} was found";
+      $this->page_data['script_uris'] = array();
+    }
     $this->page_data['transaction_data'] = $transaction_info;
+    $this->page_data['js'] = "var initial_inst_id = {$inst_id};";
         // var_dump($transaction_info);
     $this->page_data['show_instrument_data'] = true;
     $this->load->view('single_item_view',$this->page_data);
@@ -89,8 +95,6 @@ class Status extends Baseline_controller {
     }
     
     $transaction_list = $this->status->get_transactions_for_group($instrument_id,$time_period);
-    
-    
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $transaction_list;
     $this->load->view($view_name,$this->page_data);
@@ -108,7 +112,11 @@ class Status extends Baseline_controller {
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $transaction_list;
     $view_name = 'upload_item_view.html';
-    $this->load->view($view_name, $this->page_data);
+    if(!empty($transaction_list)){
+      $this->load->view($view_name, $this->page_data);
+    }else{
+      print "";
+    }
   }
   
   public function get_status($lookup_type, $id = 0){

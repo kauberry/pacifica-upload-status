@@ -6,7 +6,7 @@ $(function(){
     });
   });
   
-  window.setInterval(update_breadcrumbs,5000);
+  window.setInterval(update_breadcrumbs,10000);
   
   
   

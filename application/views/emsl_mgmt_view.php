@@ -1,6 +1,13 @@
 <?php
   $table_object = !empty($table_object) ? $table_object : "";
   $this->load->view('pnnl_template/view_header'); 
+  $js = isset($js) ? 
+"<script type='text/javascript'>
+//<![CDATA[
+  {$js}
+//]]>
+</script>" : '';
+  
 ?>
 <body class="col1">
   <?php $this->load->view('pnnl_template/intranet_banner'); ?>
@@ -30,6 +37,7 @@
                     <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
                       <?php $period_list = array(
                         '1' => "Last 24 Hours",
+                        '2' => "Last 48 Hours",
                         '7' => "Last 7 Days",
                         '14' => "Last 2 Weeks",
                         '30' => "Last Month",
@@ -60,5 +68,6 @@
     </div>
     <?php $this->load->view('pnnl_template/view_footer'); ?>
   </div>
+<?= $js ?>  
 </body>
 </html>
