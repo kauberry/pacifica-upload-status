@@ -177,6 +177,11 @@ class Status extends Baseline_controller {
     var_dump($this->status->get_instrument_group_list());
   }
   
+  public function test_get_groups_for_transaction($transaction_id){
+    $this->status->get_groups_for_transaction($transaction_id);
+    
+  }
+  
 }
 
 ?>

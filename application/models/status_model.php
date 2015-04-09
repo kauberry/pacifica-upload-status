@@ -186,6 +186,28 @@ class Status_model extends CI_Model {
     return array('transaction_list' => $results, 'time_period_empty' => $is_empty);
   }
 
+  function get_groups_for_transaction($transaction_id){
+    $DB_myemsl = $this->load->database('default',TRUE);
+    
+    $select_array = array(
+      'f.transaction as transaction_id',
+      'g.group_id as group_id', 'g.group_name as group_name',
+      'g.type as group_type'
+    );
+    
+    $DB_myemsl->select($select_array)->distinct();
+    $DB_myemsl->from('files f')->join('group_items gi', 'gi.item_id = f.item_id');
+    $DB_myemsl->join('groups g', 'g.group_id = gi.group_id');
+    $query = $DB_myemsl->where('f.transaction', $transaction_id)->get();
+    
+    
+    // SELECT distinct f."transaction", "g"."group_id", "g"."name", "g"."type"
+      // FROM myemsl.files f INNER JOIN myemsl.group_items gi ON gi.item_id = f.item_id
+        // INNER JOIN myemsl.groups "g" ON "g".group_id = gi.group_id where f.transaction = 1056;
+    
+    echo $DB_myemsl->last_query();
+  }
+
 
 
 
