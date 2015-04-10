@@ -22,7 +22,18 @@
 <?php $bar_text = trim($this->load->view('status_breadcrumb_insert_view.html',$bar_info, true)); ?>
 <?php $hash_list[$transaction_id] = sha1($bar_text); ?>
       <div class="bar_holder" id="bar_holder_<?= $transaction_id ?>"><?= $bar_text ?></div>
-      <br />
+      <div class="full_width_block">
+        <h3>Upload Metadata</h3>
+        <ul>
+        <?php foreach($transaction_info['groups'] as $type => $content): ?>
+          <?php $cleaned_type_name = str_ireplace("id","ID", ucwords(str_replace("_"," ",$type))); ?>
+          <li class="metadata_item">
+            <span class="metadata_term"><?= strpos($type,'.') > 0 ? $type : $cleaned_type_name; ?>: </span>
+            <span class="metadata_def"><?= $content ?></span>
+          </li>
+        <?php endforeach; ?>
+        </ul>
+      </div>
       <div class="full_width_block" style="margin-left:40px;width:95%;">
         <div class="disclosure_block">
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
