@@ -23,8 +23,12 @@
 <?php $hash_list[$transaction_id] = sha1($bar_text); ?>
       <div class="bar_holder" id="bar_holder_<?= $transaction_id ?>"><?= $bar_text ?></div>
       <div class="full_width_block">
-        <h3>Upload Metadata</h3>
-        <ul>
+        <h2><span>Upload Metadata</span><span id='metadata_<?= $transaction_id ?>_dc' class="disclosure_button dc_up"></span></h2>
+        <ul class="metadata_container">
+          <li>
+            <span class="metadata_term">Transaction ID: </span>
+            <span class="metadata_def"><?= $transaction_id ?></span>
+          </li>          
         <?php foreach($transaction_info['groups'] as $type => $content): ?>
           <?php $cleaned_type_name = str_ireplace("id","ID", ucwords(str_replace("_"," ",$type))); ?>
           <li class="metadata_item">
@@ -34,13 +38,12 @@
         <?php endforeach; ?>
         </ul>
       </div>
-      <div class="full_width_block" style="margin-left:40px;width:95%;">
+      <div class="full_width_block" style="width:95%;">
+        <h2>File List</h2>
         <div class="disclosure_block">
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
-            <ul id="treeData_<?= $transaction_id ?>" >
-            <?php $ul_list = ""; ?>
-            <?php format_folder_structure($transaction_info['files'], $ul_list, $transaction_id); ?>
-            <?= $ul_list ?>
+            <ul id="treeData_<?= $transaction_id ?>" style="display:none;" >
+              <li id="treeData_<?= $transaction_id ?>" class="lazy folder">Uploaded Data</li>
             </ul>
           </div>
         </div>

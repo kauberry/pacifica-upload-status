@@ -11,9 +11,10 @@ $(function(){
   });
       
   setup_tree_data();
+  setup_metadata_disclosure();
     
-  window.setInterval(update_breadcrumbs,3000);
-  window.setInterval(get_latest_transactions,5000);
+  window.setInterval(update_breadcrumbs,5000);
+  window.setInterval(get_latest_transactions,15000);
   
   
 });

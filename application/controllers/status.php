@@ -171,6 +171,26 @@ class Status extends Baseline_controller {
       
     }
   }
+
+  public function get_lazy_load_folder(){
+    if(!$this->input->post('parent')){
+      print("");
+      return;
+    }
+    $node = intval(str_replace("treeData_","",$this->input->post('parent')));
+    
+  }
+
+  public function job_status($job_id = -1){
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+    $values = json_decode($HTTP_RAW_POST_DATA,true);
+    if(!$values && $job_id > 0){
+      //must not have a list of values, so just check the one
+      $values = array($job_id);
+    }
+    $results = $this->status->get_job_status($values, $this->status_list);
+    transmit_array_with_json_header($results);
+  }
   
   
   public function test_get_instrument_list(){

@@ -74,10 +74,43 @@ var update_content = function(event){
   });
 };
 
+var setup_metadata_disclosure = function(){
+  $('ul.metadata_container').hide();
+  $('.disclosure_button').click(function(){
+    var el = $(this);
+    var container = el.parentsUntil('div').siblings('ul.metadata_container');
+    if(el.hasClass('dc_up')){
+      //view is rolled up and hidden
+      el.removeClass('dc_up').addClass('dc_down');
+      container.slideDown("slow");
+    }else if(el.hasClass('dc_down')){
+      //view is open and visible
+      el.removeClass('dc_down').addClass('dc_up');
+      container.slideUp("slow");
+
+    }else{
+      
+    }
+  });
+  
+};
+
 var setup_tree_data = function(){
   $('.tree_holder').each(function(index, el){
     if($(el).find('ul.ui-fancytree').length == 0){
-      $(el).fancytree();
+      $(el).fancytree(
+        {
+          lazyLoad: function(event, data){
+            var node = data.node;
+            data.result = {
+              url: base_url + 'index/status/get_lazy_load_folder',
+              data: {mode: "children", parent: node.key},
+              method:"POST",
+              cache: false
+            };
+          }
+        }
+      );
     }
   });
 };

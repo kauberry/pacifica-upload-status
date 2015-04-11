@@ -13,6 +13,25 @@
         margin-left: -40px;
 }
 
+.tree_holder {
+  margin-top:10px;
+}
+
+.transaction_container h2 {
+  margin-bottom:0 !important;
+  margin-top:10px;
+}
+
+ul.metadata_container li{
+  margin-left:2em !important;
+  margin-bottom: 2px !important;
+  list-style: none;
+}
+
+.metadata_term {
+  font-weight: bold;
+  color:#222;
+}
 
 .transaction_container{
   margin-bottom:1em;

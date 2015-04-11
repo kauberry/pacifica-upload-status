@@ -562,15 +562,39 @@ div.content_block p {
 
 .disclosure_button {
   padding-right:16px;
-  vertical-align:top;
-  background:url(../images/dc_arrows_21.png) no-repeat top left;
+  margin-left:6px;
+  vertical-align:middle;
+  background-image:url(/myemsl/status/resources/images/disclosure_sprite.png);
+  background-repeat: no-repeat;
+  background-size: 64px 16px; 
 }
-.dc_down {
-  background-position: 0 -30px;
+.dc_down {background-position: 0 0;}
+.dc_up {background-position: -16px 0;}
+.dc_down:hover {background-position: -32px 0;}
+.dc_up:hover {background-position: -48px 0;}
+.dc_down:active {background-position: 0 0;}
+.dc_up:active {background-position: -16px 0;}
+
+
+
+/* @2x Images (Pixel Ratio of 1.25+) */
+@media only screen and (-o-min-device-pixel-ratio: 5/4),
+       only screen and (-webkit-min-device-pixel-ratio: 1.25),
+       only screen and (min-device-pixel-ratio: 1.25),
+       only screen and (min-resolution: 1.25dppx) {
+    .disclosure_button {background-image:url(/myemsl/status/resources/images/disclosure_sprite@2x.png);}
 }
-.dc_up {
-  background-position: 0 0px;
+
+/* @3x Images (Pixel Ratio of 2.25+) */
+@media only screen and (-o-min-device-pixel-ratio: 9/4),
+       only screen and (-webkit-min-device-pixel-ratio: 2.25),
+       only screen and (min-device-pixel-ratio: 2.25),
+       only screen and (min-resolution: 2.25dppx) {
+    .disclosure_button {background-image:url(/myemsl/status/resources/images/disclosure_sprite@3x.png);}
 }
+
+
+
 .textbox_control { 
   background-color: #ffffff; 
   border: 2px solid #aaa;

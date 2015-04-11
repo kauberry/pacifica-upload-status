@@ -33,7 +33,31 @@ class Status_model extends CI_Model {
     
   }
   
-
+  
+  
+  function get_job_status($job_id_list,$status_lookup){
+    $DB_myemsl = $this->load->database('default',TRUE);
+    $select_array = array(
+      'jobid', 'min(trans_id) as trans_id', 'max(step) as step'
+    );
+    $DB_myemsl->select($select_array)->where_in('jobid',$job_id_list)->group_by('jobid');
+    $query = $DB_myemsl->get('ingest_state');
+    
+    $results = array();
+    if($query && $query->num_rows() > 0){
+      foreach($query->result() as $row){
+        $item = array(intval($row->jobid) => array(
+          'state_name' => $status_lookup[$row->step],
+          'state' => $row->step
+        ));
+      }
+      $results[] = $item;
+    }
+    
+    return $results;
+  }
+  
+//select jobid, min(trans_id) as trans_id, max(step) as step from myemsl.ingest_state group by jobid order by jobid desc limit 50;
 
   
   function get_instrument_group_list($filter = ""){
