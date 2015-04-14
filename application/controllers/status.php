@@ -110,7 +110,7 @@ class Status extends Baseline_controller {
   public function get_files_by_transaction($transaction_id){
     $treelist = $this->status->get_files_for_transaction($transaction_id);
     // var_dump($treelist);
-    format_folder_object_json($treelist['treelist']['folders'], $output_array);
+    $output_array = format_folder_object_json($treelist['treelist']);
     // var_dump($output_array);
     transmit_array_with_json_header($output_array);
   }
@@ -182,7 +182,7 @@ class Status extends Baseline_controller {
     }
     $node = intval(str_replace("treeData_","",$this->input->post('parent')));
     $treelist = $this->status->get_files_for_transaction($node);
-    format_folder_object_json($treelist['treelist']['folders'], $output_array);
+    $output_array = format_folder_object_json($treelist['treelist'],"test");
     transmit_array_with_json_header($output_array);
   }
 

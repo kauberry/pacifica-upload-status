@@ -48,38 +48,71 @@ function build_folder_structure(&$dirs, $path_array) {
     }
 }
 
-function format_folder_object_json($folder_obj, &$output_structure){
-  // if(!is_array($output_structure) || empty($output_structure)){
-    // $output_structure = array();
-  // }
-  $child_output = array();
+function format_folder_object_json_worse($folder_obj, $folder_name){
+  $result = array();
   foreach(array_keys($folder_obj) as $folder_entry){
-    // $child_output = array();
+    var_dump($folder_obj[$folder_entry]);
+    echo "\n\n\n\n";
     $output = array('title' => $folder_entry, 'folder' => true);
     if(array_key_exists('folders', $folder_obj[$folder_entry])){
-      $child_output = array();
-      $f_obj = $folder_obj[$folder_entry]['folders'];
-      format_folder_object_json($f_obj, $child_output);
+      $output_children = format_folder_object_json($folder_obj[$folder_entry]);
+      if(!empty($output_children)){
+        foreach($output_children as $child_entry){
+          $output['children'][] = $child_entry;
+        }  
+      }
     }
-    // if(array_key_exists('files',$folder_obj[$folder_entry])){
-      // // $child_output = array();
-      // $file_obj = $folder_obj[$folder_entry]['files'];
-      // format_file_object_json($file_obj, $child_output);
-    // }
+    if(array_key_exists('files',$folder_obj[$folder_entry])){
+      $file_obj = $folder_obj[$folder_entry]['files'];
+      $child_output = format_file_object_json($file_obj);
+      if(!empty($child_output)){
+        foreach($child_output as $child_entry){
+          $output['children'][] = $child_emtry;
+        }
+      }
+    }
+    $result[] = $output;
   }
-  // if(array_key_exists('files',$folder_obj)){
-    // // $child_output = array();
-    // $file_obj = $folder_obj['files'];
-    // format_file_object_json($file_obj, $child_output);
-  // }
+  return $result;
+}
   
-  if(!empty($child_output)){
-    $output['children'] = $child_output;
+function format_folder_object_json($folder_obj,$folder_name){
+  $output = array();
+  
+  // $output[] = array('title' => $folder_name, 'folder' => TRUE);
+  if(array_key_exists('folders', $folder_obj)){
+    foreach($folder_obj['folders'] as $folder_entry => $folder_tree){
+      $folder_output = array('title' => $folder_entry, 'folder' => true);
+      $children = format_folder_object_json($folder_tree, $folder_entry);
+      if(!empty($children)){
+        foreach($children as $child){
+          $folder_output['children'][] = $child; 
+        }
+      }
+      $output[] = $folder_output;
+    }
   }
-  $output_structure[] = $output;
+  if(array_key_exists('files', $folder_obj)){
+    foreach($folder_obj['files'] as $file_entry){
+      $output[] = array('title' => $file_entry);
+    }
+  }
+  // $results[] = $output;
+  // return $results;
+  return $output;
 }
 
-function format_file_object_json($file_obj, &$file_structure){
+
+function format_file_object_json($file_obj){
+  $children = array();
+  foreach($file_obj as $file_entry){
+    $children[] = array('title' => $file_entry);
+  }
+}
+
+
+
+function format_file_object_json_old($file_obj, &$file_structure){
   foreach($file_obj as $file_entry){
     $file_structure[] = array('title' => $file_entry);
   }

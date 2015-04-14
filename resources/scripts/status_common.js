@@ -103,7 +103,7 @@ var setup_tree_data = function(){
           lazyLoad: function(event, data){
             var node = data.node;
             data.result = {
-              url: base_url + 'index/status/get_lazy_load_folder',
+              url: base_url + 'index.php/status/get_lazy_load_folder',
               data: {mode: "children", parent: node.key},
               method:"POST",
               cache: false
