@@ -35,38 +35,76 @@ function format_files_object($files_object){
 }
 
 function build_folder_structure(&$dirs, $path_array) {
+    // var_dump($path_array);
+    // echo "\n\n\n\n\n\n\n";
     if (count($path_array) > 1) {
-        if (!isset($dirs[$path_array[0]])) {
-            $dirs[$path_array[0]] = array();
+        if (!isset($dirs['folders'][$path_array[0]])) {
+            $dirs['folders'][$path_array[0]] = array();
         }
 
-        build_folder_structure($dirs[$path_array[0]], array_splice($path_array, 1));
+        build_folder_structure($dirs['folders'][$path_array[0]], array_splice($path_array, 1));
     } else {
-        $dirs[] = $path_array[0];
+        $dirs['files'][] = $path_array[0];
     }
 }
 
-function format_folder_structure_json($ul_struct){}
-
-function format_folder_structure($ul_struct,&$directory, $transaction_id, $dir_name = "Root"){
-  var_dump($ul_struct);
-  $directory = "<li id='transaction_id_{$transaction_id}' class='lazy folder'>{$dir_name}</li>";
-}
-
-function format_folder_structure_old($ul_struct, &$directory, $dir_name = "Root"){
-  echo $directory;
-  echo "\n\n";
-  $directory .= "<li class='folder'>{$dir_name}<ul>";
-  foreach($ul_struct as $name => $contents){
-    if(is_array($contents)){
-      format_folder_structure($contents, $directory, $name);
-    }else{
-      $directory .= "<li>{$contents}</li>";
+function format_folder_object_json($folder_obj, &$output_structure){
+  // if(!is_array($output_structure) || empty($output_structure)){
+    // $output_structure = array();
+  // }
+  $child_output = array();
+  foreach(array_keys($folder_obj) as $folder_entry){
+    // $child_output = array();
+    $output = array('title' => $folder_entry, 'folder' => true);
+    if(array_key_exists('folders', $folder_obj[$folder_entry])){
+      $child_output = array();
+      $f_obj = $folder_obj[$folder_entry]['folders'];
+      format_folder_object_json($f_obj, $child_output);
     }
+    // if(array_key_exists('files',$folder_obj[$folder_entry])){
+      // // $child_output = array();
+      // $file_obj = $folder_obj[$folder_entry]['files'];
+      // format_file_object_json($file_obj, $child_output);
+    // }
   }
-  $directory .= "</ul></li>";
+  // if(array_key_exists('files',$folder_obj)){
+    // // $child_output = array();
+    // $file_obj = $folder_obj['files'];
+    // format_file_object_json($file_obj, $child_output);
+  // }
+  
+  if(!empty($child_output)){
+    $output['children'] = $child_output;
+  }
+  $output_structure[] = $output;
 }
 
+function format_file_object_json($file_obj, &$file_structure){
+  foreach($file_obj as $file_entry){
+    $file_structure[] = array('title' => $file_entry);
+  }
+}
+
+function format_folder_object_html($folder_obj, &$output_structure){
+  foreach(array_keys($folder_obj) as $folder_entry){
+    $output_structure .= "<li class='folder'>{$folder_entry}<ul>";
+    if(array_key_exists('folders', $folder_obj[$folder_entry])){
+      $f_obj = $folder_obj[$folder_entry]['folders'];
+      format_folder_object_html($f_obj, $output_structure);
+    }
+    if(array_key_exists('files',$folder_obj[$folder_entry])){
+      $file_obj = $folder_obj[$folder_entry]['files'];
+      format_file_object_html($file_obj, $output_structure);
+    }
+    $output_structure .= "</ul></li>";
+  }
+}
+
+function format_file_object_html($file_obj, &$output_structure){
+  foreach($file_obj as $file_entry){
+    $output_structure .= "<li>{$file_entry}</li>";
+  }
+}
   
 function format_bytes($bytes) {
    if ($bytes < 1024) return $bytes.' B';

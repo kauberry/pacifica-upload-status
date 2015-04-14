@@ -66,7 +66,7 @@ var update_content = function(event){
           $('#item_info_container').html(data);
           $('#item_info_container').fadeIn('slow',function(){
             setup_tree_data();
-            $('#info_message_container h2').html();
+            setup_metadata_disclosure();
           });
         });
       }

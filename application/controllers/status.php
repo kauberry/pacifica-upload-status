@@ -94,7 +94,7 @@ class Status extends Baseline_controller {
     }else{
       $view_name = 'upload_item_view.html';
     }
-    
+    $this->page_data['informational_message'] = "";
     $results = $this->status->get_transactions_for_group($instrument_id,$time_period);
     $this->page_data['status_list'] = $this->status_list;
     // $this->page_data['transaction_data'] = $transaction_list;
@@ -109,7 +109,10 @@ class Status extends Baseline_controller {
   
   public function get_files_by_transaction($transaction_id){
     $treelist = $this->status->get_files_for_transaction($transaction_id);
-    transmit_array_with_json_header($treelist);
+    // var_dump($treelist);
+    format_folder_object_json($treelist['treelist']['folders'], $output_array);
+    // var_dump($output_array);
+    transmit_array_with_json_header($output_array);
   }
   
   public function get_latest_transactions($instrument_id,$latest_id){
@@ -178,7 +181,9 @@ class Status extends Baseline_controller {
       return;
     }
     $node = intval(str_replace("treeData_","",$this->input->post('parent')));
-    
+    $treelist = $this->status->get_files_for_transaction($node);
+    format_folder_object_json($treelist['treelist']['folders'], $output_array);
+    transmit_array_with_json_header($output_array);
   }
 
   public function job_status($job_id = -1){
