@@ -110,10 +110,9 @@ class Status_model extends CI_Model {
         $filename = $item_info['name'];
         $path = !empty($subdir) ? "{$subdir}/{$filename}" : $filename;
         $path_array = explode('/',$path);
-        build_folder_structure($dirs, $path_array);
+        build_folder_structure($dirs, $path_array, $item_info);
       }
       
-      // var_dump($dirs);
       return array('treelist' => $dirs, 'files' => $files_list);
     }
   }

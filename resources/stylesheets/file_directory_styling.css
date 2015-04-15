@@ -7,6 +7,15 @@ ul.fancytree-container {
   padding:0;
 }
 
+.fancytree-container ul {
+  margin: 0 0 0 0 !important;
+}
+
 ul.fancytree-container li{
-  margin:0 !important;
+  margin-bottom:0 !important;
+}
+
+span.fineprint {
+  font-size:0.8em;
+  font-style:italic;
 }
