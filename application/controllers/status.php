@@ -118,6 +118,11 @@ class Status extends Baseline_controller {
   public function get_latest_transactions($instrument_id,$latest_id){
     $new_transactions = $this->status->get_latest_transactions($instrument_id,$latest_id);
     $results = $this->status->get_formatted_object_for_transactions($new_transactions);
+    foreach($new_transactions as $tx_id){
+      $group_list = $this->status->get_groups_for_transaction($tx_id);
+      $results['transactions'][$tx_id]['groups'] = $group_list;
+    }
+    
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results;
     $view_name = 'upload_item_view.html';

@@ -47,6 +47,7 @@ var get_latest_transactions = function(){
     if(data.length > 0){
       $('#item_info_container').prepend(data);
       setup_tree_data();
+      setup_metadata_disclosure();
     }
   });  
 };

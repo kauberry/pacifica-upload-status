@@ -42,7 +42,6 @@ class Status_model extends CI_Model {
     );
     $DB_myemsl->select($select_array)->where_in('jobid',$job_id_list)->group_by('jobid');
     $query = $DB_myemsl->get('ingest_state');
-    
     $results = array();
     if($query && $query->num_rows() > 0){
       foreach($query->result() as $row){
@@ -50,10 +49,9 @@ class Status_model extends CI_Model {
           'state_name' => $status_lookup[$row->step],
           'state' => $row->step
         ));
+        $results[] = $item;
       }
-      $results[] = $item;
     }
-    
     return $results;
   }
   

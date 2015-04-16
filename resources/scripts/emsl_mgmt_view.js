@@ -14,7 +14,7 @@ $(function(){
   setup_metadata_disclosure();
     
   window.setInterval(update_breadcrumbs,5000);
-  window.setInterval(get_latest_transactions,15000);
+  window.setInterval(get_latest_transactions,5000);
   
   
 });
