@@ -45,11 +45,11 @@ class Status_model extends CI_Model {
     $results = array();
     if($query && $query->num_rows() > 0){
       foreach($query->result() as $row){
-        $item = array(intval($row->jobid) => array(
+        $item = array(
           'state_name' => $status_lookup[$row->step],
           'state' => $row->step
-        ));
-        $results[] = $item;
+        );
+        $results[$row->jobid] = $item;
       }
     }
     return $results;
