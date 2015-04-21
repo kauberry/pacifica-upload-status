@@ -44,8 +44,10 @@ function build_folder_structure(&$dirs, $path_array, $item_info) {
     } else {
         $size_string = format_bytes($item_info['size']);
         $item_id = $item_info['item_id'];
+        $url = base_url()."myemsl/itemauth/{$item_id}";
+        $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
-        $dirs['files'][] = "{$path_array[0]} <span class='fineprint'>[size: {$size_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
+        $dirs['files'][] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[size: {$size_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
     }
 }
 
