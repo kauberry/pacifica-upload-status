@@ -10,6 +10,7 @@ class Status extends Baseline_controller {
       // $this->load->view('insufficient_privileges', $this->page_data);
     // }
     $this->load->model('status_model','status');
+    $this->load->model('Myemsl_model','myemsl');
     $this->load->helper(array('inflector','item','url','opwhse_search','form','network'));
     $this->load->library(array('table'));
     $this->status_list = array(
@@ -210,6 +211,11 @@ class Status extends Baseline_controller {
   public function test_get_groups_for_transaction($transaction_id){
     $this->status->get_groups_for_transaction($transaction_id);
     
+  }
+  
+  public function test_get_userinfo(){
+    $user_info = $this->myemsl->get_user_info_myemsl();
+    var_dump($user_info);
   }
   
 }
