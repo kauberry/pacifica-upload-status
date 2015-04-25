@@ -17,7 +17,7 @@ class Myemsl_model extends CI_Model {
   }
   
   
-  function get_user_info_myemsl(){
+  function get_user_info(){
     $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
     $basedir = 'myemsl';
     $url_base = "{$protocol}://localhost";
