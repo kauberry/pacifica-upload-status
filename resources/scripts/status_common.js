@@ -21,58 +21,75 @@ var update_breadcrumbs = function(){
     'transaction_list' : trans_id_list,
     'instrument_id' : inst_id
   };
-  var url = base_url + 'index.php/status/get_status/t';
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: data_obj,
-    success: function(data){
-      if(data != 0){
-        $.each(data, function(index,trans_entry){
-          var new_item = $('#bar_holder_' + index);
-          new_item.html(trans_entry);
-          var hash = new_item.crypt({method:"sha1"});
-          trans_id_list[index] = hash;
-        });
-      }
-    },
-    dataType: 'json'
-  });
+  if(inst_id && trans_id_list.length > 0){
+    var url = base_url + 'index.php/status/get_status/t';
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: data_obj,
+      success: function(data){
+        if(data != 0){
+          $.each(data, function(index,trans_entry){
+            var new_item = $('#bar_holder_' + index);
+            new_item.html(trans_entry);
+            var hash = new_item.crypt({method:"sha1"});
+            trans_id_list[index] = hash;
+          });
+        }
+      },
+      dataType: 'json'
+    });
+  }
   
 };
 
 var get_latest_transactions = function(){
-  var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
-  $.get(new_tx_url, function(data){
-    if(data.length > 0){
-      $('#item_info_container').prepend(data);
-      setup_tree_data();
-      setup_metadata_disclosure();
-    }
-  });  
+  if(inst_id && latest_tx_id){
+    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
+    $.get(new_tx_url, function(data){
+      if(data.length > 0){
+        $('#item_info_container').prepend(data);
+        setup_tree_data();
+        setup_metadata_disclosure();
+      }
+    });  
+  }
 };
 
 var update_content = function(event){
   var el = $(event.target);
   $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),7);
-  var instrument_id = $('#instrument_selector').select2('val');
-  var time_frame = $('#timeframe_selector').select2('val');
+  var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : 0;
+  var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : 0;
+  var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
   var url = base_url + 'index.php/status/overview/' + instrument_id + '/' + time_frame;
-  $('#item_info_container').hide();
-  $('#loading_status').fadeIn("slow", function(){
-    var getting = $.get(url);
-    getting.done(function(data){
-      if(data){
-        $('#loading_status').fadeOut(200,function(){
-          $('#item_info_container').html(data);
-          $('#item_info_container').fadeIn('slow',function(){
-            setup_tree_data();
-            setup_metadata_disclosure();
+  if(proposal_id && instrument_id && time_frame){
+    $('#item_info_container').hide();
+    $('#loading_status').fadeIn("slow", function(){
+      var getting = $.get(url);
+      getting.done(function(data){
+        if(data){
+          $('#loading_status').fadeOut(200,function(){
+            $('#item_info_container').html(data);
+            $('#item_info_container').fadeIn('slow',function(){
+              setup_tree_data();
+              setup_metadata_disclosure();
+            });
           });
-        });
-      }
+        }
+      });
     });
-  });
+  }else if(!instrument_id && proposal_id){
+    //check to see if instrument list is current
+    var inst_url = base_url + 'index.php/status/get_instrument_list/' + proposal_id;
+    $.getJSON(inst_url,function(data){
+      $('#instrument_selector').select2({
+        data: data.items,
+        placeholder: "Select an Instrument..."
+      });
+      $('#instrument_selector').enable();
+    });
+  }
 };
 
 var setup_metadata_disclosure = function(){

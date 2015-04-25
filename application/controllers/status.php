@@ -65,7 +65,7 @@ class Status extends Baseline_controller {
 }
 
   
-  public function overview($instrument_id = 8029, $time_period = 1){
+  public function overview($instrument_id = false, $time_period = false){
     $instrument_group_xref = $this->status->get_instrument_group_list();
     $time_period = $this->input->cookie('myemsl_status_last_timeframe_selector') ? $this->input->cookie('myemsl_status_last_timeframe_selector') : $time_period;
     $instrument_id = $this->input->cookie('myemsl_status_last_instrument_selector') ? $this->input->cookie('myemsl_status_last_instrument_selector') : $instrument_id;
@@ -87,8 +87,18 @@ class Status extends Baseline_controller {
         base_url()."resources/scripts/emsl_mgmt_view.js",
         base_url()."resources/scripts/select2/select2.js"
       );
+      $full_user_info = $this->myemsl->get_user_info();
+      $proposal_list = array();
+      
+      foreach($full_user_info['proposals'] as $prop_id => $prop_info){
+        $proposal_list[$prop_id] = $prop_info['title'];
+      }
+      
+      $this->page_data['proposal_list'] = $proposal_list;
+      
       $this->page_data['load_prototype'] = false;
       $this->page_data['load_jquery'] = true;
+      $this->page_data['selected_proposal'] = isset($selected_proposal) ? $selected_proposal : false;
       $this->page_data['time_period'] = $time_period;
       $this->page_data['instrument_id'] = $instrument_id;
       $this->page_data['instrument_list'] = $instrument_group_xref;
@@ -201,6 +211,19 @@ class Status extends Baseline_controller {
     }
     $results = $this->status->get_job_status($values, $this->status_list);
     transmit_array_with_json_header($results);
+  }
+  
+  
+  public function get_instrument_list($proposal_id){
+    // $instruments = $this->eus->get_instruments_for_proposal($proposal_id);
+    $full_user_info = $this->myemsl->get_user_info();
+    $instruments = array();
+    $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
+    foreach($instruments_available as $inst_id){
+      $instruments[$inst_id] = $full_user_info['instruments'][$inst_id]['eus_display_name'];
+    }
+    
+    format_array_for_select2(array('items' => $instruments));
   }
   
   

@@ -23,14 +23,26 @@
             <form id="instrument_selection" class="themed">
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
+
                 <div class="full_width_block">
-                  <div class="left_block">
-                    <select id="instrument_selector" name="instrument_selector" style="width:100%;">
-                      <option value>Select an Instrument...</option>
-                    <?php foreach($instrument_list as $inst_id => $inst_name): ?>
-                      <?php $selected_state = $inst_id == $instrument_id ? ' selected="selected"' : ''; ?>
-                      <option value="<?= $inst_id ?>"<?= $selected_state ?>><?= $inst_name ?></option>
+                  <select id="proposal_selector" name="proposal_selector" style="width:96%;">
+                    <option></option>
+                    <?php foreach($proposal_list as $prop_id => $prop_title): ?>
+                      <?php $selected_state = $prop_id == $selected_proposal ? ' selected="selected"' : ''; ?>
+                    <option value="<?= $prop_id ?>"<?= $selected_state ?>><?= $prop_title ?> [ID:<?= $prop_id ?>]</option>
                     <?php endforeach; ?>
+                  </select>
+                </div>
+                
+                <div class="full_width_block" style="margin-top:1em;">
+                  <div class="left_block">
+                    <input id="instrument_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:100%;"/>
+                    <!-- <select id="instrument_selector" disabled="disabled" name="instrument_selector" style="width:100%;"> -->
+                      <!-- <option></option> -->
+                    <?php //foreach($instrument_list as $inst_id => $inst_name): ?>
+                      <?php //$selected_state = $inst_id == $instrument_id ? ' selected="selected"' : ''; ?>
+                      <!-- <option value="<?= $inst_id ?>"<?= $selected_state ?>><?= $inst_name ?></option> -->
+                    <?php //endforeach; ?>
                     </select>
                   </div>
                   <div class="right_block">
@@ -42,7 +54,7 @@
                         '14' => "Last 2 Weeks",
                         '30' => "Last Month",
                         '365' => "Last Year"); ?>
-                      <option value>Select a Time Frame...</option>
+                      <option></option>
                       <?php foreach($period_list as $period => $desc): ?>
                         <?php $selected_state = $period == $time_period ? ' selected="selected"' : ''; ?>
                       <option value="<?= $period ?>"<?= $selected_state ?>><?= $desc ?></option>
