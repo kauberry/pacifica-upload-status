@@ -1,12 +1,7 @@
 <?php
   $table_object = !empty($table_object) ? $table_object : "";
   $this->load->view('pnnl_template/view_header'); 
-  $js = isset($js) ? 
-"<script type='text/javascript'>
-//<![CDATA[
-  {$js}
-//]]>
-</script>" : '';
+  $js = isset($js) ? $js : "";
   
 ?>
 <body class="col1">
@@ -29,21 +24,17 @@
                     <option></option>
                     <?php foreach($proposal_list as $prop_id => $prop_title): ?>
                       <?php $selected_state = $prop_id == $selected_proposal ? ' selected="selected"' : ''; ?>
-                    <option value="<?= $prop_id ?>"<?= $selected_state ?>><?= $prop_title ?> [ID:<?= $prop_id ?>]</option>
-                    <?php endforeach; ?>
+                      <?php $trunc_prop_title = truncate_text($prop_title, 110); ?>
+                    <option value="<?= $prop_id ?>"<?= $selected_state ?> title="<?= $prop_title ?>">Proposal <?= $prop_id ?>: <?= $trunc_prop_title ?></option>
+                    <?php endforeach; ?><br />
+                    <?php $prop_list_object = "var initial_proposal_list = [".implode(',',array_keys($proposal_list))."];"; ?>
+                    <?php $js .= "\n".$prop_list_object; ?>
                   </select>
                 </div>
                 
                 <div class="full_width_block" style="margin-top:1em;">
                   <div class="left_block">
                     <input id="instrument_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:100%;"/>
-                    <!-- <select id="instrument_selector" disabled="disabled" name="instrument_selector" style="width:100%;"> -->
-                      <!-- <option></option> -->
-                    <?php //foreach($instrument_list as $inst_id => $inst_name): ?>
-                      <?php //$selected_state = $inst_id == $instrument_id ? ' selected="selected"' : ''; ?>
-                      <!-- <option value="<?= $inst_id ?>"<?= $selected_state ?>><?= $inst_name ?></option> -->
-                    <?php //endforeach; ?>
-                    </select>
                   </div>
                   <div class="right_block">
                     <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
@@ -80,6 +71,11 @@
     </div>
     <?php $this->load->view('pnnl_template/view_footer'); ?>
   </div>
-<?= $js ?>  
+<script type='text/javascript'>
+//<![CDATA[
+  <?= $js ?> 
+//]]>
+</script>  
+ 
 </body>
 </html>

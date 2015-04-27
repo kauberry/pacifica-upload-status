@@ -65,10 +65,11 @@ class Status extends Baseline_controller {
 }
 
   
-  public function overview($instrument_id = false, $time_period = false){
+  public function overview($proposal_id = false, $instrument_id = false, $time_period = false){
     $instrument_group_xref = $this->status->get_instrument_group_list();
     $time_period = $this->input->cookie('myemsl_status_last_timeframe_selector') ? $this->input->cookie('myemsl_status_last_timeframe_selector') : $time_period;
     $instrument_id = $this->input->cookie('myemsl_status_last_instrument_selector') ? $this->input->cookie('myemsl_status_last_instrument_selector') : $instrument_id;
+    $proposal_id = $this->input->cookie('myemsl_status_last_proposal_selector') ? $this->input->cookie('myemsl_status_last_proposal_selector') : $proposal_id;
     if(!$this->input->is_ajax_request()){
       $view_name = 'emsl_mgmt_view';
       $this->page_data['page_header'] = "MyEMSL Status Reporting";
@@ -93,6 +94,11 @@ class Status extends Baseline_controller {
       foreach($full_user_info['proposals'] as $prop_id => $prop_info){
         $proposal_list[$prop_id] = $prop_info['title'];
       }
+      krsort($proposal_list);
+      
+      $js = "var initial_proposal_id = '{$proposal_id}';
+var initial_instrument_id = '{$instrument_id}';
+var initial_time_period = '{$time_period}';";
       
       $this->page_data['proposal_list'] = $proposal_list;
       
@@ -102,6 +108,7 @@ class Status extends Baseline_controller {
       $this->page_data['time_period'] = $time_period;
       $this->page_data['instrument_id'] = $instrument_id;
       $this->page_data['instrument_list'] = $instrument_group_xref;
+      $this->page_data['js'] = $js;
     }else{
       $view_name = 'upload_item_view.html';
     }
@@ -220,8 +227,10 @@ class Status extends Baseline_controller {
     $instruments = array();
     $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
     foreach($instruments_available as $inst_id){
-      $instruments[$inst_id] = $full_user_info['instruments'][$inst_id]['eus_display_name'];
+      $instruments[$inst_id] = "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}";
     }
+    
+    asort($instruments);
     
     format_array_for_select2(array('items' => $instruments));
   }

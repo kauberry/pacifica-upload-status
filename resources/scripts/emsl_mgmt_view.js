@@ -4,6 +4,10 @@ $(function(){
   });
   $('#proposal_selector').change(update_content);
   
+  if(initial_proposal_id.length > 0){
+    $('#proposal_selector').val(initial_proposal_id);
+  }
+  
   $("#instrument_selector").select2({
     data: [{id:0,text:""}],
     placeholder: "Select an Instrument..."
@@ -24,7 +28,6 @@ $(function(){
     
   window.setInterval(update_breadcrumbs,5000);
   window.setInterval(get_latest_transactions,5000);
-  
   
 });
 
