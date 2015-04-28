@@ -98,13 +98,14 @@ class Status extends Baseline_controller {
       
       $js = "var initial_proposal_id = '{$proposal_id}';
 var initial_instrument_id = '{$instrument_id}';
-var initial_time_period = '{$time_period}';";
+var initial_time_period = '{$time_period}';
+var initial_instrument_list = [];";
       
       $this->page_data['proposal_list'] = $proposal_list;
       
       $this->page_data['load_prototype'] = false;
       $this->page_data['load_jquery'] = true;
-      $this->page_data['selected_proposal'] = isset($selected_proposal) ? $selected_proposal : false;
+      $this->page_data['selected_proposal'] = isset($proposal_id) ? $proposal_id : false;
       $this->page_data['time_period'] = $time_period;
       $this->page_data['instrument_id'] = $instrument_id;
       $this->page_data['instrument_list'] = $instrument_group_xref;
