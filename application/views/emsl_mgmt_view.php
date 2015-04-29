@@ -33,7 +33,8 @@
                 
                 <div class="full_width_block" style="margin-top:1em;">
                   <div class="left_block">
-                    <input id="instrument_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:100%;"/>
+                    <input id="instrument_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:95%;"/>
+                    <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
                   </div>
                   <div class="right_block">
                     <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
