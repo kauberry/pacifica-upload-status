@@ -66,7 +66,7 @@ class Status extends Baseline_controller {
 
   
   public function overview($proposal_id = false, $instrument_id = false, $time_period = false){
-    $instrument_group_xref = $this->status->get_instrument_group_list();
+    // $instrument_group_xref = $this->status->get_instrument_group_list();
     $time_period = $this->input->cookie('myemsl_status_last_timeframe_selector') ? $this->input->cookie('myemsl_status_last_timeframe_selector') : $time_period;
     $instrument_id = $this->input->cookie('myemsl_status_last_instrument_selector') ? $this->input->cookie('myemsl_status_last_instrument_selector') : $instrument_id;
     $proposal_id = $this->input->cookie('myemsl_status_last_proposal_selector') ? $this->input->cookie('myemsl_status_last_proposal_selector') : $proposal_id;
@@ -104,18 +104,19 @@ var initial_time_period = '{$time_period}';";
       
       $this->page_data['load_prototype'] = false;
       $this->page_data['load_jquery'] = true;
-      $this->page_data['selected_proposal'] = isset($selected_proposal) ? $selected_proposal : false;
+      $this->page_data['selected_proposal'] = isset($proposal_id) ? $proposal_id : false;
       $this->page_data['time_period'] = $time_period;
       $this->page_data['instrument_id'] = $instrument_id;
-      $this->page_data['instrument_list'] = $instrument_group_xref;
+      // $this->page_data['instrument_list'] = $instrument_group_xref;
       $this->page_data['js'] = $js;
     }else{
       $view_name = 'upload_item_view.html';
     }
     $this->page_data['informational_message'] = "";
-    $results = $this->status->get_transactions_for_group($instrument_id,$time_period);
+    $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
+    $results = $this->status->get_transactions_for_group(array_keys($group_lookup_list['by_inst_id'][$instrument_id]),$time_period,$proposal_id);
     $this->page_data['status_list'] = $this->status_list;
-    // $this->page_data['transaction_data'] = $transaction_list;
+    // var_dump($results['transaction_list']);
     $this->page_data['transaction_data'] = $results['transaction_list'];
     if($results['time_period_empty']){
       $list_size = sizeof($results['transaction_list']['times']);
@@ -133,13 +134,20 @@ var initial_time_period = '{$time_period}';";
     transmit_array_with_json_header($output_array);
   }
   
-  public function get_latest_transactions($instrument_id,$latest_id){
-    $new_transactions = $this->status->get_latest_transactions($instrument_id,$latest_id);
+  public function get_latest_transactions($instrument_id,$proposal_id,$latest_id){
+    $group_list = $this->status->get_instrument_group_list($instrument_id);
+    $new_transactions = $this->status->get_latest_transactions($group_list,$proposal_id,$latest_id);
     $results = $this->status->get_formatted_object_for_transactions($new_transactions);
-    foreach($new_transactions as $tx_id){
-      $group_list = $this->status->get_groups_for_transaction($tx_id);
-      $results['transactions'][$tx_id]['groups'] = $group_list;
+    // foreach($new_transactions as $tx_id){
+      // $group_list = $this->status->get_groups_for_transaction($tx_id);
+      // $results['transactions'][$tx_id]['groups'] = $group_list;
+    // }
+    $results['transactions'] = $this->status->get_groups_for_transaction($new_transactions);
+    $group_list = $this->get_groups_for_transaction($new_transactions);
+    foreach($group_list['groups'] as $tx_id => $group_info){
+      $results['transactions'][$tx_id]['groups'] = $group_info;
     }
+      
     
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results;
@@ -246,7 +254,7 @@ var initial_time_period = '{$time_period}';";
   }
   
   public function test_get_userinfo(){
-    $user_info = $this->myemsl->get_user_info_myemsl();
+    $user_info = $this->myemsl->get_user_info();
     var_dump($user_info);
   }
   
