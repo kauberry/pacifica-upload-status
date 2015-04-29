@@ -58,7 +58,9 @@ var get_latest_transactions = function(){
 
 var update_content = function(event){
   var el = $(event.target);
-  $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),7);
+  if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0){
+    $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),7);
+  }
   var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : 0;
   var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : 0;
   var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
@@ -79,17 +81,33 @@ var update_content = function(event){
         }
       });
     });
-  }else if(!instrument_id && proposal_id){
-    //check to see if instrument list is current
-    var inst_url = base_url + 'index.php/status/get_instrument_list/' + proposal_id;
-    $.getJSON(inst_url,function(data){
-      $('#instrument_selector').select2({
-        data: data.items,
-        placeholder: "Select an Instrument..."
-      });
-      $('#instrument_selector').enable();
-    });
   }
+  if(el.prop('id') == 'proposal_selector'){ 
+    //check to see if instrument list is current
+    if(el.val() != initial_proposal_id){
+      get_instrument_list(el.val());
+      initial_proposal_id = el.val();
+    }
+  }
+};
+
+var get_instrument_list = function(proposal_id){
+  var inst_url = base_url + 'index.php/status/get_instrument_list/' + proposal_id;
+  $.getJSON(inst_url,function(data){
+    $('#instrument_selector').select2({
+      data: data.items,
+      placeholder: "Select an Instrument..."
+    });
+    $('#instrument_selector').enable();
+    initial_instrument_list = [];
+    
+    $.each(data.items, function(index,item){
+      initial_instrument_list.push(item.id);
+    });
+    if(initial_instrument_list.indexOf(parseInt(initial_instrument_id,10)) < 0){
+      $('#instrument_selector').val('').trigger('change');
+    }
+  });
 };
 
 var setup_metadata_disclosure = function(){
