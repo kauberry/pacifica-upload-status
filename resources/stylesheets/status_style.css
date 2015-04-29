@@ -17,6 +17,14 @@
   margin-top:10px;
 }
 
+.selector_spinner_container{
+  position: absolute;
+  right: -15px;
+  top: -1px;
+  width: 28px;
+  height: 27px;
+}
+
 .transaction_container h2 {
   margin-bottom:0 !important;
   margin-top:10px;
