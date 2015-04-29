@@ -58,19 +58,39 @@ class Status_model extends CI_Model {
 //select jobid, min(trans_id) as trans_id, max(step) as step from myemsl.ingest_state group by jobid order by jobid desc limit 50;
 
   
-  function get_instrument_group_list($filter = ""){
+  function get_instrument_group_list($inst_id_filter = ""){
     $DB_myemsl = $this->load->database('default',TRUE);
     
-    $DB_myemsl->select(array('group_id','name'));
-    $DB_myemsl->where("(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo')");
-    $query = $DB_myemsl->order_by('name')->get('groups');
+    $DB_myemsl->select(array('group_id','name','type'));
+    // if(!empty($inst_id_filter)){
+      // $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo') and (group_id = '{$inst_id_filter}' or type like 'Instrument.{$inst_id_filter}')";
+    // }else{
+      // $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo')";
+    // }
+    if(!empty($inst_id_filter)){
+      $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo') and (group_id = '{$inst_id_filter}' or type like 'Instrument.{$inst_id_filter}')";
+    }else{
+      $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo')";
+    }
     
-    $results = array();
+    $DB_myemsl->where($where_clause);
+    $query = $DB_myemsl->order_by('name')->get('groups');
+    // echo $DB_myemsl->last_query();
+    $results_by_group = array();
+    $results_by_inst_id = array();
     if($query && $query->num_rows() > 0){
       foreach($query->result() as $row){
-        $results[$row->group_id] = $row->name;
+        if($row->type == 'omics.dms.instrument'){
+          $inst_id = intval($row->group_id);
+        }elseif(strpos($row->type, 'Instrument.') >= 0){
+          $inst_id = intval(str_replace('Instrument.','',$row->type));
+        }else{
+          continue;
+        }
+        $results_by_inst_id[$inst_id][$row->group_id] = $row->name;
       }
     }
+    $results = array('by_group' => $results_by_group, 'by_inst_id' => $results_by_inst_id);
     return $results;
   }
   
@@ -116,7 +136,7 @@ class Status_model extends CI_Model {
   }
 
 
-  function get_latest_transactions($group_id, $last_id){
+  function get_latest_transactions($group_id_list, $proposal_id, $last_id){
     //if last_id is -1, grab the last transaction so we can display its date as a pointer 
     $transaction_list = array();
     $DB_myemsl = $this->load->database('default',TRUE);
@@ -124,6 +144,9 @@ class Status_model extends CI_Model {
       'max(f.transaction) as transaction_id',
       'max(gi.group_id) as group_id'
     );
+    if(!is_array($group_id_list)){
+      $group_id_list = array($group_id_list);
+    }
     
     $raw_transaction_list = array();
     if($last_id > 0){
@@ -131,17 +154,16 @@ class Status_model extends CI_Model {
       $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
       $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
       $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
-      $query = $DB_myemsl->where('gi.group_id',$group_id)->where('f.transaction >',$last_id)->get();
+      $query = $DB_myemsl->where_in('gi.group_id',$group_id_list)->where('f.transaction >',$last_id)->get();
       $DB_myemsl->trans_complete();
     }else{
       $DB_myemsl->trans_start();
       $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
       $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
       $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
-      $query = $DB_myemsl->where('gi.group_id',$group_id)->order_by('f.transaction desc')->limit(1)->get();
+      $query = $DB_myemsl->where_in('gi.group_id',$group_id_list)->order_by('f.transaction desc')->limit(1)->get();
       $DB_myemsl->trans_complete();
     }
-
     if($query && $query->num_rows() > 0){
       //must have some new transactions
       foreach($query->result() as $row){
@@ -167,7 +189,12 @@ class Status_model extends CI_Model {
     $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
     $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
-    $query = $DB_myemsl->where('gi.group_id',$group_id)->get();
+    if(is_array($group_id)){
+      $DB_myemsl->where_in('gi.group_id',$group_id);
+    }else{
+      $DB_myemsl->where('gi.group_id',$group_id);
+    }
+    $query = $DB_myemsl->get();
     // echo $DB_myemsl->last_query();
     $DB_myemsl->trans_complete();    
     $results = array();
@@ -201,46 +228,82 @@ class Status_model extends CI_Model {
         $is_empty = true;        
       }
       $results = $this->get_formatted_object_for_transactions($transaction_list);
-      foreach($transaction_list as $tx_id){
-        $group_list = $this->get_groups_for_transaction($tx_id);
-        $results['transactions'][$tx_id]['groups'] = $group_list;
+      $group_list = $this->get_groups_for_transaction($transaction_list);
+      foreach($group_list['groups'] as $tx_id => $group_info){
+        $results['transactions'][$tx_id]['groups'] = $group_info;
       }
     }
     return array('transaction_list' => $results, 'time_period_empty' => $is_empty);
   }
 
-  function get_groups_for_transaction($transaction_id){
+  // function get_groups_for_transaction($transaction_id){
+    // $DB_myemsl = $this->load->database('default',TRUE);
+//     
+    // $select_array = array(
+      // 'g.group_id as group_id', 'g.name as group_name',
+      // 'g.type as group_type'
+    // );
+//     
+    // $DB_myemsl->select($select_array)->distinct();
+    // $DB_myemsl->from('files f')->join('group_items gi', 'gi.item_id = f.item_id');
+    // $DB_myemsl->join('groups g', 'g.group_id = gi.group_id')->order_by('g.name');
+    // $query = $DB_myemsl->where('f.transaction', $transaction_id)->get();
+        // echo $DB_myemsl->last_query();
+//     
+    // $inst_group_pattern = '/Instrument\.(\d+)/i';
+//     
+    // $groups = array();
+    // if($query && $query->num_rows()>0){
+      // foreach($query->result() as $row){
+        // if(preg_match($inst_group_pattern, $row->group_type, $inst_matches)){
+          // $groups['instrument_id'] = $inst_matches[1];
+          // $groups['instrument_name'] = !empty($row->group_name) ? "{$row->group_name} [MyEMSL Group: {$row->group_id}]" : "[Not Specified]";
+        // }elseif($row->group_type == 'proposal'){
+          // $groups['proposal_id'] = $row->group_name;
+          // $groups['proposal_name'] = $this->eus->get_proposal_name($row->group_name);  
+        // }else{
+          // $groups[$row->group_type] = !empty($row->group_name) ? $row->group_name : "[Not Specified]";
+        // }
+      // }
+    // }
+    // return $groups;
+  // }
+
+  function get_groups_for_transaction($transaction_id_list){
     $DB_myemsl = $this->load->database('default',TRUE);
     
     $select_array = array(
       'g.group_id as group_id', 'g.name as group_name',
-      'g.type as group_type'
+      'g.type as group_type', 'f.transaction as tx_id'
     );
     
     $DB_myemsl->select($select_array)->distinct();
     $DB_myemsl->from('files f')->join('group_items gi', 'gi.item_id = f.item_id');
     $DB_myemsl->join('groups g', 'g.group_id = gi.group_id')->order_by('g.name');
-    $query = $DB_myemsl->where('f.transaction', $transaction_id)->get();
+    $query = $DB_myemsl->where_in('f.transaction', $transaction_id_list)->get();
+        // echo $DB_myemsl->last_query();
     
     $inst_group_pattern = '/Instrument\.(\d+)/i';
     
-    $groups = array();
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
+        $groups = array();
         if(preg_match($inst_group_pattern, $row->group_type, $inst_matches)){
-          $groups['instrument_id'] = $inst_matches[1];
-          $groups['instrument_name'] = !empty($row->group_name) ? $row->group_name : "[Not Specified]";
+          $groups['instrument_id'] = "{$inst_matches[1]} [MyEMSL Group: {$row->group_id}]";
+          $groups['instrument_name'] = !empty($row->group_name) ? "{$row->group_name}" : "[Not Specified]";
         }elseif($row->group_type == 'proposal'){
           $groups['proposal_id'] = $row->group_name;
+          // if($groups['proposal_id'] != )
           $groups['proposal_name'] = $this->eus->get_proposal_name($row->group_name);  
         }else{
           $groups[$row->group_type] = !empty($row->group_name) ? $row->group_name : "[Not Specified]";
         }
+        $return_set['groups'][$row->tx_id] = $groups;
       }
     }
-    return $groups;
+    return $return_set;
   }
-
+  
 
 
 

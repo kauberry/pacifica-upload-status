@@ -18,7 +18,6 @@
             <form id="instrument_selection" class="themed">
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
-
                 <div class="full_width_block">
                   <select id="proposal_selector" name="proposal_selector" style="width:96%;">
                     <option></option>

@@ -137,14 +137,18 @@ var initial_instrument_list = [];";
   
   public function get_latest_transactions($instrument_id,$proposal_id,$latest_id){
     $group_list = $this->status->get_instrument_group_list($instrument_id);
-    $new_transactions = $this->status->get_latest_transactions($group_list,$proposal_id,$latest_id);
+    $new_transactions = $this->status->get_latest_transactions(array_keys($group_list['by_inst_id'][$instrument_id]),$proposal_id,$latest_id);
+    if(empty($new_transactions)){
+      print "";
+      return;
+    }
     $results = $this->status->get_formatted_object_for_transactions($new_transactions);
     // foreach($new_transactions as $tx_id){
       // $group_list = $this->status->get_groups_for_transaction($tx_id);
       // $results['transactions'][$tx_id]['groups'] = $group_list;
     // }
     $results['transactions'] = $this->status->get_groups_for_transaction($new_transactions);
-    $group_list = $this->get_groups_for_transaction($new_transactions);
+    $group_list = $this->status->get_groups_for_transaction($new_transactions);
     foreach($group_list['groups'] as $tx_id => $group_info){
       $results['transactions'][$tx_id]['groups'] = $group_info;
     }

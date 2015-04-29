@@ -44,8 +44,8 @@ var update_breadcrumbs = function(){
 };
 
 var get_latest_transactions = function(){
-  if(inst_id && latest_tx_id){
-    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
+  if(initial_instrument_id && latest_tx_id){
+    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + initial_instrument_id + '/' + initial_proposal_id + '/' + latest_tx_id;
     $.get(new_tx_url, function(data){
       if(data.length > 0){
         $('#item_info_container').prepend(data);
