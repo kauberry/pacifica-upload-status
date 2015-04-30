@@ -181,14 +181,25 @@ class Status_model extends CI_Model {
     $is_empty = false;
     $DB_myemsl = $this->load->database('default',TRUE);
     
+    $eligible_tx_list = array();
+    
     if(!empty($eus_proposal_id)){
       //get proposal group id
       $DB_myemsl->select('group_id')->where('type','proposal')->where('name',$eus_proposal_id);
       $prop_query = $DB_myemsl->get('groups',1);
-      $proposal_group_id = $prop_query && $prop_query->num_rows() > 0 ? $prop_query->row()->transaction_id : -1;
+      $proposal_group_id = $prop_query && $prop_query->num_rows() > 0 ? $prop_query->row()->group_id : -1;
       
       //go grab the list of eligible tx_id's
-      // $DB_myemsl->select('max(f.transaction as transaction_id)')-
+      $DB_myemsl->select('max(f.transaction) as transaction_id');
+      $DB_myemsl->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
+      $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
+      $query = $DB_myemsl->where('gi.group_id',$proposal_group_id)->get();
+      if($query && $query->num_rows() > 0){
+        foreach($query->result() as $row){
+          $eligible_tx_list[] = $row->transaction_id;
+        }
+      }
+      
     }
     
     $select_array = array(
@@ -204,9 +215,10 @@ class Status_model extends CI_Model {
     }else{
       $DB_myemsl->where('gi.group_id',$group_id);
     }
+    $DB_myemsl->where_in('f.transaction', $eligible_tx_list);
     $query = $DB_myemsl->get();
-    echo $DB_myemsl->last_query();
-    $DB_myemsl->trans_complete();    
+    $DB_myemsl->trans_complete();
+    // echo $DB_myemsl->last_query();
     $results = array();
     //filter the transactions for date
     $results = array();

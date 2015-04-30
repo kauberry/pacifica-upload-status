@@ -5,7 +5,7 @@ var inst_id = 0;
 var spinner_opts = {
   lines: 9, // The number of lines to draw
   length: 4, // The length of each line
-  width: 3, // The line thickness
+  width: 2, // The line thickness
   radius: 4, // The radius of the inner circle
   corners: 1, // Corner roundness (0..1)
   rotate: 0, // The rotation offset
@@ -143,11 +143,11 @@ var setup_metadata_disclosure = function(){
     if(el.hasClass('dc_up')){
       //view is rolled up and hidden
       el.removeClass('dc_up').addClass('dc_down');
-      container.slideDown("slow");
+      container.slideDown(200);
     }else if(el.hasClass('dc_down')){
       //view is open and visible
       el.removeClass('dc_down').addClass('dc_up');
-      container.slideUp("slow");
+      container.slideUp(200);
 
     }else{
       

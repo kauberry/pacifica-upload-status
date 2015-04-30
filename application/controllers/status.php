@@ -85,6 +85,7 @@ class Status extends Baseline_controller {
       $this->page_data['script_uris'] = array(
         base_url()."resources/scripts/spinner/spin.min.js",
         base_url()."resources/scripts/fancytree/jquery.fancytree-all.js",
+        base_url()."resources/scripts/myemsl_file_download.js",
         base_url()."resources/scripts/status_common.js",
         base_url()."resources/scripts/emsl_mgmt_view.js",
         base_url()."resources/scripts/select2/select2.js"
