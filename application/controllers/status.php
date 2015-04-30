@@ -115,16 +115,16 @@ var initial_instrument_list = [];";
     }else{
       $view_name = 'upload_item_view.html';
     }
-    $this->page_data['informational_message'] = "";
-    $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
-    $results = $this->status->get_transactions_for_group(array_keys($group_lookup_list['by_inst_id'][$instrument_id]),$time_period,$proposal_id);
+    // $this->page_data['informational_message'] = "";
+    // if($proposal_id && $instrument_id && $time_period){
+      $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
+      $results = $this->status->get_transactions_for_group(array_keys($group_lookup_list['by_inst_id'][$instrument_id]),$time_period,$proposal_id);
+    // }else{
+      // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
+    // }
     $this->page_data['status_list'] = $this->status_list;
-    // var_dump($results['transaction_list']);
     $this->page_data['transaction_data'] = $results['transaction_list'];
-    if($results['time_period_empty']){
-      $list_size = sizeof($results['transaction_list']['times']);
-      $this->page_data['informational_message'] = "No uploads were found during this time period.<br />The {$list_size} most recent entries for this instrument are below.";
-    }    
+    $this->page_data['informational_message'] = $results['message'];    
     $this->load->view($view_name,$this->page_data);
   }
   
@@ -159,6 +159,7 @@ var initial_instrument_list = [];";
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results;
     $view_name = 'upload_item_view.html';
+    var_dump($results);
     if(!empty($results['times'])){
       $this->load->view($view_name, $this->page_data);
     }else{

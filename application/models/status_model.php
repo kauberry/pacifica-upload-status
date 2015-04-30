@@ -176,10 +176,12 @@ class Status_model extends CI_Model {
   }
 
   
-  function get_transactions_for_group($group_id, $num_days_back, $eus_proposal_id = ""){
+  function get_transactions_for_group($group_id, $num_days_back, $eus_proposal_id){
     $transaction_list = array();
     $is_empty = false;
     $DB_myemsl = $this->load->database('default',TRUE);
+    $results = array();
+    $message = "";
     
     $eligible_tx_list = array();
     
@@ -194,12 +196,16 @@ class Status_model extends CI_Model {
       $DB_myemsl->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
       $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
       $query = $DB_myemsl->where('gi.group_id',$proposal_group_id)->get();
+      // echo $DB_myemsl->last_query();
       if($query && $query->num_rows() > 0){
         foreach($query->result() as $row){
           $eligible_tx_list[] = $row->transaction_id;
         }
       }
       
+    }else{
+      $message = "Select an EUS Proposal and Instrument to load data";
+      return array('transaction_list' => $results, 'time_period_empty' => $is_empty, 'message' => $message);
     }
     
     $select_array = array(
@@ -218,10 +224,7 @@ class Status_model extends CI_Model {
     $DB_myemsl->where_in('f.transaction', $eligible_tx_list);
     $query = $DB_myemsl->get();
     $DB_myemsl->trans_complete();
-    // echo $DB_myemsl->last_query();
-    $results = array();
     //filter the transactions for date
-    $results = array();
     if($query && $query->num_rows()>0){
       foreach($query->result() as $row){
         $raw_transaction_list[] = $row->transaction_id;
@@ -247,7 +250,9 @@ class Status_model extends CI_Model {
             $transaction_list[] = $row->transaction;
           }
         }
-        $is_empty = true;        
+        $is_empty = true;
+        $list_size = $trans_query->num_rows();
+        $message = "No uploads were found during this time period.<br />The {$list_size} most recent entries for this instrument are below.";
       }
       $results = $this->get_formatted_object_for_transactions($transaction_list);
       $group_list = $this->get_groups_for_transaction($transaction_list);
@@ -255,7 +260,7 @@ class Status_model extends CI_Model {
         $results['transactions'][$tx_id]['groups'] = $group_info;
       }
     }
-    return array('transaction_list' => $results, 'time_period_empty' => $is_empty);
+    return array('transaction_list' => $results, 'time_period_empty' => $is_empty, 'message' => $message);
   }
 
   // function get_groups_for_transaction($transaction_id){
@@ -334,7 +339,9 @@ class Status_model extends CI_Model {
     $results = array('transactions' => array(),'times' => array());
     foreach($transaction_list as $transaction_id){
       $files_obj = $this->get_files_for_transaction($transaction_id);
-      if(!empty($files_obj)){
+      // $files_obj = array('treelist' => array(), 'files' => array());
+      // var_dump($files_obj);
+      if(!empty($files_obj['treelist'])){
         $file_tree = $files_obj['treelist'];
         $flat_list = $files_obj['files'];
         foreach($flat_list as $item){
@@ -349,10 +356,11 @@ class Status_model extends CI_Model {
         // $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
         if(sizeof($files_obj)>0){
           $status_list = $this->get_status_for_transaction('transaction',$transaction_id);
+          // var_dump($status_list);
           if(sizeof($status_list) > 0){
             $results['transactions'][$transaction_id]['status'] = $status_list;
           }else{
-            $results['transactions'][$transaction_id]['status'] = "Unknown";
+            $results['transactions'][$transaction_id]['status'] = array();
           }
         }
       }
@@ -360,6 +368,7 @@ class Status_model extends CI_Model {
     if(!empty($results['times'])){
       arsort($results['times']);
     }
+    // var_dump($results);
     return $results;
   }
   

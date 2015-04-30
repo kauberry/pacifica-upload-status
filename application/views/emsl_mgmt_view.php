@@ -63,7 +63,7 @@
             <span id="loading_status_text">Loading...</span>
           </div>
           <div class="themed" id="item_info_container" style="margin-top:20px;">
-            <?=  $this->load->view('upload_item_view.html',$transaction_data); ?>
+            
           </div>
         </div>
 
