@@ -87,7 +87,7 @@ var update_content = function(event){
       return false;
     }
     if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0){
-      $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),7);
+      $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 7, path: '/' });
     }
   }
   var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : initial_proposal_id;

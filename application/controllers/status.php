@@ -149,7 +149,7 @@ var initial_instrument_list = [];";
       // $group_list = $this->status->get_groups_for_transaction($tx_id);
       // $results['transactions'][$tx_id]['groups'] = $group_list;
     // }
-    $results['transactions'] = $this->status->get_groups_for_transaction($new_transactions);
+   // $results['transactions'] = $this->status->get_groups_for_transaction($new_transactions);
     $group_list = $this->status->get_groups_for_transaction($new_transactions);
     foreach($group_list['groups'] as $tx_id => $group_info){
       $results['transactions'][$tx_id]['groups'] = $group_info;
@@ -159,7 +159,7 @@ var initial_instrument_list = [];";
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results;
     $view_name = 'upload_item_view.html';
-    var_dump($results);
+    // var_dump($results);
     if(!empty($results['times'])){
       $this->load->view($view_name, $this->page_data);
     }else{
