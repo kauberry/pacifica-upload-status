@@ -251,6 +251,11 @@ var initial_instrument_list = [];";
     var_dump($user_info);
   }
   
+  public function test_get_proposals_for_instrument($instrument_id){
+    $inst_list = $this->eus->get_proposals_for_instrument($instrument_id);
+    var_dump($inst_list);
+  }
+  
 }
 
 ?>
