@@ -117,14 +117,14 @@ var initial_instrument_list = [];";
     }
     // $this->page_data['informational_message'] = "";
     // if($proposal_id && $instrument_id && $time_period){
+    if(isset($instrument_id) && $instrument_id > 0){
       $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
-      // var_dump($group_lookup_list);
       if(array_key_exists($instrument_id,$group_lookup_list['by_inst_id'])){
         $results = $this->status->get_transactions_for_group(
           array_keys($group_lookup_list['by_inst_id'][$instrument_id]),
           $time_period,
           $proposal_id
-        );
+        );      
       }else{
         $results = array(
           'transaction_list' => array(), 
@@ -132,6 +132,14 @@ var initial_instrument_list = [];";
           'message' => "No data uploaded for this instrument"
         );
       }
+    }else{
+      $results = array(
+        'transaction_list' => array(), 
+        'time_period_empty' => true, 
+        'message' => "No data uploaded for this instrument"
+      );
+    }
+      // var_dump($group_lookup_list);
     // }else{
       // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
     // }
