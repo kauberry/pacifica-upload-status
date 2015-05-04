@@ -19,7 +19,7 @@
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
                 <div class="full_width_block">
-                  <select id="proposal_selector" name="proposal_selector" style="width:96%;">
+                  <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:96%;">
                     <option></option>
                     <?php foreach($proposal_list as $prop_id => $prop_title): ?>
                       <?php $selected_state = $prop_id == $selected_proposal ? ' selected="selected"' : ''; ?>
@@ -33,11 +33,11 @@
                 
                 <div class="full_width_block" style="margin-top:1em;">
                   <div class="left_block">
-                    <input id="instrument_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:95%;"/>
+                    <input id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:95%;"/>
                     <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
                   </div>
                   <div class="right_block">
-                    <select id="timeframe_selector" name="timeframe_selector" style="width:100%;">
+                    <select id="timeframe_selector" class="criterion_selector" name="timeframe_selector" style="width:100%;">
                       <?php $period_list = array(
                         '1' => "Last 24 Hours",
                         '2' => "Last 48 Hours",

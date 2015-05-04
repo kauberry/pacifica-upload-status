@@ -118,7 +118,20 @@ var initial_instrument_list = [];";
     // $this->page_data['informational_message'] = "";
     // if($proposal_id && $instrument_id && $time_period){
       $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
-      $results = $this->status->get_transactions_for_group(array_keys($group_lookup_list['by_inst_id'][$instrument_id]),$time_period,$proposal_id);
+      // var_dump($group_lookup_list);
+      if(array_key_exists($instrument_id,$group_lookup_list['by_inst_id'])){
+        $results = $this->status->get_transactions_for_group(
+          array_keys($group_lookup_list['by_inst_id'][$instrument_id]),
+          $time_period,
+          $proposal_id
+        );
+      }else{
+        $results = array(
+          'transaction_list' => array(), 
+          'time_period_empty' => true, 
+          'message' => "No data uploaded for this instrument"
+        );
+      }
     // }else{
       // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
     // }
@@ -139,7 +152,10 @@ var initial_instrument_list = [];";
   
   public function get_latest_transactions($instrument_id,$proposal_id,$latest_id){
     $group_list = $this->status->get_instrument_group_list($instrument_id);
-    $new_transactions = $this->status->get_latest_transactions(array_keys($group_list['by_inst_id'][$instrument_id]),$proposal_id,$latest_id);
+    $new_transactions = array();
+    if(array_key_exists($instrument_id,$group_list['by_inst_id'])){
+      $new_transactions = $this->status->get_latest_transactions(array_keys($group_list['by_inst_id'][$instrument_id]),$proposal_id,$latest_id);    
+    }    
     if(empty($new_transactions)){
       print "";
       return;

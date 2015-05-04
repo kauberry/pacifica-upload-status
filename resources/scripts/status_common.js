@@ -119,6 +119,11 @@ var update_content = function(event){
       initial_proposal_id = el.val();
     }
   }
+  if(el){
+    var identifier = el.prop('id').replace('_selector','');
+    var initial_ident = 'initial_' + identifier + '_id';
+    eval(initial_ident + ' = ' + el.val());
+  }
 };
 
 var get_instrument_list = function(proposal_id){
