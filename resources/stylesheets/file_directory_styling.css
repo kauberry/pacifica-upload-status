@@ -19,3 +19,12 @@ span.fineprint {
   font-size:0.8em;
   font-style:italic;
 }
+
+.item_link:visited, .item_link:link {
+  color: #0077a4;
+  text-decoration: none;
+}
+
+.item_link:hover{
+  text-decoration:underline;
+}

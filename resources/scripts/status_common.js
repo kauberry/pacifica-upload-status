@@ -1,6 +1,29 @@
 var trans_id_list = {};
 var latest_tx_id = 0;
 var inst_id = 0;
+var initial_load = true;
+
+var spinner_opts = {
+  lines: 9, // The number of lines to draw
+  length: 4, // The length of each line
+  width: 2, // The line thickness
+  radius: 4, // The radius of the inner circle
+  corners: 1, // Corner roundness (0..1)
+  rotate: 0, // The rotation offset
+  direction: 1, // 1: clockwise, -1: counterclockwise
+  color: '#111', // #rgb or #rrggbb or array of colors
+  speed: 1, // Rounds per second
+  trail: 60, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: true, // Whether to use hardware acceleration
+  className: 'spinner', // The CSS class to assign to the spinner
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  top: '50%', // Top position relative to parent
+  left: '50%' // Left position relative to parent
+};
+
+
+
 
 $(function(){
   inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
@@ -44,8 +67,8 @@ var update_breadcrumbs = function(){
 };
 
 var get_latest_transactions = function(){
-  if(inst_id && latest_tx_id){
-    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + inst_id + '/'  + latest_tx_id;
+  if(initial_instrument_id && latest_tx_id){
+    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + initial_instrument_id + '/' + initial_proposal_id + '/' + latest_tx_id;
     $.get(new_tx_url, function(data){
       if(data.length > 0){
         $('#item_info_container').prepend(data);
@@ -57,15 +80,22 @@ var get_latest_transactions = function(){
 };
 
 var update_content = function(event){
-  var el = $(event.target);
-  if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0){
-    $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),7);
+  var el = null;
+  if(event != null){
+    el = $(event.target);
+    if(el.prop('id') == 'instrument_selector' && el.val() == initial_instrument_id && !initial_load){
+      return false;
+    }
+    if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0){
+      $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 7, path: '/' });
+    }
   }
-  var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : 0;
-  var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : 0;
+  var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : initial_proposal_id;
+  var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : initial_instrument_id;
   var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
-  var url = base_url + 'index.php/status/overview/' + instrument_id + '/' + time_frame;
+  var url = base_url + 'index.php/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame;
   if(proposal_id && instrument_id && time_frame){
+    inital_load = false;
     $('#item_info_container').hide();
     $('#loading_status').fadeIn("slow", function(){
       var getting = $.get(url);
@@ -82,17 +112,24 @@ var update_content = function(event){
       });
     });
   }
-  if(el.prop('id') == 'proposal_selector'){ 
+  if(el && el.prop('id') == 'proposal_selector'){ 
     //check to see if instrument list is current
     if(el.val() != initial_proposal_id){
       get_instrument_list(el.val());
       initial_proposal_id = el.val();
     }
   }
+  if(el){
+    var identifier = el.prop('id').replace('_selector','');
+    var initial_ident = 'initial_' + identifier + '_id';
+    eval(initial_ident + ' = ' + el.val());
+  }
 };
 
 var get_instrument_list = function(proposal_id){
   var inst_url = base_url + 'index.php/status/get_instrument_list/' + proposal_id;
+  var target = document.getElementById('instrument_selector_spinner');
+  var spinner = new Spinner(spinner_opts).spin(target);
   $.getJSON(inst_url,function(data){
     $('#instrument_selector').select2({
       data: data.items,
@@ -104,8 +141,13 @@ var get_instrument_list = function(proposal_id){
     $.each(data.items, function(index,item){
       initial_instrument_list.push(item.id);
     });
+    // debugger;
+    spinner.stop();
     if(initial_instrument_list.indexOf(parseInt(initial_instrument_id,10)) < 0){
       $('#instrument_selector').val('').trigger('change');
+    }else{
+      $('#instrument_selector').val(parseInt(initial_instrument_id,10)).trigger('change');
+      update_content();
     }
   });
 };
@@ -118,11 +160,11 @@ var setup_metadata_disclosure = function(){
     if(el.hasClass('dc_up')){
       //view is rolled up and hidden
       el.removeClass('dc_up').addClass('dc_down');
-      container.slideDown("slow");
+      container.slideDown(200);
     }else if(el.hasClass('dc_down')){
       //view is open and visible
       el.removeClass('dc_down').addClass('dc_up');
-      container.slideUp("slow");
+      container.slideUp(200);
 
     }else{
       
@@ -142,8 +184,14 @@ var setup_tree_data = function(){
               url: base_url + 'index.php/status/get_lazy_load_folder',
               data: {mode: "children", parent: node.key},
               method:"POST",
-              cache: false
+              cache: false,
+              complete: function(xhrobject,status){
+                setup_file_download_links($(el));
+              }
             };
+          },
+          expand: function(event,data){
+            setup_file_download_links($(el));
           }
         }
       );
@@ -155,5 +203,6 @@ var get_tree_data = function(event, data){
   var id_matcher = /.+_(\d+)/i;
   var m = data.node.key.match(id_matcher);
   var trans_id = parseInt(m[1],10);
+  // setup_file_download_links($(el));  
   // var url = 
 };

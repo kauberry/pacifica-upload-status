@@ -57,7 +57,7 @@
     </fieldset>
   <?php endforeach; ?>
 <?php else: ?>
-  <h2 style="text-align:center;font-size:1.5em;">No Uploads for this instrument were found in this time period</h2>
+  <h2 style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
 <?php endif; ?>
 <script type="application/javascript">
   var hash_list = <?=  json_encode($hash_list); ?>;
