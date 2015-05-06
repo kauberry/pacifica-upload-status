@@ -188,6 +188,7 @@ class Status_model extends CI_Model {
     $DB_myemsl = $this->load->database('default',TRUE);
     $results = array();
     $message = "";
+    $raw_transaction_list = array();
     
     $eligible_tx_list = array();
     
@@ -229,8 +230,10 @@ class Status_model extends CI_Model {
     }else{
       $DB_myemsl->where('gi.group_id',$group_id);
     }
-    $DB_myemsl->where_in('f.transaction', $eligible_tx_list);
-    $query = $DB_myemsl->get();
+    if(!empty($eligible_tx_list)){
+      $DB_myemsl->where_in('f.transaction', $eligible_tx_list);
+      $query = $DB_myemsl->get();
+    }
   // echo "get transactions by date\n";
   // echo $DB_myemsl->last_query();
   // echo "\n";

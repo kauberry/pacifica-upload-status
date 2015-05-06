@@ -110,6 +110,13 @@ var update_content = function(event){
           });
         }
       });
+      getting.fail(function(jqxhr,textStatus,error){
+        $('#loading_status').fadeOut(200,function(){
+          $('#info_message_container h2').html("An Error occurred during refresh");
+          $('#info_message_container').append("<span class='fineprint'>" + error + "</span>");
+          $('#info_message_container').show();
+        });
+      });
     });
   }
   if(el && el.prop('id') == 'proposal_selector'){ 
