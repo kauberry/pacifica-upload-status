@@ -45,7 +45,8 @@ var update_breadcrumbs = function(){
     'instrument_id' : inst_id
   };
   if(inst_id && trans_id_list.length > 0){
-    var url = base_url + 'index.php/status/get_status/t';
+    var ts = moment().format('YYYYMMDDHHmmss');
+    var url = base_url + 'index.php/status/get_status/t/bc_' + ts;
     $.ajax({
       type: "POST",
       url: url,
@@ -68,7 +69,8 @@ var update_breadcrumbs = function(){
 
 var get_latest_transactions = function(){
   if(initial_instrument_id && latest_tx_id){
-    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + initial_instrument_id + '/' + initial_proposal_id + '/' + latest_tx_id;
+    var ts = moment().format('YYYYMMDDHHmmss');    
+    var new_tx_url = base_url + 'index.php/status/get_latest_transactions/' + initial_instrument_id + '/' + initial_proposal_id + '/' + latest_tx_id + '/glt_' + ts;
     $.get(new_tx_url, function(data){
       if(data.length > 0){
         $('#item_info_container').prepend(data);
@@ -93,7 +95,8 @@ var update_content = function(event){
   var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : initial_proposal_id;
   var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : initial_instrument_id;
   var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
-  var url = base_url + 'index.php/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame;
+  var ts = moment().format('YYYYMMDDHHmmss');  
+  var url = base_url + 'index.php/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
   if(proposal_id && instrument_id && time_frame){
     inital_load = false;
     $('#item_info_container').hide();
