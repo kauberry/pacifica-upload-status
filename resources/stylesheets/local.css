@@ -256,7 +256,7 @@ div.buttons img, div.buttons a img {
   width:16px;
   height:16px;
 }
-button:hover, .submit_buttons input[type="button"]:hover, .buttons a:hover{
+button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
   background-color:#b15611; 
   text-decoration:none;
 }

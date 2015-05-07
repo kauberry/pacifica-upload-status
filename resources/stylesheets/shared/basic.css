@@ -60,7 +60,7 @@
   }
 
   * html body {
-    background: url("http://www.pnnl.gov/images/intranet_bg.gif") repeat-y;
+    background: url("/resources/images/intranet_bg.gif") repeat-y;
     background-color: #b2b3b5;
     background-position: center top;
   }
@@ -150,28 +150,28 @@
   }
 
   #main ul, #rightCol ul {
-    list-style-image: url("http://www.pnnl.gov/images/bullet_square.png");
+    list-style-image: url("https://www.pnnl.gov/images/bullet_square.png");
   }
 
   * html #main ul, * html #rightCol ul {
-      list-style-image: url("http://www.pnnl.gov/images/bullet_square.gif");
+      list-style-image: url("https://www.pnnl.gov/images/bullet_square.gif");
   }
 
   #main ul ul, #rightCol ul ul {
-    list-style-image: url("http://www.pnnl.gov/images/bullet_circle.png");
+    list-style-image: url("https://www.pnnl.gov/images/bullet_circle.png");
     margin-top: 8px;
   }
 
   * html #main ul ul, * html #rightCol ul ul {
-      list-style-image: url("http://www.pnnl.gov/images/bullet_circle.gif");
+      list-style-image: url("https://www.pnnl.gov/images/bullet_circle.gif");
   }
 
   * html #main ul ul ul, * html #rightCol ul ul ul {
-    list-style-image: url("http://www.pnnl.gov/images/bullet_diamond.gif");
+    list-style-image: url("https://www.pnnl.gov/images/bullet_diamond.gif");
   }
 
   #main ul ul ul, #rightCol ul ul ul {
-      list-style-image: url("http://www.pnnl.gov/images/bullet_diamond.png");
+      list-style-image: url("https://www.pnnl.gov/images/bullet_diamond.png");
   }
 
 	#main ol, #rightCol ol {
@@ -189,7 +189,7 @@
   #main blockquote {
     padding-left: 40px;
     font-style: italic;
-    background-image: url("http://www.pnnl.gov/images/blockquote_bg.gif");
+    background-image: url("https://www.pnnl.gov/images/blockquote_bg.gif");
     background-repeat: no-repeat;
     background-position: top left;
     line-height: 180%;
@@ -210,7 +210,7 @@
 
   button.copper {
     background-color: #d57500;
-    background-image: url("http://www.pnnl.gov/images/button_bg.png");
+    background-image: url("https://www.pnnl.gov/images/button_bg.png");
     background-repeat: repeat-x;
     background-position: left bottom;
     color: white;
@@ -280,7 +280,7 @@
   left: 0px;
   width: 220px;
   height: 30px;
-  background-image: url("http://www.pnnl.gov/images/footer_tagline.png");
+  background-image: url("https://www.pnnl.gov/images/footer_tagline.png");
   background-repeat: no-repeat;
   text-indent: -1000px;
   border-right: 2px solid white;
@@ -293,7 +293,7 @@
   right: 0px;
   width: 220px;
   height: 30px;
-  background-image: url("http://www.pnnl.gov/images/footer_right_corner.png");
+  background-image: url("https://www.pnnl.gov/images/footer_right_corner.png");
   background-repeat: no-repeat;
   text-indent: -1000px;
   overflow: hidden;

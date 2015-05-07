@@ -17,6 +17,10 @@
   margin-top:10px;
 }
 
+.fancytree-container:focus {
+  outline-style: none;
+}
+
 .selector_spinner_container{
   position: absolute;
   right: -15px;

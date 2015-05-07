@@ -25,6 +25,12 @@ span.fineprint {
   text-decoration: none;
 }
 
+.fancytree-selected .item_link:visited, .fancytree-selected .item_link:link {
+  color: #white;
+  text-decoration: none;
+}
+
+
 .item_link:hover{
   text-decoration:underline;
 }

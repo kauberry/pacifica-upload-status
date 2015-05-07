@@ -47,7 +47,7 @@ function build_folder_structure(&$dirs, $path_array, $item_info) {
         $url = base_url()."myemsl/itemauth/{$item_id}";
         $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
-        $dirs['files'][] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[size: {$size_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
+        $dirs['files'][$item_id] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[size: {$size_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
     }
 }
 
@@ -68,8 +68,8 @@ function format_folder_object_json($folder_obj,$folder_name){
     }
   }
   if(array_key_exists('files', $folder_obj)){
-    foreach($folder_obj['files'] as $file_entry){
-      $output[] = array('title' => $file_entry);
+    foreach($folder_obj['files'] as $item_id => $file_entry){
+      $output[] = array('title' => $file_entry, 'hideCheckbox' => true, 'key' => "ft_item_{$item_id}");
     }
   }
   return $output;

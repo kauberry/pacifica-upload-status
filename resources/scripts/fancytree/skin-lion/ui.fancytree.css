@@ -25,7 +25,6 @@
  * Container and UL / LI
  *----------------------------------------------------------------------------*/
 ul.fancytree-container {
-  font-family: tahoma, arial, helvetica;
   font-size: 10pt;
   white-space: nowrap;
   padding: 3px;
@@ -52,7 +51,7 @@ ul.fancytree-container li {
   background-position: 0px 0px;
   background-repeat: repeat-y;
   background-image: none;
-  margin: 0;
+  margin: 0 !important;
 }
 ul.fancytree-container li.fancytree-lastsib {
   background-image: none;
@@ -498,8 +497,8 @@ span.fancytree-selected span.fancytree-title {
 }
 .fancytree-treefocus span.fancytree-selected span.fancytree-title,
 .fancytree-treefocus span.fancytree-active span.fancytree-title {
-  color: white;
-  background-color: #3875D7;
+  /*color: white;*/
+  /*background-color: #3875D7;*/
 }
 /*******************************************************************************
  * 'table' extension

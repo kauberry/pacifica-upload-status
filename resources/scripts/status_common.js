@@ -30,6 +30,7 @@ $(function(){
 });
 
 var update_breadcrumbs = function(){
+  inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
   $('.bar_holder').each(function(index,el){
     var pattern = /\w+_\w+_(\d+)/i;
     var m = $(el).prop('id').match(pattern);
@@ -44,7 +45,7 @@ var update_breadcrumbs = function(){
     'transaction_list' : trans_id_list,
     'instrument_id' : inst_id
   };
-  if(inst_id && trans_id_list.length > 0){
+  if(inst_id && Object.keys(trans_id_list).length > 0){
     var ts = moment().format('YYYYMMDDHHmmss');
     var url = base_url + 'index.php/status/get_status/t/bc_' + ts;
     $.ajax({
@@ -186,8 +187,33 @@ var setup_metadata_disclosure = function(){
 var setup_tree_data = function(){
   $('.tree_holder').each(function(index, el){
     if($(el).find('ul.ui-fancytree').length == 0){
+      var el_id = $(el).prop('id').replace('tree_','');
       $(el).fancytree(
         {
+          checkbox:true,
+          selectMode: 3,
+          activate: function(event, data){
+            
+          },
+          select: function(event, data){
+            var dl_button = $(event.target).parent().find('#dl_button_container_' + el_id);
+            var selFiles = $.map(data.tree.getSelectedNodes(), function(node){
+              if(!node.folder){
+                return parseInt(node.key.replace('ft_item_',''),10);
+              }
+            });
+            if(data.tree.countSelected() > 0){
+              dl_button.slideDown('slow');
+            }else{
+              dl_button.slideUp('slow');
+            }
+          },
+          keydown: function(event, data){
+            if(event.which === 32){
+              data.node.toggleSelected();
+              return false;
+            }
+          },
           lazyLoad: function(event, data){
             var node = data.node;
             data.result = {
@@ -200,9 +226,14 @@ var setup_tree_data = function(){
               }
             };
           },
+          loadChildren: function(event, ctx) {
+            ctx.node.fixSelection3AfterClick();
+          },          
           expand: function(event,data){
             setup_file_download_links($(el));
-          }
+          },
+          cookieId: "fancytree_tx_" + el_id,
+          idPrefix: "fancytree_tx_" + el_id + "-"
         }
       );
     }

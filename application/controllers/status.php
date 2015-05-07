@@ -153,7 +153,6 @@ var initial_instrument_list = [];";
   
   public function get_files_by_transaction($transaction_id){
     $treelist = $this->status->get_files_for_transaction($transaction_id);
-    // var_dump($treelist);
     $output_array = format_folder_object_json($treelist['treelist']);
     // var_dump($output_array);
     transmit_array_with_json_header($output_array);
