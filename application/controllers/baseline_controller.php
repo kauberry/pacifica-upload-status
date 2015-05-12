@@ -15,7 +15,7 @@ class Baseline_controller extends CI_Controller {
     $this->fullname = "{$this->username} {$user_info['last_name']}";
     $this->site_color = $this->config->item('site_color');
     
-    
+    $this->email = $user_info['email_address'];
     $user_info['full_name'] = $this->fullname;
     $user_info['network_id'] = !empty($user_info['network_id']) ? $user_info['network_id'] : "unknown";
     $current_path_info = isset($_SERVER['PATH_INFO']) ? ltrim($_SERVER['PATH_INFO'],'/') : "./";

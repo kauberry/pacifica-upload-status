@@ -1,5 +1,6 @@
 var bearer_token = "";
 var token_url_base = '/myemsl/itemauth/';
+var token_url_base = '/myemsl/status/index.php/status/get_cart_token/';
 var cart_url_base = '/myemsl/api/2/cart/';
 
 var setup_file_download_links = function(parent_item) {
@@ -13,17 +14,48 @@ var setup_file_download_links = function(parent_item) {
   var dl_button = $('#dl_button_' + tx_id);
   dl_button.unbind('click').click(function(e){
     var el = $(e.target);
-    cart_download(parent_item, null);
+    cart_download(parent_item, tx_id, null);
   });
 };
 
-var cart_download = function(transaction_container, cart_id){
+var cart_download = function(transaction_container, tx_id, cart_id){
   var selected_files = get_selected_files(transaction_container);
   //check for token
-  get_tokens(selected_files);
+  get_token(selected_files, tx_id);
 };
 
-var get_tokens = function(item_id_list, token_list){
+
+var get_token = function(item_id_list, tx_id){
+  var token_url = token_url_base;
+  var cart_url = cart_url_base;
+  var token_getter = $.ajax({
+    url:token_url,
+    type: 'POST',
+    data: JSON.stringify({'items' : item_id_list})
+  })
+  .done(function(data){
+    var cart_submitter = $.ajax({
+      url: cart_url,
+      type: 'POST',
+      data: JSON.stringify({
+        'items':item_id_list,
+        'auth_token':data
+      }),
+      dataType: 'json'
+    })
+    .done(function(data){
+      var status_box = $('#status_block_' + tx_id);
+      status_box.html(item_id_list.length + " items added to download cart");
+      var cart_id = data.cart_id;
+      submit_cart_for_download(cart_id);
+    });
+  })
+  .fail(function(jq,textStatus,errormsg){
+    debugger;
+  });
+};
+
+var get_tokens_old = function(item_id_list, token_list){
   if(!token_list) var token_list = [];
   var item = item_id_list.shift();
   console.log(item + ':getting token');
@@ -70,7 +102,23 @@ var add_cart_items = function(token_list, cart_id){
 };
 
 var submit_cart_for_download = function(cart_id){
-  debugger;
+  if(cart_id == null){
+    return;
+  }
+  var submit_url = cart_url_base + cart_id + '?submit&email_addr=' + email_address;
+  $.ajax({
+    url:submit_url,
+    data: JSON.stringify({}),
+    type:'POST',
+    processData:false
+  })
+  .done(function(data){
+    debugger;
+  })
+  .fail(function(jq,textStatus,errormsg){
+    debugger;
+  });
+  
 };
 
 var get_selected_files = function(tree_container){

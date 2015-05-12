@@ -102,6 +102,7 @@ class Status extends Baseline_controller {
       $js = "var initial_proposal_id = '{$proposal_id}';
 var initial_instrument_id = '{$instrument_id}';
 var initial_time_period = '{$time_period}';
+var email_address = '{$this->email}';
 var initial_instrument_list = [];";
       
       $this->page_data['proposal_list'] = $proposal_list;
@@ -276,6 +277,14 @@ var initial_instrument_list = [];";
   }
   
   
+  public function get_cart_token(){
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+    $values = json_decode($HTTP_RAW_POST_DATA,TRUE);
+    $item_list = $values['items'];
+    echo generate_cart_token($item_list,$this->user_id);
+  }
+  
+  
   public function test_get_instrument_list(){
     var_dump($this->status->get_instrument_group_list());
   }
@@ -293,6 +302,11 @@ var initial_instrument_list = [];";
   public function test_get_proposals_for_instrument($instrument_id){
     $inst_list = $this->eus->get_proposals_for_instrument($instrument_id);
     var_dump($inst_list);
+  }
+  
+  public function test_generate_cart_token(){
+    $item_list = array(105655);
+    echo generate_cart_token($item_list,$this->user_id);
   }
   
 }
