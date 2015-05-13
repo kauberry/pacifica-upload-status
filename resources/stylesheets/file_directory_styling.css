@@ -20,6 +20,14 @@ span.fineprint {
   font-style:italic;
 }
 
+span.download_status {
+  padding-top: 1em;
+  font-weight: bold;
+  color:#333;
+  margin-left:2em;
+  vertical-align: baseline;
+}
+
 .item_link:visited, .item_link:link {
   color: #0077a4;
   text-decoration: none;

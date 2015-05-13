@@ -109,6 +109,7 @@ var submit_cart_for_download = function(cart_id){
   $.ajax({
     url:submit_url,
     data: JSON.stringify({}),
+    dataType: 'text',
     type:'POST',
     processData:false
   })
@@ -132,17 +133,66 @@ var get_selected_files = function(tree_container){
     var topNode = tree.getRootNode();
     var dataNode = topNode.children[0];
     //check lazyload status and load if necessary
-    if(selCount == 1 && dataNode.lazy && dataNode.countChildren == 0){
-      dataNode.load();
-      selCount = tree.countSelected();
+    if(selCount == 1 && !dataNode.isLoaded()){
+      dataNode.load()
+      .done(function(){
+        dataNode.render(true,true);
+        selCount = tree.countSelected();
+        selFiles = $.map(tree.getSelectedNodes(), function(node){
+          if(!node.folder){
+            return parseInt(node.key.replace('ft_item_',''),10);
+          }
+        });
+        update_download_status(tree_container,selCount);
+      });
+    }else{
+      selFiles = $.map(tree.getSelectedNodes(), function(node){
+        if(!node.folder){
+          return parseInt(node.key.replace('ft_item_',''),10);
+        }
+      });
+      update_download_status(tree_container,selCount);
     }
-    selFiles = $.map(tree.getSelectedNodes(), function(node){
-      if(!node.folder){
-        return parseInt(node.key.replace('ft_item_',''),10);
-      }
-    });
   }
   return selFiles;
+};
+
+var update_download_status = function(tree_container, selectCount){
+  var fileSizes = get_file_sizes(tree_container);
+  var totalSizeText = myemsl_size_format(fileSizes.total_size);
+  var el_id = $(tree_container).prop('id').replace('tree_','');
+  var dl_button = $('#dl_button_container_' + el_id);
+  if(selectCount > 0){
+    var pluralizer = Object.keys(fileSizes.sizes).length != 1 ? "s" : "";
+    $('#status_block_' + el_id).html(Object.keys(fileSizes.sizes).length + ' file' + pluralizer + ' selected [' + totalSizeText + ']');
+    dl_button.slideDown('slow');
+  }else{
+    $('#status_block_' + el_id).html('&nbsp;');
+    dl_button.slideUp('slow');
+  }
+  
+};
+
+var get_file_sizes = function(tree_container){
+  var tree = tree_container.fancytree('getTree');
+  var total_size = 0;
+  var sizes = {};
+  var item_info = {};
+  
+  var item_id_list = $.map(tree.getSelectedNodes(), function(node){
+    if(!node.folder){
+      return parseInt(node.key.replace('ft_item_',''),10);
+    }
+  });
+
+  
+  tree.render(true,true);
+  $.each(item_id_list, function(index,item){
+    item_info = JSON.parse($('#item_id_' + item).html());
+    sizes[item] = item_info.size;
+    total_size += parseInt(item_info.size,10);
+  });
+  return {'total_size' : total_size, 'sizes' : sizes};
 };
 
 var download_myemsl_item = function(file_object_data) {
@@ -192,3 +242,16 @@ var myemsl_tape_status = function(token, file_object_data, cb) {
   });
   return ajx;
 }; 
+
+
+var myemsl_size_format = function(bytes) {
+    var suffixes = ["B", "KB", "MB", "GB", "TB", "EB"];
+    if (bytes == 0) {
+        suffix = "B";
+    } else {
+        var order = Math.floor(Math.log(bytes) / Math.log(10) / 3);
+        bytes = (bytes / Math.pow(1024, order)).toFixed(1);
+        suffix = suffixes[order];
+    }
+    return bytes + suffix;
+};

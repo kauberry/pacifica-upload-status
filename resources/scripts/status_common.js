@@ -197,16 +197,14 @@ var setup_tree_data = function(){
           },
           select: function(event, data){
             var dl_button = $(event.target).parent().find('#dl_button_container_' + el_id);
-            var selFiles = $.map(data.tree.getSelectedNodes(), function(node){
-              if(!node.folder){
-                return parseInt(node.key.replace('ft_item_',''),10);
-              }
-            });
-            if(data.tree.countSelected() > 0){
-              dl_button.slideDown('slow');
-            }else{
-              dl_button.slideUp('slow');
-            }
+            var selFiles = get_selected_files($(el));
+            var fileSizes = get_file_sizes($(el));
+            var tree = $(el).fancytree('getTree');
+            var totalSizeText = myemsl_size_format(fileSizes.total_size);
+            var topNode = tree.getRootNode();
+            var dataNode = topNode.children[0];
+            
+            var selectCount = get_selected_files($(el)).length;            
           },
           keydown: function(event, data){
             if(event.which === 32){
