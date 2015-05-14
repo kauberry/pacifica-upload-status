@@ -204,7 +204,7 @@ var setup_tree_data = function(){
             var topNode = tree.getRootNode();
             var dataNode = topNode.children[0];
             
-            var selectCount = get_selected_files($(el)).length;            
+            var selectCount = selFiles.length;            
           },
           keydown: function(event, data){
             if(event.which === 32){

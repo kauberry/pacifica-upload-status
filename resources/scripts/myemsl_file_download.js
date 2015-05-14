@@ -143,7 +143,6 @@ var get_selected_files = function(tree_container){
             return parseInt(node.key.replace('ft_item_',''),10);
           }
         });
-        update_download_status(tree_container,selCount);
       });
     }else{
       selFiles = $.map(tree.getSelectedNodes(), function(node){
@@ -151,9 +150,9 @@ var get_selected_files = function(tree_container){
           return parseInt(node.key.replace('ft_item_',''),10);
         }
       });
-      update_download_status(tree_container,selCount);
     }
   }
+  update_download_status(tree_container,selCount);
   return selFiles;
 };
 
