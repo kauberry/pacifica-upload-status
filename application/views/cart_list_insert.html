@@ -1,0 +1,37 @@
+<?php
+  $carts = isset($carts) && !empty($carts) ? $carts : array();
+  $classes = array('available','building');
+?>
+
+<div id="cart_item_container">
+  <?php foreach($classes as $classification): ?>
+    <?php if(!array_key_exists($classification,$carts)): ?>
+      <?php continue; ?>
+    <?php endif; ?>
+    <?php $cart_list = $carts[$classification] ?>
+    <div id="<?= $classification ?>_cart_container" class="cart_tree">
+      <h2><?= ucwords($classification) ?></h2>
+      <ul>
+      <?php foreach($cart_list as $cart_id => $info): ?>
+        <?php if($classification == 'available'): ?>
+        <li><a href="<?= $info['download_url'] ?>">Cart ID <?= $cart_id ?></a>
+        <?php elseif($classification == 'expired' || $classification == 'building'): ?>
+        <li>Cart ID <?= $cart_id ?> - Pending
+        <?php endif; ?>
+          <ul>
+            <?php if(!empty($info['times']['submit'])): ?>
+            <li>Submitted: <?= $info['times']['submit'] ?></li>
+            <?php endif; ?>
+            <?php if(!empty($info['times']['modified'])): ?>
+            <li>Last Updated: <?= $info['times']['modified'] ?></li>
+            <?php endif; ?>
+            <?php if(!empty($info['times']['email'])): ?>
+            <li>Email Notification Sent: <?= $info['times']['email'] ?></li>
+            <?php endif; ?>
+          </ul>
+        </li>
+      <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endforeach; ?>
+</div>

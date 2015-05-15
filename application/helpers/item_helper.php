@@ -69,7 +69,7 @@ function format_folder_object_json($folder_obj,$folder_name){
   }
   if(array_key_exists('files', $folder_obj)){
     foreach($folder_obj['files'] as $item_id => $file_entry){
-      $output[] = array('title' => $file_entry, 'hideCheckbox' => true, 'key' => "ft_item_{$item_id}");
+      $output[] = array('title' => $file_entry, 'key' => "ft_item_{$item_id}");
     }
   }
   return $output;

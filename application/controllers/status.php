@@ -11,6 +11,7 @@ class Status extends Baseline_controller {
     // }
     $this->load->model('status_model','status');
     $this->load->model('Myemsl_model','myemsl');
+    $this->load->model('Cart_model','cart');
     $this->load->helper(array('inflector','item','url','opwhse_search','form','network'));
     $this->load->library(array('table'));
     $this->status_list = array(
@@ -119,7 +120,7 @@ var initial_instrument_list = [];";
     }
     // $this->page_data['informational_message'] = "";
     // if($proposal_id && $instrument_id && $time_period){
-    if(isset($instrument_id) && $instrument_id > 0){
+    if(isset($instrument_id) && $instrument_id > 0 && isset($time_period) && $time_period > 0){
       $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
       if(array_key_exists($instrument_id,$group_lookup_list['by_inst_id'])){
         $results = $this->status->get_transactions_for_group(
@@ -145,6 +146,7 @@ var initial_instrument_list = [];";
     // }else{
       // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
     // }
+    $this->page_data['cart_data'] = array('carts' => $this->cart->get_active_carts($this->user_id));
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results['transaction_list'];
     $this->page_data['informational_message'] = $results['message'];    
@@ -307,6 +309,12 @@ var initial_instrument_list = [];";
   public function test_generate_cart_token(){
     $item_list = array(105655);
     echo generate_cart_token($item_list,$this->user_id);
+  }
+  
+  public function test_get_cart_list(){
+    echo "<pre>";
+    var_dump($this->cart->get_active_carts($this->user_id));
+    echo "</pre>";
   }
   
 }

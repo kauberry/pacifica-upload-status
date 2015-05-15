@@ -54,17 +54,23 @@
                   </div>
                 </div>
               </fieldset>
-            </form>
-            
+            </form>            
             
           </div>
+          
+          <div class="themed">
+            <fieldset id="cart_listing">
+              <legend>Download Queue</legend>
+              <?php $this->load->view('cart_list_insert.html', $cart_data); ?>
+            </fieldset>
+          </div>
+          
           <div class="loading_progress_container status_messages" id="loading_status" style="display:none;">
             <span class="spinner">&nbsp;&nbsp;&nbsp;</span>
             <span id="loading_status_text">Loading...</span>
           </div>
-          <div class="themed" id="item_info_container" style="margin-top:20px;">
-            
-          </div>
+
+          <div class="themed" id="item_info_container" style="margin-top:20px;"></div>
         </div>
 
       </div>

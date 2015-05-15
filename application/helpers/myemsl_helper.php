@@ -15,9 +15,7 @@ function get_user_details_myemsl($eus_id){
   if($query && $query->num_rows() > 0){
     $results = $query->row_array();
   }
-  
   return $results;
-  
 }
 
 
@@ -61,7 +59,5 @@ function generate_cart_token($item_list,$eus_person_id){
   return $cart_token_b64;
   
 }
-
-
 
 ?>
