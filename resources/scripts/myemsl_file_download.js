@@ -1,7 +1,8 @@
 var bearer_token = "";
 var token_url_base = '/myemsl/itemauth/';
-var token_url_base = '/myemsl/status/index.php/status/get_cart_token/';
+var token_url_base = '/myemsl/status/index.php/cart/get_cart_token/';
 var cart_url_base = '/myemsl/api/2/cart/';
+var cart_info_url = '/myemsl/status/index.php/cart/listing/';
 
 var setup_file_download_links = function(parent_item) {
   parent_item = $(parent_item);
@@ -15,6 +16,16 @@ var setup_file_download_links = function(parent_item) {
   dl_button.unbind('click').click(function(e){
     var el = $(e.target);
     cart_download(parent_item, tx_id, null);
+  });
+  
+};
+
+var setup_cart_listing = function(){
+  $('#cart_listing .cart_tree').each(function(index,cart_container){
+    $(cart_container).fancytree({
+      'icons':false,
+      'tabbable':false
+    });
   });
 };
 
@@ -47,7 +58,7 @@ var get_token = function(item_id_list, tx_id){
       var status_box = $('#status_block_' + tx_id);
       status_box.html(item_id_list.length + " items added to download cart");
       var cart_id = data.cart_id;
-      submit_cart_for_download(cart_id, tx_id);
+      submit_cart_for_download(tx_id,cart_id);
     });
   })
   .fail(function(jq,textStatus,errormsg){
@@ -55,51 +66,7 @@ var get_token = function(item_id_list, tx_id){
   });
 };
 
-// var get_tokens_old = function(item_id_list, token_list){
-  // if(!token_list) var token_list = [];
-  // var item = item_id_list.shift();
-  // console.log(item + ':getting token');
-  // var token_url = token_url_base + item;
-  // var token_getter = $.get(token_url, function(data){
-    // console.log(item + ':got token');
-    // token_list.push({'item': item, 'token' : data});
-    // if(item_id_list.length > 0){
-      // get_tokens(item_id_list,token_list);
-    // }else{
-      // add_cart_items(token_list);
-    // }
-  // });
-// };
 
-// var add_cart_items = function(token_list, cart_id){
-  // if(token_list.length > 0){
-    // if(!cart_id) cart_id = '';
-    // var item_info = token_list.shift();
-    // var item = item_info.item;
-    // var bearer_token = item_info.token;
-    // var token_url = token_url_base + item;
-    // var cart_url = cart_url_base + cart_id;
-    // var cart_list = [item];
-    // var cart_submitter = $.ajax({
-      // url : cart_url,
-      // type : 'POST',
-      // data : JSON.stringify({
-        // 'items' : cart_list,
-        // 'auth_token' : bearer_token
-      // }),
-      // dataType: 'json'
-    // });
-    // cart_submitter.done(function(data,textStatus,jq_obj){
-      // cart_id = !cart_id ? data.cart_id : cart_id;
-      // if(token_list.length > 0){
-        // console.log(item + ':submitted');
-        // add_cart_items(token_list, cart_id);
-      // }else{
-        // submit_cart_for_download(cart_id);
-      // }
-    // });
-  // }
-// };
 
 var submit_cart_for_download = function(tx_id, cart_id){
   if(cart_id == null){
@@ -115,6 +82,10 @@ var submit_cart_for_download = function(tx_id, cart_id){
   })
   .done(function(data){
     $('#cart_id_' + tx_id).val(cart_id);
+    $.get(cart_info_url, function(data){
+      $('#cart_listing').html(data);
+      setup_cart_listing();
+    });
   })
   .fail(function(jq,textStatus,errormsg){
     debugger;

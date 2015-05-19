@@ -21,12 +21,14 @@ $(function(){
   // $('#proposal_selector').change(update_content);
   // $('#instrument_selector').change(update_content);
   // $('#timeframe_selector').change(update_content);
-      
+  
+  setup_cart_listing();    
   setup_tree_data();
   setup_metadata_disclosure();
+  
     
-  window.setInterval(update_breadcrumbs,5000);
-  window.setInterval(get_latest_transactions,5000);
+  window.setInterval(update_breadcrumbs,30000);
+  window.setInterval(get_latest_transactions,30000);
   
 });
 

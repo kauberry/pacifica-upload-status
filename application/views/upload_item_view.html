@@ -15,7 +15,7 @@
       $latest_step = $latest_step_info['step'];
 ?>
     <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
-      <legend>Uploaded at <?= $friendly_upload_time ?></legend>
+      <legend>Uploaded at <?= $friendly_upload_time ?> [Upload ID <?= $transaction_id ?>]</legend>
 <?php
   $bar_info = array(
     'latest_step' => $latest_step,

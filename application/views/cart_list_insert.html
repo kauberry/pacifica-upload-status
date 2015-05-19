@@ -11,27 +11,59 @@
     <?php $cart_list = $carts[$classification] ?>
     <div id="<?= $classification ?>_cart_container" class="cart_tree">
       <h2><?= ucwords($classification) ?></h2>
-      <ul>
-      <?php foreach($cart_list as $cart_id => $info): ?>
-        <?php if($classification == 'available'): ?>
-        <li><a href="<?= $info['download_url'] ?>">Cart ID <?= $cart_id ?></a>
-        <?php elseif($classification == 'expired' || $classification == 'building'): ?>
-        <li>Cart ID <?= $cart_id ?> - Pending
-        <?php endif; ?>
-          <ul>
-            <?php if(!empty($info['times']['submit'])): ?>
-            <li>Submitted: <?= $info['times']['submit'] ?></li>
-            <?php endif; ?>
-            <?php if(!empty($info['times']['modified'])): ?>
-            <li>Last Updated: <?= $info['times']['modified'] ?></li>
-            <?php endif; ?>
-            <?php if(!empty($info['times']['email'])): ?>
-            <li>Email Notification Sent: <?= $info['times']['email'] ?></li>
-            <?php endif; ?>
-          </ul>
-        </li>
+      <table style="width:100%;">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>Cart Description<br />[Proposal/Instrument/Upload Time]</th>
+            <th>Created</th>
+            <th>Last Updated</th>
+            <th>Upload ID</th>
+            <!-- <th>Email Notification?</th> -->
+          </tr>
+        </thead>
+        <tbody>
+        <?php foreach($cart_list as $cart_id => $info): ?>
+        <?php $md = $info['metadata']; ?>
+          <tr>
+            <td>
+              <?php if($classification == 'available'): ?>
+              <a href="<?= $info['download_url'] ?>">Download</a>
+              <?php else: ?>
+              &mdash;&mdash;&mdash;
+              <?php endif; ?>
+            </td>
+            <td>
+              <span><?= $md['proposal_id'] ?></span> / 
+              <span title="<?= $md['instrument_description'] ?>"><?= $md['instrument_id'] ?></span> /
+              <span><?= $info['times']['formatted_upload_time'] ?></span>
+            </td>
+            <td>
+              <?php if(!empty($info['times']['submit'])): ?>
+              <?= $info['times']['formatted_submit'] ?>
+              <?php else: ?> 
+              N/A
+              <?php endif; ?>
+            </td>
+            <td>
+              <?php if(!empty($info['times']['modified'])): ?>
+              <?= $info['times']['formatted_modified'] ?>
+              <?php else: ?> 
+              N/A
+              <?php endif; ?>
+            </td>
+            <td><?= $info['transaction_id'] ?></td>
+            <!-- <td>
+              <?php if(!empty($info['times']['email'])): ?>
+              <?= $info['times']['formatted_email'] ?>
+              <?php else: ?> 
+              N/A
+              <?php endif; ?>
+            </td> -->
+          </tr>
       <?php endforeach; ?>
-      </ul>
+        </tbody>
+      </table>
     </div>
   <?php endforeach; ?>
 </div>

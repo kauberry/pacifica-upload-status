@@ -5,10 +5,6 @@ class Status extends Baseline_controller {
 
   function __construct() {
     parent::__construct();
-    // if($this->admin_access_level < 400){
-      // $this->page_data['message'] = "You must have at least 'Power User' status to use these pages";
-      // $this->load->view('insufficient_privileges', $this->page_data);
-    // }
     $this->load->model('status_model','status');
     $this->load->model('Myemsl_model','myemsl');
     $this->load->model('Cart_model','cart');
@@ -19,6 +15,10 @@ class Status extends Baseline_controller {
       3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived'
     );
     
+  }
+  
+  public function index(){
+    redirect('status/overview');
   }
   
   public function view($lookup_type,$id){
@@ -67,7 +67,6 @@ class Status extends Baseline_controller {
 
   
   public function overview($proposal_id = false, $instrument_id = false, $time_period = false){
-    // $instrument_group_xref = $this->status->get_instrument_group_list();
     $time_period = $this->input->cookie('myemsl_status_last_timeframe_selector') ? $this->input->cookie('myemsl_status_last_timeframe_selector') : $time_period;
     $instrument_id = $this->input->cookie('myemsl_status_last_instrument_selector') ? $this->input->cookie('myemsl_status_last_instrument_selector') : $instrument_id;
     $proposal_id = $this->input->cookie('myemsl_status_last_proposal_selector') ? $this->input->cookie('myemsl_status_last_proposal_selector') : $proposal_id;
@@ -146,7 +145,7 @@ var initial_instrument_list = [];";
     // }else{
       // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
     // }
-    $this->page_data['cart_data'] = array('carts' => $this->cart->get_active_carts($this->user_id));
+    $this->page_data['cart_data'] = array('carts' => $this->cart->get_active_carts($this->user_id, false));
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results['transaction_list'];
     $this->page_data['informational_message'] = $results['message'];    
@@ -172,11 +171,6 @@ var initial_instrument_list = [];";
       return;
     }
     $results = $this->status->get_formatted_object_for_transactions($new_transactions);
-    // foreach($new_transactions as $tx_id){
-      // $group_list = $this->status->get_groups_for_transaction($tx_id);
-      // $results['transactions'][$tx_id]['groups'] = $group_list;
-    // }
-   // $results['transactions'] = $this->status->get_groups_for_transaction($new_transactions);
     $group_list = $this->status->get_groups_for_transaction($new_transactions);
     foreach($group_list['groups'] as $tx_id => $group_info){
       $results['transactions'][$tx_id]['groups'] = $group_info;
@@ -276,16 +270,7 @@ var initial_instrument_list = [];";
     asort($instruments);
     
     format_array_for_select2(array('items' => $instruments));
-  }
-  
-  
-  public function get_cart_token(){
-    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
-    $values = json_decode($HTTP_RAW_POST_DATA,TRUE);
-    $item_list = $values['items'];
-    echo generate_cart_token($item_list,$this->user_id);
-  }
-  
+  }  
   
   public function test_get_instrument_list(){
     var_dump($this->status->get_instrument_group_list());
@@ -306,16 +291,6 @@ var initial_instrument_list = [];";
     var_dump($inst_list);
   }
   
-  public function test_generate_cart_token(){
-    $item_list = array(105655);
-    echo generate_cart_token($item_list,$this->user_id);
-  }
-  
-  public function test_get_cart_list(){
-    echo "<pre>";
-    var_dump($this->cart->get_active_carts($this->user_id));
-    echo "</pre>";
-  }
   
 }
 
