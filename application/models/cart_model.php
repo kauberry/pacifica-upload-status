@@ -9,7 +9,7 @@ class Cart_model extends CI_Model {
   function __construct(){
     parent::__construct();
     $this->local_timezone = "US/Pacific";
-    $this->load->helper(array('item'));
+    $this->load->helper(array('item','time'));
     define("CART_TABLE", 'cart');
     define("ITEMS_TABLE", 'cart_items');
     define("CART_URL_BASE", '/myemsl/cart/download/');
@@ -46,18 +46,24 @@ class Cart_model extends CI_Model {
         $cart_id = $row->cart_id;
         $submit_time = new DateTime($row->submit_time);
         $modified_time = new DateTime($row->modification_time);
+        
         $email_time = new DateTime($row->last_email_time);
         $cart_list[$display_state][$row->cart_id] = array(
           'cart_id' => $row->cart_id, 'raw_state' => $row->state,
           'display_state' => $display_state, 'size_bytes' => $row->size_in_bytes,
           'display_size' => $display_size, 
+          'item_count' => 0,
           'times' => array(
             'submit' => $row->submit_time,
             'modified' => $row->modification_time,
             'email' => $row->last_email_time,
-            'formatted_submit' => $submit_time->format('d M Y g:ia'),
-            'formatted_modified' => $modified_time->format('d M Y g:ia'),
-            'formatted_email' => $modified_time->format('d M Y g:ia')
+            'submit_time_obj' => $submit_time,
+            'modified_time_obj' => $modified_time,
+            'email_time_obj' => $email_time,
+            'formatted_submit' => format_cart_display_time_element($submit_time),
+            'formatted_modified' => format_cart_display_time_element($modified_time),
+            'formatted_email' => format_cart_display_time_element($email_time),
+            'generation_time' => friendlyElapsedTime($submit_time,$email_time,false)
           )
         );
         $cart_items_query = $DB_myemsl->select('item_id')->get_where(ITEMS_TABLE,array('cart_id' => $cart_id));
@@ -72,6 +78,10 @@ class Cart_model extends CI_Model {
           }
         }
         if(!empty($cart_item_list)){
+          $item_count = sizeof($cart_item_list);
+          $cart_list[$display_state][$row->cart_id]['item_count'] = $item_count;
+          $item_count_pluralizer = $item_count != 1 ? "s" : "";
+          $cart_list[$display_state][$row->cart_id]['display_item_count'] = "{$item_count} item{$item_count_pluralizer}";
           $inst_matcher = "/Instrument\.(\d+)/i";
           $md_select_array = array('g.name','g.type');
           $DB_myemsl->select($md_select_array)->distinct();
