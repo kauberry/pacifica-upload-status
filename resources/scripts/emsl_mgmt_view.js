@@ -17,18 +17,13 @@ $(function(){
   });
   
   $('.criterion_selector').change(update_content);
-// 
-  // $('#proposal_selector').change(update_content);
-  // $('#instrument_selector').change(update_content);
-  // $('#timeframe_selector').change(update_content);
-  
-  setup_cart_listing();    
+
   setup_tree_data();
   setup_metadata_disclosure();
   
-    
+  window.setInterval(check_cart_status, 30000);
   window.setInterval(update_breadcrumbs,30000);
-  window.setInterval(get_latest_transactions,30000);
+  window.setInterval(get_latest_transactions,60000);
   
 });
 

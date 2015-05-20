@@ -20,14 +20,6 @@ var setup_file_download_links = function(parent_item) {
   
 };
 
-var setup_cart_listing = function(){
-  $('#cart_listing .cart_tree').each(function(index,cart_container){
-    $(cart_container).fancytree({
-      'icons':false,
-      'tabbable':false
-    });
-  });
-};
 
 var cart_download = function(transaction_container, tx_id, cart_id){
   var selected_files = get_selected_files(transaction_container);
@@ -82,9 +74,15 @@ var submit_cart_for_download = function(tx_id, cart_id){
   })
   .done(function(data){
     $('#cart_id_' + tx_id).val(cart_id);
-    $.get(cart_info_url, function(data){
-      $('#cart_listing').html(data);
-      setup_cart_listing();
+    var dialog_message = $('<div><p>A new download cart has been created for this data.</p><p>Status info will appear in the Download Queue shortly</p></div>');
+    dialog_message.dialog({
+      modal:true,
+      buttons: {
+        Ok: function(){
+          check_cart_status();
+          $(this).dialog("close");
+        }
+      }
     });
   })
   .fail(function(jq,textStatus,errormsg){
@@ -93,13 +91,45 @@ var submit_cart_for_download = function(tx_id, cart_id){
   
 };
 
-var check_cart_status = function(cart_id){
-  var cart_status_url = '';
-  var active_carts = $('.cart_id_storage');
-  active_carts.each(function(cart_id_obj){
-    
+var cart_delete = function(cart_id){
+  if (cart_id == null) {
+    return;
+  }
+  var url = cart_url_base + cart_id;
+  $.ajax({
+    url : url,
+    type : 'DELETE',
+    processData : false,
+    dataType : 'json'
+  })
+  .done(function(data){
+    //check how many rows are left
+    $('#cart_line_' + cart_id).remove();
+    get_cart_count();
+  });
+};
+
+var check_cart_status = function(tx_id){
+  if(tx_id == undefined){ tx_id = ''; }
+  var cart_url = cart_info_url + tx_id;
+  $.get(cart_url, function(data){
+    $('#cart_listing').html(data);
+    get_cart_count();
   });
   
+};
+
+var get_cart_count = function(){
+  var cart_count = $('.cart_line').length;
+  if(cart_count > 0){
+    if($('#cart_listing_container:visible').length == 0){
+      $('#cart_listing_container').slideDown('slow');
+    }
+  }else{
+    if($('#cart_listing_container:visible').length > 0){
+      $('#cart_listing_container').slideUp('slow');
+    }
+  }
 };
 
 var get_selected_files = function(tree_container){

@@ -321,23 +321,25 @@ div.form_container tr:hover {
   background-color: #efefef;
 }
 
-div.form_container tr.prim_row {
+div.form_container tr:nth-child(odd) {
     background-color: #ffffff;
 }
 
-div.form_container tr.sec_row {
-    background-color: #C9D5E6;
+div.form_container tr:nth-child(even) {
+    background-color: #efefef;
 }
 
 div.form_container th {
   background-color: #676767;
   color:#ffffff !important;
   font-weight:bold;
-  line-height:180%;
+  line-height:120%;
+  vertical-align: middle;
 }
 div.form_container td {
   padding:5px !important;
   vertical-align:middle !important;
+  text-align:center;
 }
 
 /*#news h2.title {

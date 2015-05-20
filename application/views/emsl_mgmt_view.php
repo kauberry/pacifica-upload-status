@@ -58,7 +58,7 @@
             
           </div>
           
-          <div class="themed">
+          <div id="cart_listing_container" class="themed" style="display:none;margin-top:1em;">
             <fieldset id="cart_listing">
               <legend>Download Queue</legend>
               <?php $this->load->view('cart_list_insert.html', $cart_data); ?>

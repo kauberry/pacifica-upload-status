@@ -9,7 +9,7 @@
       <?php continue; ?>
     <?php endif; ?>
     <?php $cart_list = $carts[$classification] ?>
-    <div id="<?= $classification ?>_cart_container" class="cart_tree">
+    <div id="<?= $classification ?>_cart_container" class="cart_tree form_container">
       <h2><?= ucwords($classification) ?></h2>
       <table style="width:100%;">
         <thead>
@@ -17,7 +17,8 @@
             <th>&nbsp;</th>
             <th>Cart Description<br />[Proposal/Instrument/Upload Time]</th>
             <th>Created</th>
-            <th>Last Updated</th>
+            <th>Completed</th>
+            <th>Size</th>
             <th>Upload ID</th>
             <!-- <th>Email Notification?</th> -->
           </tr>
@@ -25,7 +26,7 @@
         <tbody>
         <?php foreach($cart_list as $cart_id => $info): ?>
         <?php $md = $info['metadata']; ?>
-          <tr>
+          <tr id="cart_line_<?= $cart_id ?>" class="cart_line">
             <td>
               <?php if($classification == 'available'): ?>
               <a href="<?= $info['download_url'] ?>">Download</a>
@@ -46,12 +47,13 @@
               <?php endif; ?>
             </td>
             <td>
-              <?php if(!empty($info['times']['modified'])): ?>
-              <?= $info['times']['formatted_modified'] ?>
+              <?php if(!empty($info['times']['email'])): ?>
+              <time title='<?= $info["times"]["email_time_obj"]->format("d M Y g:ia") ?>' datetime='<?= $info["times"]["email_time_obj"]->format("c") ?>'><?= $info['times']['generation_time'] ?></time>
               <?php else: ?> 
-              N/A
+              &mdash;&mdash;&mdash;
               <?php endif; ?>
             </td>
+            <td><?= $info['display_item_count'] ?> [<?= $info['display_size'] ?>]</td>
             <td><?= $info['transaction_id'] ?></td>
             <!-- <td>
               <?php if(!empty($info['times']['email'])): ?>

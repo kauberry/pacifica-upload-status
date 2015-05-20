@@ -203,8 +203,8 @@ var setup_tree_data = function(){
             var totalSizeText = myemsl_size_format(fileSizes.total_size);
             var topNode = tree.getRootNode();
             var dataNode = topNode.children[0];
-            
             var selectCount = selFiles.length;            
+            
           },
           keydown: function(event, data){
             if(event.which === 32){
