@@ -15,7 +15,7 @@ class Cart_model extends CI_Model {
     define("CART_URL_BASE", '/myemsl/cart/download/');
   }
   
-  function get_active_carts($eus_id, $show_expired){
+  function get_active_carts($eus_id, $show_expired = true, $new_tx_id = false){
     $DB_myemsl = $this->load->database('default',true);
     $select_array = array(
       'cart_id', 'submit_time', 'last_mtime as modification_time',
@@ -33,10 +33,15 @@ class Cart_model extends CI_Model {
       'expired' => 'expired',
     );
     $cart_list = array();
-    $accepted_states = array('amalgam','downloading','email');
-    if($show_expired){
-      $accepted_states[] = 'expired';
-    }
+    $accepted_states = array(
+      'amalgam','downloading','email'//,
+      // 'expiring','expired','download_expiring'
+    );
+    // if($show_expired){
+      // $accepted_states[] = 'expiring';
+      // $accepted_states[] = 'expired';
+      // $accepted_states[] = 'download_expiring';
+    // }
     $DB_myemsl->select($select_array)->where('person_id',$eus_id)->order_by('last_mtime desc');
     $query = $DB_myemsl->where_in('state',$accepted_states)->get(CART_TABLE);
     if($query && $query->num_rows()>0){

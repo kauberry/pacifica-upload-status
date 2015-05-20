@@ -57,11 +57,13 @@
             </form>            
             
           </div>
-          
-          <div id="cart_listing_container" class="themed" style="display:none;margin-top:1em;">
-            <fieldset id="cart_listing">
+          <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
+          <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
+            <fieldset id="cart_listing_fieldset">
               <legend>Download Queue</legend>
-              <?php $this->load->view('cart_list_insert.html', $cart_data); ?>
+              <div id="cart_listing">
+                <?php $this->load->view('cart_list_insert.html', $cart_data); ?>
+              </div>
             </fieldset>
           </div>
           

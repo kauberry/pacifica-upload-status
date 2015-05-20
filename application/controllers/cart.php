@@ -18,7 +18,7 @@ class Cart extends Baseline_controller {
   
   
   public function listing($new_tx_id = false){
-    $cart_list = $this->cart->get_active_carts($this->user_id, false, $new_tx_id);
+    $cart_list = $this->cart->get_active_carts($this->user_id);
     $this->load->view('cart_list_insert.html',array('carts' => $cart_list));
   }
   

@@ -42,3 +42,7 @@ span.download_status {
 .item_link:hover{
   text-decoration:underline;
 }
+
+.cart_tree {
+  padding-top:1em !important;
+}

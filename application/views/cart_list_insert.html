@@ -1,6 +1,6 @@
 <?php
   $carts = isset($carts) && !empty($carts) ? $carts : array();
-  $classes = array('available','building');
+  $classes = array('available','building','expired');
 ?>
 
 <div id="cart_item_container">
@@ -20,7 +20,7 @@
             <th>Completed</th>
             <th>Size</th>
             <th>Upload ID</th>
-            <!-- <th>Email Notification?</th> -->
+            <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
@@ -55,13 +55,24 @@
             </td>
             <td><?= $info['display_item_count'] ?> [<?= $info['display_size'] ?>]</td>
             <td><?= $info['transaction_id'] ?></td>
-            <!-- <td>
-              <?php if(!empty($info['times']['email'])): ?>
-              <?= $info['times']['formatted_email'] ?>
-              <?php else: ?> 
-              N/A
-              <?php endif; ?>
-            </td> -->
+            <td>
+              <div class="buttons">
+                <input 
+                  type="button" 
+                  id="delete_button_<?= $cart_id ?>" 
+                  name="delete_button_<?= $cart_id ?>" 
+                  <?php if($classification != 'available'): ?>                    
+                  class="cart_delete_button disabled_button"
+                  disabled="disabled"
+                  title="Delete functionality not enabled until download moves to 'available' state"
+                  <?php else: ?>
+                  class="cart_delete_button"
+                  title="Delete this queued download" 
+                  <?php endif; ?>
+                  value="X" 
+                />
+              </div>
+            </td>
           </tr>
       <?php endforeach; ?>
         </tbody>
@@ -69,3 +80,29 @@
     </div>
   <?php endforeach; ?>
 </div>
+<script type="application/javascript">
+  $(function(){
+    var del_buttons = $('.cart_delete_button');
+    del_buttons.each(function(el){
+      el = $(this);
+      el.unbind('click');
+      el.click(function(){
+        var cart_id = parseInt(el.prop('id').replace('delete_button_',''),10);
+        var dialog_message = $('<div><p>Really delete this cart?</p></div>');
+        dialog_message.dialog({
+          modal:true,
+          buttons: {
+            Delete: function(){
+              cart_delete(cart_id);
+              $(this).dialog("close");
+            },
+            Cancel: function(){
+              $(this).dialog("close");
+              return false;
+            }
+          }
+        });
+      });
+    });
+  });
+</script>

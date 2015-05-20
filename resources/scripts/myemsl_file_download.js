@@ -100,12 +100,15 @@ var cart_delete = function(cart_id){
     url : url,
     type : 'DELETE',
     processData : false,
-    dataType : 'json'
+    dataType : 'text'
   })
   .done(function(data){
     //check how many rows are left
     $('#cart_line_' + cart_id).remove();
-    get_cart_count();
+    check_cart_status();
+  })
+  .fail(function(jq, textStatus, errormsg){
+    var error = errormsg;
   });
 };
 
