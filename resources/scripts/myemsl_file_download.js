@@ -151,39 +151,30 @@ var get_selected_files = function(tree_container){
       .done(function(){
         dataNode.render(true,true);
         selCount = tree.countSelected();
-        selFiles = $.map(tree.getSelectedNodes(), function(node){
-          if(!node.folder){
-            return parseInt(node.key.replace('ft_item_',''),10);
-          }
-        });
+        selFiles = get_file_sizes(tree_container);
+        update_download_status(tree_container,selCount);
+        return selFiles;
+        // selFiles = $.map(tree.getSelectedNodes(), function(node){
+          // if(!node.folder){
+            // return parseInt(node.key.replace('ft_item_',''),10);
+          // }
+        // });
       });
     }else{
-      selFiles = $.map(tree.getSelectedNodes(), function(node){
-        if(!node.folder){
-          return parseInt(node.key.replace('ft_item_',''),10);
-        }
-      });
+      selFiles = get_file_sizes(tree_container);
+      update_download_status(tree_container,selCount);
+      return selFiles;
+
+      // selFiles = $.map(tree.getSelectedNodes(), function(node){
+        // if(!node.folder){
+          // return parseInt(node.key.replace('ft_item_',''),10);
+        // }
+      // });
     }
   }
-  update_download_status(tree_container,selCount);
-  return selFiles;
 };
 
-var update_download_status = function(tree_container, selectCount){
-  var fileSizes = get_file_sizes(tree_container);
-  var totalSizeText = myemsl_size_format(fileSizes.total_size);
-  var el_id = $(tree_container).prop('id').replace('tree_','');
-  var dl_button = $('#dl_button_container_' + el_id);
-  if(selectCount > 0){
-    var pluralizer = Object.keys(fileSizes.sizes).length != 1 ? "s" : "";
-    $('#status_block_' + el_id).html(Object.keys(fileSizes.sizes).length + ' file' + pluralizer + ' selected [' + totalSizeText + ']');
-    dl_button.slideDown('slow');
-  }else{
-    $('#status_block_' + el_id).html('&nbsp;');
-    dl_button.slideUp('slow');
-  }
-  
-};
+
 
 var get_file_sizes = function(tree_container){
   var tree = tree_container.fancytree('getTree');
@@ -205,6 +196,23 @@ var get_file_sizes = function(tree_container){
     total_size += parseInt(item_info.size,10);
   });
   return {'total_size' : total_size, 'sizes' : sizes};
+};
+
+
+var update_download_status = function(tree_container, selectCount){
+  var fileSizes = get_file_sizes(tree_container);
+  var totalSizeText = myemsl_size_format(fileSizes.total_size);
+  var el_id = $(tree_container).prop('id').replace('tree_','');
+  var dl_button = $('#dl_button_container_' + el_id);
+  if(selectCount > 0){
+    var pluralizer = Object.keys(fileSizes.sizes).length != 1 ? "s" : "";
+    $('#status_block_' + el_id).html(Object.keys(fileSizes.sizes).length + ' file' + pluralizer + ' selected [' + totalSizeText + ']');
+    dl_button.slideDown('slow');
+  }else{
+    $('#status_block_' + el_id).html('&nbsp;');
+    dl_button.slideUp('slow');
+  }
+  
 };
 
 var download_myemsl_item = function(file_object_data) {

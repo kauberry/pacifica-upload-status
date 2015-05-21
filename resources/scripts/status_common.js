@@ -90,7 +90,7 @@ var update_content = function(event){
       return false;
     }
     if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0){
-      $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 7, path: '/' });
+      $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 30, path: '/' });
     }
   }
   var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : initial_proposal_id;
@@ -197,13 +197,13 @@ var setup_tree_data = function(){
           },
           select: function(event, data){
             var dl_button = $(event.target).parent().find('#dl_button_container_' + el_id);
-            var selFiles = get_selected_files($(el));
-            var fileSizes = get_file_sizes($(el));
+            var fileSizes = get_selected_files($(el));
+            // var fileSizes = get_file_sizes($(el));
             var tree = $(el).fancytree('getTree');
             var totalSizeText = myemsl_size_format(fileSizes.total_size);
             var topNode = tree.getRootNode();
             var dataNode = topNode.children[0];
-            var selectCount = selFiles.length;            
+            var selectCount = Object.keys(fileSizes.sizes).length;
             
           },
           keydown: function(event, data){
