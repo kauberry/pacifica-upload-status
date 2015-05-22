@@ -171,6 +171,8 @@ var get_selected_files = function(tree_container){
         // }
       // });
     }
+  }else{
+    update_download_status(tree_container,selCount);
   }
 };
 
@@ -200,11 +202,11 @@ var get_file_sizes = function(tree_container){
 
 
 var update_download_status = function(tree_container, selectCount){
-  var fileSizes = get_file_sizes(tree_container);
-  var totalSizeText = myemsl_size_format(fileSizes.total_size);
   var el_id = $(tree_container).prop('id').replace('tree_','');
   var dl_button = $('#dl_button_container_' + el_id);
   if(selectCount > 0){
+    var fileSizes = get_file_sizes(tree_container);
+    var totalSizeText = myemsl_size_format(fileSizes.total_size);
     var pluralizer = Object.keys(fileSizes.sizes).length != 1 ? "s" : "";
     $('#status_block_' + el_id).html(Object.keys(fileSizes.sizes).length + ' file' + pluralizer + ' selected [' + totalSizeText + ']');
     dl_button.slideDown('slow');
