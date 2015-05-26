@@ -24,7 +24,8 @@ var setup_file_download_links = function(parent_item) {
 var cart_download = function(transaction_container, tx_id, cart_id){
   var selected_files = get_selected_files(transaction_container);
   //check for token
-  get_token(selected_files, tx_id);
+  var item_id_list = Object.keys(selected_files.sizes);
+  get_token(item_id_list, tx_id);
 };
 
 
