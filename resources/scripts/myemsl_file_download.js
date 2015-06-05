@@ -8,7 +8,7 @@ var setup_file_download_links = function(parent_item) {
   parent_item = $(parent_item);
   var tx_id = parent_item.prop('id').replace('tree_','');
   var file_object_collection = parent_item.find('.item_link');
-  file_object_collection.click(function(e) {
+  file_object_collection.unbind('click').click(function(e) {
     var file_object_data = JSON.parse($(e.target).siblings('.item_data_json').html());
     download_myemsl_item(file_object_data);
   });
