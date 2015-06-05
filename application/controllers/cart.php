@@ -9,10 +9,14 @@ class Cart extends Baseline_controller {
     $this->load->helper(array('url','network'));
   }
   
-  public function get_cart_token(){
+  public function get_cart_token($item_id = false){
     $HTTP_RAW_POST_DATA = file_get_contents('php://input');
     $values = json_decode($HTTP_RAW_POST_DATA,TRUE);
-    $item_list = $values['items'];
+    if(empty($values) && $item_id){
+      $item_list = array($item_id);
+    }else{
+      $item_list = $values['items'];
+    }
     echo generate_cart_token($item_list,$this->user_id);
   }
   
@@ -25,7 +29,7 @@ class Cart extends Baseline_controller {
   
   public function test_generate_cart_token(){
     $item_list = array(105655);
-    echo generate_cart_token($item_list,$this->user_id);
+    echo $this->get_cart_token(105655);
   }
   
   public function test_get_cart_list(){
