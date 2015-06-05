@@ -55,7 +55,7 @@ var get_token = function(item_id_list, tx_id){
     });
   })
   .fail(function(jq,textStatus,errormsg){
-    debugger;
+    
   });
 };
 

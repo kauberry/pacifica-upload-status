@@ -1,3 +1,4 @@
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <link rel="shortcut icon" href="<?=base_url();?>favicon.ico" type="image/vnd.microsoft.icon" />
   <link rel="stylesheet" type="text/css" href="<?=base_url();?>resources/stylesheets/shared/basic.css" />
   <style type="text/css" media="screen"><!-- @import "<?=base_url();?>resources/stylesheets/shared/pnnl.css"; --></style>
@@ -18,4 +19,3 @@
   <link rel="stylesheet" type="text/css" href="<?=base_url()?>resources/fonts/opensans/opensans.css" />
   <link rel="stylesheet" type="text/css" href="<?=base_url()?>resources/fonts/sourcesanspro/sourcesanspro.css" />
   <link rel="stylesheet" type="text/css" href="<?=base_url()?>resources/fonts/oxygen/oxygen.css" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />

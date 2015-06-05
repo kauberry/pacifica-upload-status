@@ -69,9 +69,7 @@ if(window.jQuery && jQuery.fn.jquery > "1.8"){
           top: element.offset().top,
           left: element.offset().left,
           width: element.width(),
-          height: element.height(),
-          margin:0,
-          //padding: 0
+          height: element.height()
         });
       }
       else //probably images without a width and height yet
@@ -80,7 +78,7 @@ if(window.jQuery && jQuery.fn.jquery > "1.8"){
           position: 'absolute',
           top: element.offset().top,
           left: element.offset().left,
-          margin:0,
+          margin:0
           //padding: 0
         });  
       }
