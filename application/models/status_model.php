@@ -62,12 +62,7 @@ class Status_model extends CI_Model {
     $DB_myemsl = $this->load->database('default',TRUE);
     
     $DB_myemsl->select(array('group_id','name','type'));
-    // if(!empty($inst_id_filter)){
-      // $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo') and (group_id = '{$inst_id_filter}' or type like 'Instrument.{$inst_id_filter}')";
-    // }else{
-      // $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('0','foo')";
-    // }
-    if(!empty($inst_id_filter)){
+    if(!empty($inst_id_filter) && intval($inst_id_filter) >= 0){
       $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo') and (group_id = '{$inst_id_filter}' or type like 'Instrument.{$inst_id_filter}')";
     }else{
       $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo')";
@@ -75,7 +70,6 @@ class Status_model extends CI_Model {
     
     $DB_myemsl->where($where_clause);
     $query = $DB_myemsl->order_by('name')->get('groups');
-    // echo $DB_myemsl->last_query();
     $results_by_group = array();
     $results_by_inst_id = array();
     if($query && $query->num_rows() > 0){
@@ -95,7 +89,30 @@ class Status_model extends CI_Model {
   }
   
   
-  
+  function get_proposal_group_list($proposal_id = ""){
+    $DB_myemsl = $this->load->database('default',TRUE);
+    
+    $DB_myemsl->select(array('group_id','name','type'));
+    if(!empty($proposal_id)){
+      $where_clause = "(type = 'proposal') and name not in ('foo') and (group_id = '{$proposal_id}')";
+    }else{
+      $where_clause = "(type = 'proposal') and name not in ('foo')";
+    }
+    
+    $DB_myemsl->where($where_clause);
+    $query = $DB_myemsl->order_by('name')->get('groups');
+    echo $DB_myemsl->last_query();
+    $results_by_group = array();
+    if($query && $query->num_rows() > 0){
+      foreach($query->result() as $row){
+        $found_proposal_id = $row->name;
+        $results_by_group[$row->group_id] = $found_proposal_id;
+      }
+    }
+    $results = array('by_group' => $results_by_group);
+    // var_dump($results);
+    return $results;
+  }
   
   
   function get_files_for_transaction($transaction_id){
@@ -225,10 +242,12 @@ class Status_model extends CI_Model {
     $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");    
     $DB_myemsl->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
     $DB_myemsl->group_by('f.transaction')->order_by('f.transaction desc');
-    if(is_array($group_id)){
-      $DB_myemsl->where_in('gi.group_id',$group_id);
-    }else{
-      $DB_myemsl->where('gi.group_id',$group_id);
+    if($group_id && $group_id != 0){
+      if(is_array($group_id)){
+        $DB_myemsl->where_in('gi.group_id',$group_id);
+      }else{
+        $DB_myemsl->where('gi.group_id',$group_id);
+      }
     }
     if(!empty($eligible_tx_list)){
       $DB_myemsl->where_in('f.transaction', $eligible_tx_list);
@@ -275,7 +294,8 @@ class Status_model extends CI_Model {
         $message = "No uploads were found during this time period.<br />The {$list_size} most recent entries for this instrument are below.";
       }
       $results = $this->get_formatted_object_for_transactions($transaction_list);
-      $group_list = $this->get_groups_for_transaction($transaction_list);
+      // var_dump($results);
+      $group_list = $this->get_groups_for_transaction($transaction_list,false);
       foreach($group_list['groups'] as $tx_id => $group_info){
         $results['transactions'][$tx_id]['groups'] = $group_info;
         // var_dump($results['transactions'][$tx_id]['groups']);
@@ -341,7 +361,7 @@ class Status_model extends CI_Model {
     
         $results['times'][$time_string] = $transaction_id;
         
-        $results['transactions'][$transaction_id]['files'] = $file_tree;
+        // $results['transactions'][$transaction_id]['files'] = $file_tree;
         // $results['transactions'][$transaction_id]['flat_files'] = $flat_list;
         if(sizeof($files_obj)>0){
           $status_list = $this->get_status_for_transaction('transaction',$transaction_id);

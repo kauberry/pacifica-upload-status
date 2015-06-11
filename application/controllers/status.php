@@ -119,14 +119,45 @@ var initial_instrument_list = [];";
     }
     // $this->page_data['informational_message'] = "";
     // if($proposal_id && $instrument_id && $time_period){
-    if(isset($instrument_id) && $instrument_id > 0 && isset($time_period) && $time_period > 0){
+    if(isset($instrument_id) && isset($time_period) && $time_period > 0){
+      $inst_lookup_id = $instrument_id >= 0 ? $instrument_id : "";
       $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
-      if(array_key_exists($instrument_id,$group_lookup_list['by_inst_id'])){
+      if(array_key_exists($instrument_id,$group_lookup_list['by_inst_id']) ){
         $results = $this->status->get_transactions_for_group(
           array_keys($group_lookup_list['by_inst_id'][$instrument_id]),
           $time_period,
           $proposal_id
-        );      
+        );
+      }elseif($instrument_id < 0){
+        $results = array(
+          'transaction_list' => array(),
+          'time_period_empty' => false,
+          'message' => ""
+        );
+        foreach($group_lookup_list['by_inst_id'] as $inst_id => $group_id_list){
+          $transaction_list = $this->status->get_transactions_for_group(array_keys($group_id_list), $time_period, $proposal_id);
+          if(!empty($transaction_list['transaction_list'])){
+            foreach($transaction_list['transaction_list']['transactions'] as $group_id => $group_info){
+              if(!array_key_exists('transactions',$results['transaction_list'])){
+                $results['transaction_list']['transactions'] = array();
+              }
+              if(!array_key_exists($group_id,$results['transaction_list']['transactions'])){
+                $results['transaction_list']['transactions'][$group_id] = $group_info;
+              }
+            }
+          }
+          if(!empty($transaction_list['transaction_list']['times'])){
+            foreach($transaction_list['transaction_list']['times'] as $ts => $tx_id){
+              if(!array_key_exists('times',$results['transaction_list'])){
+                $results['transaction_list']['times'] = array();
+              }
+              if(!array_key_exists($ts, $results['transaction_list']['times'])){
+                $results['transaction_list']['times'][$ts] = $tx_id;
+              }
+            }
+            
+          }
+        }
       }else{
         $results = array(
           'transaction_list' => array(), 
@@ -263,6 +294,7 @@ var initial_instrument_list = [];";
     $full_user_info = $this->myemsl->get_user_info();
     $instruments = array();
     $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
+    $instruments[-1] = "All Available Instruments for Proposal {$proposal_id}";
     foreach($instruments_available as $inst_id){
       $instruments[$inst_id] = "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}";
     }
@@ -276,9 +308,19 @@ var initial_instrument_list = [];";
     var_dump($this->status->get_instrument_group_list());
   }
   
+  public function test_get_groups_for_proposal($proposal_id){
+    $results = $this->status->get_proposal_group_list($proposal_id);
+    var_dump($results);
+  }
+  
   public function test_get_groups_for_transaction($transaction_id){
     $this->status->get_groups_for_transaction($transaction_id);
     
+  }
+  
+  public function test_get_transactions_for_proposal($proposal_id){
+    $results = $this->status->get_transactions_for_group(-1, 30,$proposal_id);
+    var_dump($results);
   }
   
   public function test_get_userinfo(){
