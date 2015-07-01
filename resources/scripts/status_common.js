@@ -26,7 +26,11 @@ var spinner_opts = {
 
 
 $(function(){
-  inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
+  if($('#instrument_selector')){
+    inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
+  }else{
+    inst_id = -1;
+  }
 });
 
 var update_breadcrumbs = function(){

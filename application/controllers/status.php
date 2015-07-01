@@ -50,12 +50,13 @@ class Status extends Baseline_controller {
         
       }
     }
-    $inst_id = $this->status->get_instrument_for_id('t',$id);
+    $inst_id = $lookup_type == 't' ? $this->status->get_instrument_for_id('t',$id) : -1;
     $lookup_type_description = $lookup_type = 't' ? 'transaction' : 'job';
     $transaction_list = array();
     $transaction_list[] = $id;
     
     $transaction_info = $this->status->get_formatted_object_for_transactions($transaction_list);
+    var_dump($transaction_info);
     $this->page_data['status_list'] = $this->status_list;
     if(empty($transaction_info)){
       $this->page_data['message'] = "No {$lookup_type_description} with an identifier of {$id} was found";

@@ -341,7 +341,9 @@ class Status_model extends CI_Model {
   }
   
 
-
+  function get_formatted_object_for_job($job_id){
+    
+  }
 
 
   function get_formatted_object_for_transactions($transaction_list){
