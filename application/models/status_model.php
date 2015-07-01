@@ -449,7 +449,7 @@ class Status_model extends CI_Model {
     $DB_myemsl->trans_complete();
     $transaction_id = -1;
     if($query && $query->num_rows()>0){
-      $transaction_id = $query->row()->transaction_id;
+      $transaction_id = !empty($query->row()->transaction_id) ? $query->row()->transaction_id : -1; 
     }
     return $transaction_id;
   }
