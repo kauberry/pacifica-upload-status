@@ -31,39 +31,45 @@ class Status extends Baseline_controller {
       "/resources/stylesheets/file_directory_styling.css"
     );
     $this->page_data['script_uris'] = array(
-      base_url()."resources/scripts/spinner/spin.min.js",
-      base_url()."resources/scripts/fancytree/jquery.fancytree-all.js",
-      base_url()."resources/scripts/myemsl_file_download.js",
-      base_url()."resources/scripts/status_common.js",
-      base_url()."resources/scripts/moment.min.js",
-      base_url()."resources/scripts/single_item_view.js"    
+      "/resources/scripts/spinner/spin.min.js",
+      "/resources/scripts/fancytree/jquery.fancytree-all.js",
+      "/resources/scripts/myemsl_file_download.js",
+      "/resources/scripts/status_common.js",
+      "/resources/scripts/moment.min.js",
+      "/resources/scripts/single_item_view.js"    
     );
     $this->page_data['load_prototype'] = false;
     $this->page_data['load_jquery'] = true;  
+    $lookup_type_description = $lookup_type = 't' ? 'transaction' : 'job';
+    $this->page_data['status_list'] = $this->status_list;
+    $inst_id = -1;
     
     if($lookup_type == 'j' || $lookup_type == 'job'){
       //lookup transaction_id from job
-      $id = $this->status->get_transaction_id($id);
-      if($id > 0){
-        redirect(base_url()."index.php/status/view/t/{$id}");
+      $tx_id = $this->status->get_transaction_id($id);
+      if($tx_id > 0){
+        redirect(base_url()."index.php/status/view/t/{$tx_id}");
       }else{
-        
+        $job_status_info = $this->status->get_formatted_object_for_job($id);
+        if(empty($job_status_info)){
+          $this->page_data['message'] = "No {$lookup_type_description} with an identifier of {$id} was found";
+          $this->page_data['script_uris'] = array();
+        }
+        $this->page_data['transaction_data'] = $job_status_info;
       }
+    }else{
+      $inst_id = $this->status->get_instrument_for_id('t',$id);
+      $transaction_list = array();
+      $transaction_list[] = $id;
+      
+      $transaction_info = $this->status->get_formatted_object_for_transactions($transaction_list);
+      if(empty($transaction_info)){
+        $this->page_data['message'] = "No {$lookup_type_description} with an identifier of {$id} was found";
+        $this->page_data['script_uris'] = array();
+      }
+      $this->page_data['transaction_data'] = $transaction_info;
     }
-    $inst_id = $lookup_type == 't' ? $this->status->get_instrument_for_id('t',$id) : -1;
-    $lookup_type_description = $lookup_type = 't' ? 'transaction' : 'job';
-    $transaction_list = array();
-    $transaction_list[] = $id;
-    
-    $transaction_info = $this->status->get_formatted_object_for_transactions($transaction_list);
-    var_dump($transaction_info);
-    $this->page_data['status_list'] = $this->status_list;
-    if(empty($transaction_info)){
-      $this->page_data['message'] = "No {$lookup_type_description} with an identifier of {$id} was found";
-      $this->page_data['script_uris'] = array();
-    }
-    $this->page_data['transaction_data'] = $transaction_info;
-    $this->page_data['js'] = "var initial_inst_id = {$inst_id};";
+    $this->page_data['js'] = "var initial_inst_id = '".$inst_id."';";
         // var_dump($transaction_info);
     $this->page_data['show_instrument_data'] = true;
     $this->load->view('single_item_view',$this->page_data);
