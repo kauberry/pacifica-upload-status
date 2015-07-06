@@ -40,7 +40,7 @@ class Status extends Baseline_controller {
     );
     $this->page_data['load_prototype'] = false;
     $this->page_data['load_jquery'] = true;  
-    $lookup_type_description = $lookup_type = 't' ? 'transaction' : 'job';
+    $lookup_type_description = $lookup_type == 't' ? 'transaction' : 'job';
     $this->page_data['status_list'] = $this->status_list;
     $inst_id = -1;
     
@@ -69,14 +69,12 @@ class Status extends Baseline_controller {
       }
       $this->page_data['transaction_data'] = $transaction_info;
     }
-    $this->page_data['js'] = "var initial_inst_id = '".$inst_id."';";
-        // var_dump($transaction_info);
+    $this->page_data['request_type'] = $lookup_type;
+    $this->page_data['js'] = "var initial_inst_id = '{$inst_id}';
+var lookup_type = '{$lookup_type}'";
     $this->page_data['show_instrument_data'] = true;
     $this->load->view('single_item_view',$this->page_data);
-    
-    
-    
-    
+
 }
 
   
@@ -193,7 +191,9 @@ var initial_instrument_list = [];";
     $this->page_data['cart_data'] = array('carts' => $this->cart->get_active_carts($this->user_id, false));
     $this->page_data['status_list'] = $this->status_list;
     $this->page_data['transaction_data'] = $results['transaction_list'];
-    $this->page_data['informational_message'] = $results['message'];    
+    $this->page_data['informational_message'] = $results['message'];
+    $this->page_data['request_type'] = 't';
+     
     $this->load->view($view_name,$this->page_data);
   }
   
@@ -236,12 +236,8 @@ var initial_instrument_list = [];";
   public function get_status($lookup_type, $id = 0){
     //lookup by (j)ob or (t)ransaction
     //check for list of transactions in post
-    if($this->input->post('transaction_list')){
-      $lookup_type = 't';
-      $item_list = $this->input->post('transaction_list');
-    }elseif($this->input->post('job_list')){
-      $lookup_type = 'j';
-      $item_list = $this->input->post('job_list');
+    if($this->input->post('item_list')){
+      $item_list = $this->input->post('item_list');
     }elseif($id > 0){
       $item_list = array($id => $id);
     }

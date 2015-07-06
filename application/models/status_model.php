@@ -43,7 +43,7 @@ class Status_model extends CI_Model {
     $status_list = !empty($status_list) ? $status_list : $this->status_list;
     $DB_myemsl = $this->load->database('default',TRUE);
     $select_array = array(
-      'jobid', 'min(trans_id) as trans_id', 'max(step) as step'
+      'jobid', 'min(trans_id) as trans_id', 'max(step) as step', 'max(person_id) as person_id'
     );
     $DB_myemsl->select($select_array)->where_in('jobid',$job_id_list)->group_by('jobid');
     $query = $DB_myemsl->get('ingest_state');
@@ -51,8 +51,9 @@ class Status_model extends CI_Model {
     if($query && $query->num_rows() > 0){
       foreach($query->result() as $row){
         $item = array(
-          'state_name' => $status_lookup[$row->step],
-          'state' => $row->step
+          'state_name' => $status_list[$row->step],
+          'state' => $row->step,
+          'person_id' => $row->person_id
         );
         $results[$row->jobid] = $item;
       }
@@ -347,20 +348,33 @@ class Status_model extends CI_Model {
   
 
   function get_formatted_object_for_job($job_id){
-    $status = $this->get_job_status(array($job_id), $this->status_lookup);
-    echo "status";
-    var_dump($status);
-    // $results = array(
-      // 'transactions' => array(
-        // $job_id => array(
-          // 'status' => array(
-            // $job_id => array(
-//               
-            // )
-          // )
-        // )
-      // ), 'times' => array());
-    
+    $status = $this->get_job_status(array($job_id), $this->status_list);
+    $status = $status[$job_id];
+    $time_now = new DateTime();
+    $time_string = $time_now->format('Y-m-d H:i:s');
+    $job_id = strval($job_id);
+    $results = array(
+      'transactions' => array(
+        $job_id => array(
+          'status' => array(
+            $job_id => array(
+              $status['state'] => array(
+                'jobid' => $job_id,
+                'trans_id' => false,
+                'person_id' => $status['person_id'],
+                'step' => $status['state'],
+                'message' => $this->status_list[$status['state']],
+                'status' => "SUCCESS"
+              )
+            )
+          )
+        )
+      ), 
+      'times' => array(
+        $time_string => $job_id
+      )
+    );
+    return $results;
   }
 
 /*

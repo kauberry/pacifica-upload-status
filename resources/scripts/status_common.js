@@ -46,12 +46,12 @@ var update_breadcrumbs = function(){
     }
   });
   var data_obj = {
-    'transaction_list' : trans_id_list,
+    'item_list' : trans_id_list,
     'instrument_id' : inst_id
   };
   if(inst_id && Object.keys(trans_id_list).length > 0){
     var ts = moment().format('YYYYMMDDHHmmss');
-    var url = base_url + 'index.php/status/get_status/t/bc_' + ts;
+    var url = base_url + 'index.php/status/get_status/' + lookup_type + '/bc_' + ts;
     $.ajax({
       type: "POST",
       url: url,

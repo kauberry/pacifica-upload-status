@@ -9,5 +9,6 @@ $(function(){
   setup_metadata_disclosure();
   
   window.setInterval(check_cart_status, 30000);
+  window.setInterval(update_breadcrumbs, 10000);
   setup_hover_info();
 });
