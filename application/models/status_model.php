@@ -349,7 +349,11 @@ class Status_model extends CI_Model {
 
   function get_formatted_object_for_job($job_id){
     $status = $this->get_job_status(array($job_id), $this->status_list);
-    $status = $status[$job_id];
+    if(array_key_exists($job_id, $status)){
+      $status = $status[$job_id];
+    }else{
+      return array();
+    }
     $time_now = new DateTime();
     $time_string = $time_now->format('Y-m-d H:i:s');
     $job_id = strval($job_id);

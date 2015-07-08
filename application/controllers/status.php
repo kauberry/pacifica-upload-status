@@ -258,11 +258,12 @@ var initial_instrument_list = [];";
         $status_info_temp = array(
           'latest_step' => $latest_step,
           'status_list' => $this->status_list,
-          'transaction_id' => $item_id
+          'transaction_id' => $item_info[$latest_step]['trans_id']
         );
         $item_text = trim($this->load->view('status_breadcrumb_insert_view.html',$status_info_temp, true));
         if($item_list[$item_id] != sha1($item_text)){
-          $status_info[$item_id] = $item_text;
+          $status_info[$item_id]['bar_text'] = $item_text;
+          $status_info[$item_id]['transaction_id'] = $status_info_temp['transaction_id'];
         }
       }
       krsort($status_info);
