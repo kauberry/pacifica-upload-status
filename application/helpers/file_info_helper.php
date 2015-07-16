@@ -1,12 +1,12 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
   
-function format_bytes($bytes) {
-   if ($bytes < 1024) return $bytes.' B';
-   elseif ($bytes < 1048576) return round($bytes / 1024, 2).' KB';
-   elseif ($bytes < 1073741824) return round($bytes / 1048576, 2).' MB';
-   elseif ($bytes < 1099511627776) return round($bytes / 1073741824, 2).' GB';
-   else return round($bytes / 1099511627776, 2).' TB';
-}
+// function format_bytes($bytes) {
+   // if ($bytes < 1024) return $bytes.' B';
+   // elseif ($bytes < 1048576) return round($bytes / 1024, 2).' KB';
+   // elseif ($bytes < 1073741824) return round($bytes / 1048576, 2).' MB';
+   // elseif ($bytes < 1099511627776) return round($bytes / 1073741824, 2).' GB';
+   // else return round($bytes / 1099511627776, 2).' TB';
+// }
 
 function quarter_to_range($quarter_num){
   $last_q = $quarter_num - 1;
@@ -78,4 +78,40 @@ function check_disk_stage($path, $numeric = false){
   return $status_bit;
 }
 
+function array_prefix_values($prefix, $array){
+  $callback = create_function('$s','return "'.$prefix.'".$s;');
+  return array_map($callback,$array);
+}
+
+function get_last_update(){
+  if ( func_num_args() < 1 ) return 0;
+  $dirs = func_get_args();
+  $files = array();
+  foreach ( $dirs as $dir )
+  {
+    echo $dir;
+    // $directory = new RecursiveDirectoryIterator($dir);
+    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir),RecursiveIteratorIterator::SELF_FIRST);
+    
+    var_dump($objects);
+    return;
+    $subfiles = scandir($dir);
+    $subfiles = array_prefix_values($dir,$subfiles);
+    $subfiles = array_filter($subfiles,"is_file");
+    $files = array_merge($files,$subfiles);
+  }
+  $maxtimestamp = 0;
+  $maxfilename = "";
+  foreach ( $files as $file )
+  {
+    $timestamp = filemtime($file);
+    if ( $timestamp > $maxtimestamp )
+    {
+      $maxtimestamp = $timestamp;
+      $maxfilename = $file; 
+    }
+    echo "file: {$file} ({$timestamp})<br />";
+  }
+  return date("Ymd",$maxtimestamp)." ($maxfilename)";
+}
 

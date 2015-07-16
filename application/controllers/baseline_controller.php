@@ -4,7 +4,7 @@ class Baseline_controller extends CI_Controller {
   function __construct() {
     date_default_timezone_set('America/Los_Angeles');
     parent::__construct();
-    $this->load->helper(array('user','url','html','myemsl'));
+    $this->load->helper(array('user','url','html','myemsl','file_info'));
     $this->user_id = strtolower(get_user());
     // $this->site_id = $this->config->item('site_id');
     
@@ -29,6 +29,7 @@ class Baseline_controller extends CI_Controller {
     $this->page_data['fullname'] = $this->fullname;
     $this->page_data['load_prototype'] = false;
     $this->page_data['load_jquery'] = true;
+    // echo "last update: ".get_last_update(realpath(BASEPATH.'../'.APPPATH.'/'));
     $this->controller_name = $this->uri->rsegment(1);
         
   }
