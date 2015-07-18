@@ -41,7 +41,7 @@
   </div>
   <div class="banner_bar banner_bar_right banner_bar_grey">
     <div id="site_label">MyEMSL Status Reporting</div>
-    <div id="last_update_timestamp" style="position: absolute;right: 11px;text-shadow: -1px -1px 1px rgba(20, 20, 20, 0.65);top:10px;color: #efefef;">Last Source Update: <?= $this->last_update_time->format('n/j/Y g:i a') ?></div>
+    <div id="last_update_timestamp" style="">Last Source Update: <?= $this->last_update_time->format('n/j/Y g:i a') ?></div>
   <?php if($_SERVER["SERVER_NAME"] == "wfdev30w.pnl.gov"): ?>
     <div id="site_status_notification">Development Version</div>
   <?php endif; ?>
