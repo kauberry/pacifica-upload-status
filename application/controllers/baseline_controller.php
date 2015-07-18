@@ -29,7 +29,6 @@ class Baseline_controller extends CI_Controller {
     $this->page_data['fullname'] = $this->fullname;
     $this->page_data['load_prototype'] = false;
     $this->page_data['load_jquery'] = true;
-    // echo "last update: ".get_last_update(realpath(BASEPATH.'../'.APPPATH.'/'));
     $this->controller_name = $this->uri->rsegment(1);
         
   }

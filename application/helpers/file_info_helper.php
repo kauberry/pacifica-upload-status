@@ -89,16 +89,9 @@ function get_last_update(){
   $files = array();
   foreach ( $dirs as $dir )
   {
-    echo $dir;
     // $directory = new RecursiveDirectoryIterator($dir);
-    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir),RecursiveIteratorIterator::SELF_FIRST);
-    
-    var_dump($objects);
-    return;
-    $subfiles = scandir($dir);
-    $subfiles = array_prefix_values($dir,$subfiles);
-    $subfiles = array_filter($subfiles,"is_file");
-    $files = array_merge($files,$subfiles);
+    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir),RecursiveIteratorIterator::LEAVES_ONLY);
+    $files = array_keys(iterator_to_array($objects,TRUE));
   }
   $maxtimestamp = 0;
   $maxfilename = "";
@@ -110,8 +103,9 @@ function get_last_update(){
       $maxtimestamp = $timestamp;
       $maxfilename = $file; 
     }
-    echo "file: {$file} ({$timestamp})<br />";
   }
-  return date("Ymd",$maxtimestamp)." ($maxfilename)";
+  $d = new DateTime();
+  $d->setTimestamp($maxtimestamp);
+  return $d;
 }
 
