@@ -47,14 +47,7 @@ class Status extends Baseline_controller {
       $this->page_data['lookup_type_desc'] = $lookup_type_description;
       $this->page_data['lookup_type'] = $lookup_type;
       $this->load->view('status_error_page.html', $this->page_data);
-    }
-    
-    // if(array_key_exists('transactions',$results['transaction_list']) && !empty($results['transaction_list']['transactions'])){
-      // $this->page_data['transaction_sizes'] = $this->status->get_total_size_for_transactions(array_keys($results['transaction_list']['transactions']));
-    // }else{
-      // $this->page_data['transaction_sizes'] = array();
-    // }
-    
+    }    
     
     $this->page_data['page_header'] = "Upload Report";
     $this->page_data['title'] = "Upload Report";
@@ -235,14 +228,19 @@ var initial_instrument_list = [];";
   }
   
   
-  public function get_files_by_transaction($transaction_id){
-    $treelist = $this->status->get_files_for_transaction($transaction_id);
-    $output_array = format_folder_object_json($treelist['treelist']);
-    // var_dump($output_array);
+  public function get_files_by_transaction($transaction_id = false){
+    if(!isset($transaction_id) || !$transaction_id){
+      $output_array = array();
+    }else{
+      $treelist = $this->status->get_files_for_transaction($transaction_id);
+      $output_array = format_folder_object_json($treelist['treelist']);
+    }
     transmit_array_with_json_header($output_array);
   }
   
-  public function get_latest_transactions($instrument_id,$proposal_id,$latest_id){
+  
+  
+  public function get_latest_transactions($instrument_id = "",$proposal_id = "",$latest_id = ""){
     $group_list = $this->status->get_instrument_group_list($instrument_id);
     $new_transactions = array();
     if(array_key_exists($instrument_id,$group_list['by_inst_id'])){
