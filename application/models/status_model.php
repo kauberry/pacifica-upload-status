@@ -133,7 +133,7 @@ class Status_model extends CI_Model {
     // echo $DB_myemsl->last_query();
     $DB_myemsl->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
     $DB_myemsl->where('f.transaction',$transaction_id);
-    $DB_myemsl->order_by('t.stime desc');
+    $DB_myemsl->order_by('f.subdir, f.name');
     $files_query = $DB_myemsl->get();
     $DB_myemsl->trans_complete();
     $files_list = array();
