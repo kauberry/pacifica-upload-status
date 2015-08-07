@@ -129,9 +129,13 @@ var lookup_type = '{$lookup_type}'";
       );
       $full_user_info = $this->myemsl->get_user_info();
       $proposal_list = array();
-      
+      // echo "<pre>";
+      // var_dump($full_user_info);
+      // echo "</pre>";
       foreach($full_user_info['proposals'] as $prop_id => $prop_info){
-        $proposal_list[$prop_id] = $prop_info['title'];
+        if(array_key_exists('title', $prop_info)){
+          $proposal_list[$prop_id] = $prop_info['title'];
+        }
       }
       krsort($proposal_list);
       
