@@ -505,7 +505,6 @@ array(2) {
     $DB_myemsl->trans_complete();
     if($ingest_query && $ingest_query->num_rows()>0){
       foreach($ingest_query->result_array() as $row){
-        var_dump($row);
         if(intval($row['step']) >= 5 && strtoupper($row['status']) == 'SUCCESS' && $row['trans_id'] != -1){
           //need to check for validation progress
           $DB_myemsl->select('transaction')->group_by('transaction');
