@@ -8,8 +8,12 @@
 
       <div id="container">
         <div id="main">
-          
-          <h1 class="underline"><?= $page_header ?></h1>
+          <div id="header_container">
+            <h1 class="underline"><?= $page_header ?></h1>
+            <div id="login_id_container">
+              <em><?= $this->nav_info['current_page_info']['logged_in_user'] ?></em>
+            </div>
+          </div>
           <div class="form_container">
             
             <form id="instrument_selection" class="themed">

@@ -56,7 +56,8 @@ class Status extends Baseline_controller {
       "/resources/scripts/select2/select2.css",
       "/resources/stylesheets/status.css",
       "/resources/stylesheets/status_style.css",
-      "/resources/stylesheets/file_directory_styling.css"
+      "/resources/stylesheets/file_directory_styling.css",
+      "/resources/stylesheets/bread_crumbs.css"
     );
     $this->page_data['script_uris'] = array(
       "/resources/scripts/spinner/spin.min.js",
@@ -120,7 +121,8 @@ var lookup_type = '{$lookup_type}'";
         "/resources/stylesheets/status.css",
         "/resources/stylesheets/status_style.css",
         "/resources/scripts/select2/select2.css",
-        "/resources/stylesheets/file_directory_styling.css"
+        "/resources/stylesheets/file_directory_styling.css",
+        "/resources/stylesheets/bread_crumbs.css"      
       );
       $this->page_data['script_uris'] = array(
         "/resources/scripts/spinner/spin.min.js",

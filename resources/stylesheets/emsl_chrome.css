@@ -13,8 +13,6 @@
 }
 
 #page_menu{
-  display:-webkit-inline-flex;
-  display:inline-flex;
   margin:0;
   color:white;
   text-transform:uppercase;
@@ -22,9 +20,13 @@
   font-size:14px;:white;
 }
 
+.menu_separator {
+  padding: 0 0.5em;
+}
 
 #page_menu li {
-  margin: 0 0.75em;
+  float:left;
+  margin: 0em;
   list-style: none;
 }
 
@@ -44,6 +46,13 @@
 @media (max-width: 960px){
   .page_content{
     width:700px;
+  }
+  #page_menu {
+    padding:0;
+    font-size:11px;
+  }
+  .menu_separator {
+    padding: 0 0.35em
   }
 }
 
@@ -91,13 +100,13 @@
 footer {
   background-color:#616265;
   position:relative;
-  bottom:0;
-  width:960px;
-  height:148px;
-  padding:4em 0em 1em 0em;
+  height:120px;
+  padding:1em 0em 1em 0em;
   color:#fff;
   line-height:6px;
-  font-size:0.75em;
+  font-size:0.95em;
+  border-radius:8px 8px 0 0 ;
+
 }
 
 footer a {
@@ -124,32 +133,32 @@ footer a:visited {
 }
 
 .facebook {
-  background-position-y: 0 !important;
+  background-position: 0 0 !important;
 }
 .twitter {
-  background-position-y: 20% !important;
+  background-position: 0 20% !important;
 }
 .googleplus {
-  background-position-y: 40% !important;
+  background-position: 0 40% !important;
 }
 .linkedin {
-  background-position-y: 60% !important;
+  background-position: 0 60% !important;
 }
 .youtube {
-  background-position-y: 80% !important;
+  background-position: 0 80% !important;
 }
 .flickr {
-  background-position-y: 100% !important;
+  background-position: 0 100% !important;
 }
 
 .logo_container {
   background:url(../images/emsl-doe_combined.png) no-repeat top left;
   background-size: 346px 107px;
   position: absolute;
-  top: 45px;
+  top: 10px;
   height: 107px;
   width: 346px;
-  right: 30px;
+  right: 20px;
 }
 
 @media
