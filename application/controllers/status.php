@@ -52,7 +52,8 @@ class Status extends Baseline_controller {
     $this->page_data['page_header'] = "Upload Report";
     $this->page_data['title'] = "Upload Report";
     $this->page_data['css_uris'] = array(
-      "/resources/scripts/fancytree/skin-lion/ui.fancytree.css",
+      "/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css",
+      "/resources/scripts/select2/select2.css",
       "/resources/stylesheets/status.css",
       "/resources/stylesheets/status_style.css",
       "/resources/stylesheets/file_directory_styling.css"
@@ -60,6 +61,9 @@ class Status extends Baseline_controller {
     $this->page_data['script_uris'] = array(
       "/resources/scripts/spinner/spin.min.js",
       "/resources/scripts/fancytree/jquery.fancytree-all.js",
+      "/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js",
+      "/resources/scripts/jquery-crypt/jquery.crypt.js",
+      "/resources/scripts/select2/select2.min.js",
       "/resources/scripts/myemsl_file_download.js",
       "/resources/scripts/status_common.js",
       "/resources/scripts/moment.min.js",
@@ -121,6 +125,7 @@ var lookup_type = '{$lookup_type}'";
       $this->page_data['script_uris'] = array(
         "/resources/scripts/spinner/spin.min.js",
         "/resources/scripts/fancytree/jquery.fancytree-all.js",
+        "/resources/scripts/jquery-crypt/jquery.crypt.js",
         "/resources/scripts/myemsl_file_download.js",
         "/resources/scripts/status_common.js",
         "/resources/scripts/emsl_mgmt_view.js",
