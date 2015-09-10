@@ -24,7 +24,8 @@ class Myemsl_model extends CI_Model {
     $url_base = "{$protocol}://localhost";
     $options = array(
       'verify' => false,
-      'timeout' => 30
+      'timeout' => 60,
+      'connect_timeout' => 30
     );
     $headers = array();
     
