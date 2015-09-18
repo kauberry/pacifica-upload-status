@@ -14,11 +14,19 @@ class Status extends Baseline_controller {
       0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
       3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived'
     );
+    $this->valid_search_term_types = array(
+      ''
+    );
+    
     $this->last_update_time = get_last_update(realpath(BASEPATH.'../'.APPPATH.'/'));
   }
   
   public function index(){
     redirect('status/overview');
+  }
+  
+  public function xml($search_term_type,$filter){
+    
   }
   
   public function view($lookup_type,$id = -1){
