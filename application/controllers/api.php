@@ -32,8 +32,7 @@ class API extends Baseline_controller {
       return false;
     }
     $results = $this->api->search_by_metadata($pairs);
-    
-    
+    transmit_array_with_json_header($results);
   }
   
   
