@@ -8,7 +8,7 @@ class API extends Baseline_controller {
     $this->load->model('status_model','status');
     $this->load->model('API_model','api');
     $this->load->model('Cart_model','cart');
-    $this->load->helper(array('inflector','item','url','opwhse_search','form','network'));
+    $this->load->helper(array('inflector','item','url','opwhse_search','form','network','myemsl'));
     $this->load->library(array('table'));
     $this->status_list = array(
       0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
@@ -45,6 +45,18 @@ class API extends Baseline_controller {
     $results = !empty($pairs) ? $this->api->search_by_metadata($pairs) : array('transactions' => array(), 'result_count' => 0, 'metadata' => array());
     transmit_array_with_json_header($results);
   }
+
+  function iteminfo($item_id,$format = "xml"){
+    $file_info = $this->api->get_item_info($item_id);
+    if($format == 'json'){
+      // $file_info_formatted = json_encode($file_info);
+      transmit_array_with_json_header(array('myemsl' => $file_info));
+    }else{
+      $file_info_formatted = new SimpleXMLElement('<?xml version="1.0"?><myemsl></myemsl>');
+      array_to_xml($file_info, $file_info_formatted);
+      echo $file_info_formatted->asXML();
+    }
+  }
   
   
   
@@ -59,6 +71,11 @@ class API extends Baseline_controller {
     echo "<pre>";
     var_dump($types);
     echo "</pre>";
+  }
+  
+  
+  function test_iteminfo($item_id){
+    $item_info = $this->api->get_item_info($item_id);
   }
   
   

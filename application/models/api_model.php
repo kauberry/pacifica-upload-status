@@ -103,6 +103,29 @@ class API_model extends CI_Model {
     // let's get the info for all of them
   }
 
+  function get_item_info($item_id){
+    $select_array = array(
+      'files.item_id as itemid', "CONCAT(files.subdir,'/',files.name) as full_path",
+      'files.name as filename', 'files.size', 'transactions.stime',
+      'hashsums.hashsum', 'files.verified', 'files.aged'
+    );
+    $fi_row = array('error_message' => 'Could not find item.');
+    $this->db->select($select_array)->where("files.item_id",$item_id);
+    $this->db->from('files')->join('hashsums', 'files.item_id = hashsums.item_id');
+    $this->db->join('transactions','transactions.transaction = files.transaction');
+    $file_info_query = $this->db->limit(1)->get();
+    if($file_info_query && $file_info_query->num_rows()>0){
+      $fi_row = $file_info_query->row_array();
+      $fi_row['type'] = 'file';
+      $fi_row['checksum'] = array('sha1' => $fi_row['hashsum']);
+      unset($fi_row['hashsum']);
+      // $file_info = array('myemsl' => $fi_row);
+    }
+    
+    return $fi_row;
+  }
+
+
   private function get_transaction_info($item_list){
     //get a list of transactions for this list of item_id's
     $trans_query = $this->db->select('transaction')->distinct()->where_in('item_id',$item_list)->get('files');
@@ -126,7 +149,7 @@ class API_model extends CI_Model {
       $select_array = array(
         'f.item_id', "CONCAT(f.subdir,'/',f.name) as full_path",
         'f.name as filename', 'f.size as size_in_bytes',
-        'f.transaction', 'h.hashsum'
+        'f.transaction', 'h.hashsum', 'f.verified', 'f.aged'
       );
       $file_info = array();
       $this->db->select($select_array)->where_in('transaction',array_keys($transaction_list));
