@@ -20,18 +20,29 @@ class API extends Baseline_controller {
    * Expects alternating terms of field/value/field/value like...
    * <item_search/group.omics.dms.dataset_id/267771/group.omics.dms.instrument/ltq_4>
    */
-  function item_search($metadata_field_name,$metadata_value){
-    //look for additional terms?
-    if($this->uri->total_rsegments() % 2 != 0){
-      //got an odd number of segments, yields incomplete pairs
-      return false;
+  function item_search($search_operator = "AND"){
+    //are we GET or POST?
+    //check for POST body
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+    $values = json_decode($HTTP_RAW_POST_DATA,true);
+    
+    if(empty($values)){
+      //must be GET request
+      if($this->uri->total_rsegments() % 2 == 0){
+        //got an even number of segments, yields incomplete pairs
+        return false;
+      }
+      $pairs = $this->uri->ruri_to_assoc(4);
+      if(!$pairs){
+        //return error message about not having anything to search for
+        return false;
+      }
+    }else{
+      //looks like a POST, parse the body and rock on
+      $search_operator = array_key_exists('search_operator',$values) && !empty($values['search_operator']) ? $values['search_operator'] : "AND";
+      $pairs = array_key_exists('search_terms',$values) ? $values['search_terms'] : array();
     }
-    $pairs = $this->uri->ruri_to_assoc();
-    if(!$pairs){
-      //return error message about not having anything to search for
-      return false;
-    }
-    $results = $this->api->search_by_metadata($pairs);
+    $results = !empty($pairs) ? $this->api->search_by_metadata($pairs) : array('transactions' => array(), 'result_count' => 0, 'metadata' => array());
     transmit_array_with_json_header($results);
   }
   

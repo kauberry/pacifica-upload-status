@@ -31,7 +31,15 @@ class API_model extends CI_Model {
     return $results;
   }
 
-  function search_by_metadata($metadata_pairs){
+  function search_by_metadata($metadata_pairs, $search_operator = "AND"){
+    // check for valid search operator
+    $search_operator = strtoupper($search_operator);
+    $valid_operators = array('AND','OR');
+    if(!in_array($search_operator,$valid_operators)){
+      $search_operator = "AND";
+    }
+    
+    
     //check for valid types
     $clean_pairs = $this->clean_up_metadata_pairs($metadata_pairs);
     $compiled_info = array('results_count' => 0);
@@ -76,8 +84,14 @@ class API_model extends CI_Model {
         
         $item_list = array_shift($item_results);
         $item_list = $item_list['items'];
-        foreach($item_results as $filter){
-          $item_list = array_intersect($item_list, $filter['items']);
+        if($search_operator == "AND"){
+          foreach($item_results as $filter){
+            $item_list = array_merge($item_list,$filter['items']);
+          }
+        }else{
+          foreach($item_results as $filter){
+            $item_list = array_intersect($item_list, $filter['items']);
+          }
         }
         $file_info = $this->get_transaction_info($item_list);
         $compiled_info = $this->get_metadata_entries($file_info);
