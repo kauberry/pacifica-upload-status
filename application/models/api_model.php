@@ -106,7 +106,7 @@ class API_model extends CI_Model {
   function get_item_info($item_id){
     $select_array = array(
       'files.item_id as itemid', "CONCAT(files.subdir,'/',files.name) as full_path",
-      'files.name as filename', 'files.size', 'transactions.stime',
+      'files.name as filename', 'files.size', "transactions.stime AT TIME ZONE 'US/Pacific' as stime",
       'hashsums.hashsum', 'files.verified', 'files.aged'
     );
     $fi_row = array('error_message' => 'Could not find item.');
@@ -138,6 +138,7 @@ class API_model extends CI_Model {
     $file_info = array();
     if(!empty($transaction_list)){
       //first, get the submission times for each transaction
+      $this->db->select(array("stime AT TIME ZONE 'US/Pacific' as stime", "transaction"));
       $stime_query = $this->db->where_in('transaction', array_keys($transaction_list))->get('transactions');
       if($stime_query && $stime_query->num_rows()>0){
         foreach($stime_query->result() as $stime_row){

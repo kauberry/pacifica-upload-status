@@ -58,6 +58,12 @@ class API extends Baseline_controller {
     }
   }
   
+  function status($job_id){
+    $status_info = $this->status->get_status_for_transaction('j',$job_id);
+    $status_obj = new SimpleXMLElement('<?xml version="1.0"?><status></status>');
+    
+  }
+  
   
   
   
