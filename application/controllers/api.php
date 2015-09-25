@@ -60,7 +60,41 @@ class API extends Baseline_controller {
   
   function status($job_id){
     $status_info = $this->status->get_status_for_transaction('j',$job_id);
-    $status_obj = new SimpleXMLElement('<?xml version="1.0"?><status></status>');
+    
+    $myemsl_obj = new SimpleXMLElement('<?xml version="1.0"?><myemsl></myemsl>');
+    foreach($status_info as $job_id => $job_info){
+      $status_obj = $myemsl_obj->addChild('status');
+      $last_step = array_slice($job_info,-1,1,TRUE);
+      $last_step_index = array_pop(array_keys($last_step));
+      $last_step_info = array_pop(array_values($last_step));
+      foreach($last_step as $step => $step_info){
+        $status_obj->addAttribute('username',$step_info['person_id']);
+        $transaction_obj = $status_obj->addChild('transaction');
+        $transaction_obj->addAttribute('id',$step_info['trans_id']);
+      }
+      foreach($this->status_list as $index => $display_name){
+        if(array_key_exists($index,$job_info)){
+          $step_info = $job_info[$index];
+        }else{
+          $step_info = array(
+            'status' => $index < $last_step_index ? "SUCCESS" : "UNKNOWN",
+            'message' => $index < $last_step_index ? "completed" : "unknown",
+            'step' => $index
+          );
+        }
+        $status = $step_info['status'];
+        $message = $step_info['message'];
+        
+        $step_obj = $status_obj->addChild('step');
+        $step_obj->addAttribute('id',$index);
+        $step_obj->addAttribute('message',$message);
+        $step_obj->addAttribute('status', $status);
+      }
+    }
+    $this->output->set_content_type('text/xml');
+    echo $myemsl_obj->asXML();
+    
+    
     
   }
   
