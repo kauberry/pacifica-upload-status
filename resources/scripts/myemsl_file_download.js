@@ -76,11 +76,15 @@ var submit_cart_for_download = function(tx_id, cart_id){
   .done(function(data){
     $('#cart_id_' + tx_id).val(cart_id);
     var dialog_message = $('<div><p>A new download cart has been created for this data.</p><p>Status info will appear in the Download Queue shortly</p></div>');
+    $('#dl_button_' + tx_id).fadeOut();
+    $('#tree_' + tx_id).fancytree('getTree').visit(function(node){
+        node.setSelected(false);
+    });
     dialog_message.dialog({
       modal:true,
       buttons: {
         Ok: function(){
-          check_cart_status();
+          check_cart_status(cart_id);
           $(this).dialog("close");
         }
       }
