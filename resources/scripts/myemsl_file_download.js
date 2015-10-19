@@ -1,8 +1,9 @@
 var bearer_token = "";
+var url_base = '/myemsl/status/index.php';
 var token_url_base = '/myemsl/itemauth/';
-var token_url_base = '/myemsl/status/index.php/cart/get_cart_token/';
+var token_url_base = url_base + '/cart/get_cart_token/';
 var cart_url_base = '/myemsl/api/2/cart/';
-var cart_info_url = '/myemsl/status/index.php/cart/listing/';
+var cart_info_url = url_base + '/cart/listing/';
 
 var setup_file_download_links = function(parent_item) {
   parent_item = $(parent_item);
@@ -114,6 +115,17 @@ var cart_delete = function(cart_id){
   })
   .fail(function(jq, textStatus, errormsg){
     var error = errormsg;
+  });
+};
+
+var dead_cart_delete = function(cart_id){
+  if (cart_id == null) {
+    return;
+  }
+  var url = url_base + '/cart/delete/' + cart_id;
+  $.get(url, function(data){
+    $('#cart_listing').html(data);
+    get_cart_count();
   });
 };
 
