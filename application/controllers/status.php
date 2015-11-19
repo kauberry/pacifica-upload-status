@@ -265,7 +265,7 @@ var initial_instrument_list = [];";
   
   
   public function get_latest_transactions($instrument_id = "",$proposal_id = "",$latest_id = ""){
-    $group_list = $this->status->get_instrument_group_list($instrument_id);
+    $group_list = $this->status->get_instrument_group_list();
     $new_transactions = array();
     if(array_key_exists($instrument_id,$group_list['by_inst_id'])){
       $new_transactions = $this->status->get_latest_transactions(array_keys($group_list['by_inst_id'][$instrument_id]),$proposal_id,$latest_id);    
@@ -412,7 +412,7 @@ var initial_instrument_list = [];";
   
   public function test_get_userinfo(){
     $user_info = $this->myemsl->get_user_info();
-    var_dump($user_info);
+    // var_dump($user_info);
   }
   
   public function test_get_proposals_for_instrument($instrument_id){
