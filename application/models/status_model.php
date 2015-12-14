@@ -48,7 +48,7 @@ class Status_model extends CI_Model {
     // if(!empty($inst_id_filter) && intval($inst_id_filter) >= 0){
       // $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo') and (group_id = '{$inst_id_filter}' or type like 'Instrument.{$inst_id_filter}')";
     // }else{
-      $where_clause = "(type = 'omics.dms.instrument' or type ilike 'instrument.%') and name not in ('foo')";
+      $where_clause = "(type = 'omics.dms.instrument_id' or type ilike 'instrument.%') and name not in ('foo')";
     // }
     
     $DB_myemsl->where($where_clause);
@@ -57,8 +57,8 @@ class Status_model extends CI_Model {
     $results_by_inst_id = array();
     if($query && $query->num_rows() > 0){
       foreach($query->result() as $row){
-        if($row->type == 'omics.dms.instrument'){
-          $inst_id = intval($row->group_id);
+        if($row->type == 'omics.dms.instrument_id'){
+          $inst_id = intval($row->name);
         }elseif(strpos($row->type, 'Instrument.') >= 0){
           $inst_id = intval(str_replace('Instrument.','',$row->type));
         }else{

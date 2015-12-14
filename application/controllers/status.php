@@ -393,8 +393,8 @@ var initial_instrument_list = [];";
     var_dump($this->status->get_status_for_transaction('j',$job_id));
   }
   
-  public function test_get_instrument_list(){
-    var_dump($this->status->get_instrument_group_list());
+  public function test_get_instrument_list($instrument_id = ""){
+    var_dump($this->status->get_instrument_group_list($instrument_id));
   }
   
   public function test_get_groups_for_proposal($proposal_id){
