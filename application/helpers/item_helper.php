@@ -2,9 +2,9 @@
 
 // function format_files_object($files_object){
   // $tree = array();
-//   
+//
   // $list = "<ul>";
-//   
+//
   // foreach($files_object as $item_id => $item){
     // $size = format_bytes(intval($item['size']));
     // if(empty($item['subdir'])){
@@ -16,7 +16,7 @@
       // }
     // }
   // }
-  
+
   // foreach($files_object as $item_id => $item){
     // $size = format_bytes(intval($item['size']));
     // if(empty($item['subdir'])){
@@ -43,25 +43,27 @@ function build_folder_structure(&$dirs, $path_array, $item_info) {
         build_folder_structure($dirs['folders'][$path_array[0]], array_splice($path_array, 1),$item_info);
     } else {
         $size_string = format_bytes($item_info['size']);
+        $m_time = new DateTime($item_info['modified_time']);
+        $date_string = $m_time->format('n/j/Y g:ia');
         $item_id = $item_info['item_id'];
         $url = base_url()."myemsl/itemauth/{$item_id}";
         $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
-        $dirs['files'][$item_id] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[size: {$size_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
+        $dirs['files'][$item_id] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[File Size: {$size_string}; Last Modified: {$date_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
     }
 }
 
-  
+
 function format_folder_object_json($folder_obj,$folder_name){
   $output = array();
-  
+
   if(array_key_exists('folders', $folder_obj)){
     foreach($folder_obj['folders'] as $folder_entry => $folder_tree){
       $folder_output = array('title' => $folder_entry, 'folder' => true);
       $children = format_folder_object_json($folder_tree, $folder_entry);
       if(!empty($children)){
         foreach($children as $child){
-          $folder_output['children'][] = $child; 
+          $folder_output['children'][] = $child;
         }
       }
       $output[] = $folder_output;
@@ -96,7 +98,7 @@ function format_file_object_html($file_obj, &$output_structure){
     $output_structure .= "<li>{$file_entry}</li>";
   }
 }
-  
+
 function format_bytes($bytes) {
    if ($bytes < 1024) return $bytes.' B';
    elseif ($bytes < 1048576) return round($bytes / 1024, 0).' KB';

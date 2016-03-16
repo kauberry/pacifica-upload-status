@@ -17,7 +17,7 @@ ul.fancytree-container li{
 
 span.fineprint {
   font-size:0.8em;
-  font-style:italic;
+  /*font-style:italic;*/
 }
 
 span.download_status {
