@@ -1,4 +1,5 @@
 # MyEMSL Uploader Status Site
+[![Build Status](https://travis-ci.org/EMSL-MSC/pacifica-upload-status.svg?branch=master)](https://travis-ci.org/EMSL-MSC/pacifica-upload-status)
 
 ## Overview
 This site will provide a conduit for lots of different types of researchers to
