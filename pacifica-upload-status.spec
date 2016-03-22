@@ -8,6 +8,7 @@ License:	GPLv2
 URL:		http://www.example.com/
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
 
 BuildRequires:	rsync
 
