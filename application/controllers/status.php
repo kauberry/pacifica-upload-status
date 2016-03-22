@@ -1,5 +1,5 @@
 <?php
-require_once('baseline_controller.php');
+require_once('Baseline_controller.php');
 
 class Status extends Baseline_controller {
 
@@ -15,10 +15,10 @@ class Status extends Baseline_controller {
       3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived'
     );
     $this->valid_search_term_types = array(
-      
+
     );
 
-    $this->last_update_time = get_last_update(realpath(BASEPATH.'../'.APPPATH.'/'));
+    $this->last_update_time = get_last_update(APPPATH);
   }
 
   public function index(){

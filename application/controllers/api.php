@@ -1,5 +1,5 @@
 <?php
-require_once('baseline_controller.php');
+require_once('Baseline_controller.php');
 
 class API extends Baseline_controller {
 
@@ -15,7 +15,7 @@ class API extends Baseline_controller {
       3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived'
     );
   }
-  
+
   /*
    * Expects alternating terms of field/value/field/value like...
    * <item_search/group.omics.dms.dataset_id/267771/group.omics.dms.instrument/ltq_4>
@@ -25,7 +25,7 @@ class API extends Baseline_controller {
     //check for POST body
     $HTTP_RAW_POST_DATA = file_get_contents('php://input');
     $values = json_decode($HTTP_RAW_POST_DATA,true);
-    
+
     if(empty($values)){
       //must be GET request
       if($this->uri->total_rsegments() % 2 == 0){
@@ -57,10 +57,10 @@ class API extends Baseline_controller {
       echo $file_info_formatted->asXML();
     }
   }
-  
+
   function status($job_id){
     $status_info = $this->status->get_status_for_transaction('j',$job_id);
-    
+
     $myemsl_obj = new SimpleXMLElement('<?xml version="1.0"?><myemsl></myemsl>');
     foreach($status_info as $job_id => $job_info){
       $status_obj = $myemsl_obj->addChild('status');
@@ -84,7 +84,7 @@ class API extends Baseline_controller {
         }
         $status = $step_info['status'];
         $message = $step_info['message'];
-        
+
         $step_obj = $status_obj->addChild('step');
         $step_obj->addAttribute('id',$index);
         $step_obj->addAttribute('message',$message);
@@ -93,31 +93,31 @@ class API extends Baseline_controller {
     }
     $this->output->set_content_type('text/xml');
     echo $myemsl_obj->asXML();
-    
-    
-    
+
+
+
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   /*
    * testing functions below this line
    */
-  
+
   function test_get_available_group_types($filter = ""){
     $types = $this->api->get_available_group_types($filter);
     echo "<pre>";
     var_dump($types);
     echo "</pre>";
   }
-  
-  
+
+
   function test_iteminfo($item_id){
     $item_info = $this->api->get_item_info($item_id);
   }
-  
-  
+
+
 }
 ?>
