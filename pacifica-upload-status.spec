@@ -32,7 +32,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-/var/www/myemsl/status/*
+/var/www/myemsl/status
 
 %changelog
 * Mon Mar 21 2016 David Brown <david.brown@pnnl.gov> 0.99.0-1
