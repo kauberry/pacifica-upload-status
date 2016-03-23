@@ -5,11 +5,12 @@ class Baseline_controller extends CI_Controller {
     date_default_timezone_set('America/Los_Angeles');
     parent::__construct();
     $this->load->helper(array('user','url','html','myemsl','file_info'));
-    $this->output->enable_profiler(TRUE);
+    $this->output->enable_profiler(false);
     $this->benchmark->mark('get_user_start');
     $this->user_id = get_user();
     $this->benchmark->mark('get_user_end');
     // $this->site_id = $this->config->item('site_id');
+    $this->application_version = $this->config->item('application_version');
 
     $this->page_address = implode('/',$this->uri->rsegments);
 

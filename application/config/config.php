@@ -361,14 +361,5 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-$config['jquery_script'] = "jquery-1.11.2.js";
-
-$config['site_color'] = 'orange';
-
-
-$config['myemsl_config_file_path'] = "/etc/myemsl/";
-
-$config['template'] = "emsl";
-
 /* End of file config.php */
 /* Location: ./application/config/config.php */

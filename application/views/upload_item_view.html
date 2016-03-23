@@ -1,5 +1,5 @@
 <?php $hash_list = array(); ?>
-<?php $informational_message = !empty($informational_message) ? $informational_message : ""; ?> 
+<?php $informational_message = !empty($informational_message) ? $informational_message : ""; ?>
 <?php if(!empty($transaction_data)): ?>
 <div id="info_message_container">
   <h2 style="margin-top:1em;text-align:center;font-size:1.2em;"><?= $informational_message ?></h2>
@@ -9,9 +9,10 @@
       $upload_time = new DateTime($upload_time_string);
       $transaction_info = $transaction_data['transactions'][$transaction_id];
       $friendly_upload_time = $upload_time->format('g:ia \o\n D, M j Y');
-      $status_steps = !empty($transaction_info['status']) ? array_pop($transaction_info['status']) : array('0' => array('trans_id' => $transaction_id, 'step' => '0')); 
+      $status_steps = !empty($transaction_info['status']) ? array_pop($transaction_info['status']) : array('0' => array('trans_id' => $transaction_id, 'step' => '0'));
       krsort($status_steps);
-      $latest_step_info =  array_pop(array_slice($status_steps, 0,1, true));
+      $latest_step_obj = array_slice($status_steps, 0,1, true);
+      $latest_step_info =  array_pop($latest_step_obj);
       $latest_step = $latest_step_info['step'];
 ?>
     <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
@@ -22,7 +23,7 @@
     'latest_step' => $latest_step,
     'status_list' => $status_list,
     'transaction_id' => $transaction_id
-  ); 
+  );
 ?>
 <?php $bar_text = trim($this->load->view('status_breadcrumb_insert_view.html',$bar_info, true)); ?>
 <?php $hash_list[$transaction_id] = sha1($bar_text); ?>
@@ -34,8 +35,8 @@
           <li>
             <span class="metadata_term">Transaction ID: </span>
             <span class="metadata_def"><?= $transaction_id ?></span>
-          </li>  
-        <?php if(!empty($transaction_info['groups'])): ?>        
+          </li>
+        <?php if(!empty($transaction_info['groups'])): ?>
         <?php foreach($transaction_info['groups'] as $type => $content): ?>
           <?php $cleaned_type_name = str_ireplace("id","ID", ucwords(str_replace("_"," ",$type))); ?>
           <li class="metadata_item">
@@ -52,7 +53,7 @@
         <div class="disclosure_block">
           <div id="tree_<?= $transaction_id ?>" class="tree_holder">
             <ul id="treeData_<?= $transaction_id ?>" style="display:none;" >
-              <li id="treeData_<?= $transaction_id ?>" class="lazy folder"><span>Uploaded Data 
+              <li id="treeData_<?= $transaction_id ?>" class="lazy folder"><span>Uploaded Data
                 <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
                 <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>
                 <?php endif; ?>
