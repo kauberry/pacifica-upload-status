@@ -25,7 +25,9 @@ rm -rf websystem resources
 
 %install
 mkdir -p %{buildroot}/var/www/myemsl/status
-rsync -r * %{buildroot}/var/www/myemsl/status/
+mkdir -p %{buildroot}/etc/php.d
+rsync -r application index.php system %{buildroot}/var/www/myemsl/status/
+cp php_myemsl.ini %{buildroot}/etc/php.d/myemsl.ini
 
 %clean
 rm -rf %{buildroot}
@@ -33,6 +35,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 /var/www/myemsl/status
+/etc/php.d/myemsl.ini
 
 %changelog
 * Mon Mar 21 2016 David Brown <david.brown@pnnl.gov> 0.99.0-1
