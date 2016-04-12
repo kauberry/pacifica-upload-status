@@ -1,12 +1,12 @@
 <?php
   $this->template_version = $this->config->item('template');
-  $this->load->view("{$this->template_version}_template/view_header"); 
-  $js = isset($js) ? 
+  $this->load->view("{$this->template_version}_template/view_header");
+  $js = isset($js) ?
 "<script type='text/javascript'>
 //<![CDATA[
   {$js}
 //]]>
-</script>" : '';  
+</script>" : '';
 ?>
     <div id="container">
       <div id="main">
@@ -26,7 +26,7 @@
               </div>
             </fieldset>
           </div>
-          
+
           <div class="loading_progress_container status_messages" id="loading_status" style="display:none;">
             <span class="spinner">&nbsp;&nbsp;&nbsp;</span>
             <span id="loading_status_text">Loading...</span>
@@ -35,7 +35,7 @@
             <?php if(!empty($message)): ?>
             <h2><?= $message ?></h2>
             <?php else: ?>
-            <?=  $this->load->view('upload_item_view.html',$transaction_data); ?>
+            <?php $this->load->view('upload_item_view.html',$transaction_data); ?>
             <?php endif; ?>
           </div>
         </div>
@@ -43,6 +43,6 @@
       </div>
     </div>
     <?php $this->load->view("{$this->template_version}_template/view_footer_short"); ?>
-<?= $js ?>  
+<?= $js ?>
 </body>
 </html>
