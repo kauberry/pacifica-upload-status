@@ -15,7 +15,7 @@
 |
 */
 $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
-$basedir = '';
+$basedir = '/myemsl/status';
 $config['base_url'] = "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
 $config['base_dir'] = $basedir;
 
