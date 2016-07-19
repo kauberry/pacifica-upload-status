@@ -35,7 +35,7 @@
             <?php if(!empty($message)): ?>
             <h2><?= $message ?></h2>
             <?php else: ?>
-            <?=  $this->load->view('upload_item_view.html',$transaction_data); ?>
+            <?php  $this->load->view('upload_item_view.html',$transaction_data); ?>
             <?php endif; ?>
           </div>
         </div>
