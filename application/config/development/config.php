@@ -1,7 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-date_default_timezone_set('America/Los_Angeles');
-
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -17,10 +15,11 @@ date_default_timezone_set('America/Los_Angeles');
 |
 */
 $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
-$basedir = '/myemsl/status';
+$rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == true ? true : false;
+$basedir = $rooted ? '' : '/myemsl/status';
 $config['base_url']	= "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
 $config['base_dir'] = $basedir;
-
+$config['local_resources_folder'] = "application/resources";
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +31,7 @@ $config['base_dir'] = $basedir;
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = $rooted ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +49,7 @@ $config['index_page'] = 'index.php';
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= 'AUTO';
+$config['uri_protocol']	= 'PATH_INFO';
 
 /*
 |--------------------------------------------------------------------------
@@ -186,7 +185,7 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -198,32 +197,6 @@ $config['log_threshold'] = 4;
 |
 */
 $config['log_path'] = '';
-
-/*
-|--------------------------------------------------------------------------
-| Log File Extension
-|--------------------------------------------------------------------------
-|
-| The default filename extension for log files. The default 'php' allows for
-| protecting the log files via basic scripting, when they are to be stored
-| under a publicly accessible directory.
-|
-| Note: Leaving it blank will default to 'php'.
-|
-*/
-$config['log_file_extension'] = 'log';
-
-/*
-|--------------------------------------------------------------------------
-| Log File Permissions
-|--------------------------------------------------------------------------
-|
-| The file system permissions to be applied on newly created log files.
-|
-| IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
-|            integer notation (i.e. 0700, 0644, etc.)
-*/
-$config['log_file_permissions'] = 0644;
 
 /*
 |--------------------------------------------------------------------------
@@ -388,6 +361,9 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
+
+$config['jquery_script'] = "jquery-1.11.2.min.js";
+
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
