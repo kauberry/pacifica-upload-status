@@ -15,9 +15,11 @@
 |
 */
 $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
-$basedir = '/myemsl/status';
-$config['base_url'] = "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
+$rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == true ? true : false;
+$basedir = $rooted ? '' : '/myemsl/status';
+$config['base_url']	= "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
 $config['base_dir'] = $basedir;
+$config['local_resources_folder'] = "application/resources";
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +31,7 @@ $config['base_dir'] = $basedir;
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = $rooted ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
