@@ -570,15 +570,17 @@ array(2) {
 
   function get_transaction_info($job_id){
     $DB_myemsl = $this->load->database('default',TRUE);
+    $current_step = 0;
     $DB_myemsl->trans_start();
     $DB_myemsl->query("set local timezone to '{$this->local_timezone}';");
-    $query = $DB_myemsl->select('trans_id as transaction_id')->get_where('ingest_state',array('jobid' =>$job_id),1);
+    $query = $DB_myemsl->select(array('trans_id as transaction_id', 'step'))->get_where('ingest_state',array('jobid' =>$job_id),1);
     $DB_myemsl->trans_complete();
     $transaction_id = -1;
     if($query && $query->num_rows()>0){
       $transaction_id = !empty($query->row()->transaction_id) ? $query->row()->transaction_id : -1;
       $current_step = !empty($query->row()->step) ? $query->row()->step : 0;
     }
+
     return array('transaction_id' => $transaction_id, 'current_step' => $current_step);
   }
 
