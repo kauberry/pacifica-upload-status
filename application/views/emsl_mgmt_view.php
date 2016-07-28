@@ -1,9 +1,9 @@
 <?php
   $table_object = !empty($table_object) ? $table_object : "";
   $this->template_version = $this->config->item('template');
-  $this->load->view("{$this->template_version}_template/view_header"); 
+  $this->load->view("{$this->template_version}_template/view_header");
   $js = isset($js) ? $js : "";
-  
+
 ?>
 
       <div id="container">
@@ -15,7 +15,7 @@
             </div>
           </div>
           <div class="form_container">
-            
+
             <form id="instrument_selection" class="themed">
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
@@ -31,7 +31,7 @@
                     <?php $js .= "\n".$prop_list_object; ?>
                   </select>
                 </div>
-                
+
                 <div class="full_width_block" style="margin-top:1em;">
                   <div class="left_block">
                     <input id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:95%;"/>
@@ -55,8 +55,8 @@
                   </div>
                 </div>
               </fieldset>
-            </form>            
-            
+            </form>
+
           </div>
           <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
           <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
@@ -67,8 +67,8 @@
               </div>
             </fieldset>
           </div>
-          
-          <div class="loading_progress_container status_messages" id="loading_status" style="display:none;">
+
+          <div class="loading_status loading_progress_container status_messages" id="loading_status" style="display:none;">
             <span class="spinner">&nbsp;&nbsp;&nbsp;</span>
             <span id="loading_status_text">Loading...</span>
           </div>
@@ -79,9 +79,9 @@
   </div>
 <script type='text/javascript'>
 //<![CDATA[
-  <?= $js ?> 
+  <?= $js ?>
 //]]>
-</script>  
- 
+</script>
+
 </body>
 </html>
