@@ -20,9 +20,8 @@ class Myemsl_model extends CI_Model {
   function get_user_info(){
     $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
     $basedir = 'myemsl';
-    $server = $_SERVER['SERVER_NAME'];
     // $url_base =  dirname(dirname($this->myemsl_ini['getuser']['prefix']));
-    $url_base = "{$protocol}://{$server}";
+    $url_base = "http://localhost";
     $options = array(
       'verify' => false,
       'timeout' => 60,
@@ -33,13 +32,13 @@ class Myemsl_model extends CI_Model {
     foreach($_COOKIE as $cookie_name => $cookie_value){
       $headers[] = "{$cookie_name}={$cookie_value}";
     }
-
     $headers = array('Cookie' => implode(';',$headers));
     $session = new Requests_Session($url_base, $headers, array(), $options);
 
     try{
       $response = $session->get('/myemsl/userinfo');
       $user_info = json_decode($response->body,true);
+    //   var_dump($user_info);
     }catch(Exception $e){
       $user_info = array('error' => 'Unable to retrieve User Information');
       return $user_info;
