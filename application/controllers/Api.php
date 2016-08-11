@@ -18,11 +18,16 @@ class API extends Baseline_controller
     );
     }
 
-    /*
-   * Expects alternating terms of field/value/field/value like...
-   * <item_search/group.omics.dms.dataset_id/267771/group.omics.dms.instrument/ltq_4>
-   */
-    public function item_search($search_operator = 'AND')
+    /**
+     * Sets up a generic item search based on name/value pairs in the url_base.
+     *
+     * Expects alternating terms of field/value/field/value like...
+     * ```<item_search/group.omics.dms.dataset_id/267771/group.omics.dms.instrument/ltq_4>```
+     * no return value, but sends the expected result to the browser as a json blob.
+     *
+     * @return void
+     */
+    public function item_search()
     {
         /*are we GET or POST?
         check for POST body */
@@ -49,6 +54,17 @@ class API extends Baseline_controller
         transmit_array_with_json_header($results);
     }
 
+    /**
+     * Get specific details for any item in the system.
+     *
+     * This function takes an item_id from the database and provides all
+     * the pertinent metadata for that oci_fetch_object.
+     *
+     * @param integer $item_id The database id of the requested object
+     * @param string $format The return format for the item info (defaults to 'xml')
+     *
+     * @return void
+     */
     public function iteminfo($item_id, $format = 'xml')
     {
         $file_info = $this->api->get_item_info($item_id);
@@ -60,7 +76,14 @@ class API extends Baseline_controller
             echo $file_info_formatted->asXML();
         }
     }
-
+    /**
+     * Returns an XML formatted block with current processing status for the
+     * specified job number from a given uploader instance.
+     *
+     * @param  integer $job_id The current in-progress job_id for the specified
+     * upload job.
+     * @return void
+     */
     public function status($job_id)
     {
         $status_info = $this->status->get_status_for_transaction('j', $job_id);

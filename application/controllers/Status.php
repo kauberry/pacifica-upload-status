@@ -58,23 +58,23 @@ class Status extends Baseline_controller
         $this->page_data['page_header'] = 'Upload Report';
         $this->page_data['title'] = 'Upload Report';
         $this->page_data['css_uris'] = array(
-          '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
-          '/resources/scripts/select2/select2.css',
-          '/resources/stylesheets/status.css',
-          '/resources/stylesheets/status_style.css',
-          '/resources/stylesheets/file_directory_styling.css',
-          '/resources/stylesheets/bread_crumbs.css',
+            '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
+            '/resources/scripts/select2/select2.css',
+            '/resources/stylesheets/status.css',
+            '/resources/stylesheets/status_style.css',
+            '/resources/stylesheets/file_directory_styling.css',
+            '/resources/stylesheets/bread_crumbs.css',
         );
         $this->page_data['script_uris'] = array(
-          '/resources/scripts/spinner/spin.min.js',
-          '/resources/scripts/fancytree/jquery.fancytree-all.js',
-          '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
-          '/resources/scripts/jquery-crypt/jquery.crypt.js',
-          '/resources/scripts/select2/select2.min.js',
-          '/resources/scripts/myemsl_file_download.js',
-          '/resources/scripts/status_common.js',
-          '/resources/scripts/moment.min.js',
-          '/resources/scripts/single_item_view.js',
+            '/resources/scripts/spinner/spin.min.js',
+            '/resources/scripts/fancytree/jquery.fancytree-all.js',
+            '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
+            '/resources/scripts/jquery-crypt/jquery.crypt.js',
+            '/resources/scripts/select2/select2.min.js',
+            '/resources/scripts/myemsl_file_download.js',
+            '/resources/scripts/status_common.js',
+            '/resources/scripts/moment.min.js',
+            '/resources/scripts/single_item_view.js',
         );
 
         if ($lookup_type == 'j' || $lookup_type == 'job') {
@@ -149,10 +149,8 @@ class Status extends Baseline_controller
             $full_user_info = $this->myemsl->get_user_info();
             $this->benchmark->mark('get_user_info_from_ws_end');
 
+            // print(json_encode($full_user_info));
             $proposal_list = array();
-            // echo "<pre>";
-            // var_dump($full_user_info);
-            // echo "</pre>";
             if (array_key_exists('proposals', $full_user_info)) {
                 foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
                     if (array_key_exists('title', $prop_info)) {
@@ -192,12 +190,12 @@ class Status extends Baseline_controller
                 );
             } elseif ($instrument_id < 0) {
                 //this should be the "all instruments" trigger
-        //  get all the instruments for this proposal
+                //  get all the instruments for this proposal
 
                 $results = array(
-                  'transaction_list' => array(),
-                  'time_period_empty' => false,
-                  'message' => '',
+                    'transaction_list' => array(),
+                    'time_period_empty' => false,
+                    'message' => '',
                 );
                 foreach ($group_lookup_list['by_inst_id'] as $inst_id => $group_id_list) {
                     $transaction_list = $this->status->get_transactions_for_group(array_keys($group_id_list), $time_period, $proposal_id);
@@ -236,10 +234,6 @@ class Status extends Baseline_controller
                 'message' => 'No data uploaded for this instrument',
             );
         }
-      // var_dump($group_lookup_list);
-    // }else{
-      // $results = array('transaction_list' => array(), 'time_period_empty' => true, 'message' => "Select an EUS Proposal and Instrument to load data");
-    // }
         $this->page_data['cart_data'] = array('carts' => $this->cart->get_active_carts($this->user_id, false));
         $this->page_data['enable_breadcrumbs'] = false;
         $this->page_data['status_list'] = $this->status_list;
@@ -388,45 +382,4 @@ class Status extends Baseline_controller
         transmit_array_with_json_header($results);
     }
 
-    public function test_get_status($job_id)
-    {
-        var_dump($this->status->get_status_for_transaction('j', $job_id));
-    }
-
-    public function test_get_instrument_list($instrument_id = '')
-    {
-        var_dump($this->status->get_instrument_group_list($instrument_id));
-    }
-
-    public function test_get_groups_for_proposal($proposal_id)
-    {
-        $results = $this->status->get_proposal_group_list($proposal_id);
-        var_dump($results);
-    }
-
-    public function test_get_groups_for_transaction($transaction_id)
-    {
-        $results = $this->status->get_groups_for_transaction($transaction_id);
-        echo '<pre>';
-        var_dump($results);
-        echo '</pre>';
-    }
-
-    public function test_get_transactions_for_proposal($proposal_id)
-    {
-        $results = $this->status->get_transactions_for_group(-1, 30, $proposal_id);
-        var_dump($results);
-    }
-
-    public function test_get_userinfo()
-    {
-        $user_info = $this->myemsl->get_user_info();
-    // var_dump($user_info);
-    }
-
-    public function test_get_proposals_for_instrument($instrument_id)
-    {
-        $inst_list = $this->eus->get_proposals_for_instrument($instrument_id);
-        var_dump($inst_list);
-    }
 }
