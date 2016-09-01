@@ -8,10 +8,12 @@ class Test extends Baseline_controller
     {
         parent::__construct();
         $this->load->model('status_model', 'status');
+        /* already loaded in status model
         $this->load->model('Myemsl_model', 'myemsl');
         $this->load->model('Cart_model', 'cart');
-        // $this->load->helper(array('inflector', 'item', 'url', 'opwhse_search', 'form', 'network'));
-        // $this->load->library(array('table'));
+        $this->load->helper(array('inflector', 'item', 'url', 'opwhse_search', 'form', 'network'));
+        $this->load->library(array('table'));
+        */
         // $this->status_list = array(
         //   0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
         //   3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived',
@@ -62,6 +64,32 @@ class Test extends Baseline_controller
     public function test_get_proposals_for_instrument($instrument_id)
     {
         $inst_list = $this->eus->get_proposals_for_instrument($instrument_id);
+        echo '<pre>';
         var_dump($inst_list);
+        echo '</pre>';
+    }
+
+    public function get_instruments_by_proposal($proposal_id){
+        $inst_list = $this->myemsl->get_instruments_by_proposal($proposal_id);
+        echo '<pre>';
+        var_dump($inst_list);
+        echo '</pre>';
+
+    }
+
+    public function get_proposals_by_name_eus($filter = 'false'){
+        $inst_list = $this->eus->get_proposals_by_name($filter,$this->user_id);
+        echo '<pre>';
+        var_dump($inst_list);
+        echo '</pre>';
+
+    }
+
+
+    public function get_instruments_by_proposal_eus($proposal_id,$filter = false){
+        $inst_list= $this->eus->get_instruments_for_proposal($proposal_id, $filter);
+        echo '<pre>';
+        var_dump($inst_list);
+        echo '</pre>';
     }
 }

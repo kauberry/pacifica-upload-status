@@ -180,7 +180,11 @@ class EUS
         $DB_ers->join(INST_PROPOSAL_XREF.' pi', 'i.instrument_id = pi.instrument_id');
 
         if (!empty($filter)) {
-            $DB_ers->like('i.eus_display_name', $filter);
+            $filter = urldecode($filter);
+            $filter_terms = explode(' ',$filter);
+            foreach($filter_terms as $term){
+                $DB_ers->like('LOWER(i.eus_display_name)', strtolower($term));
+            }
         }
 
         $inst_query = $DB_ers->get();
@@ -225,9 +229,15 @@ class EUS
         $DB_ers->where('p.closed_date is null')->where('p.actual_end_date >=', $today->format('Y-m-d'));
         $DB_ers->from(INST_PROPOSAL_XREF.' as pi');
         $DB_ers->join(PROPOSALS_TABLE.' as p', 'p.proposal_id = pi.proposal_id');
+
         if (!empty($filter)) {
-            $DB_ers->like('p.title', $filter);
+            $filter = urldecode($filter);
+            $filter_terms = explode(' ',$filter);
+            foreach($filter_terms as $term){
+                $DB_ers->like('LOWER(p.title)', strtolower($term));
+            }
         }
+
         $proposal_query = $DB_ers->get();
 
         $proposal_list = array();
@@ -317,23 +327,24 @@ class EUS
     public function get_proposals_for_user($eus_user_id)
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
-        $select_array = array('proposal_id', 'person_id');
+        $select_array = array('proposal_id');
         $DB_ers->select($select_array)->where('active', 'Y');
-
+        $DB_ers->where('person_id',$eus_user_id)->distinct();
         $query = $DB_ers->get(PROPOSAL_MEMBERS);
 
         $results = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $results[] = $row->person_id;
+                $results[] = $row->proposal_id;
             }
         }
 
         return $results;
     }
 
-    public function get_proposals_by_name($proposal_name_fragment, $is_active = 'active')
+    public function get_proposals_by_name($proposal_name_fragment, $eus_id, $is_active = 'active')
     {
+        $my_proposals = $this->get_proposals_for_user($eus_id);
         $DB_eus = $this->CI->load->database('eus_for_myemsl', true);
         $DB_eus->select(array(
             'proposal_id', 'title', 'group_id',
@@ -341,7 +352,17 @@ class EUS
             'actual_end_date as end_date', )
         );
         $DB_eus->where('closed_date');
-        $DB_eus->where('title ILIKE', "%{$proposal_name_fragment}%");
+
+        if (!empty($proposal_name_fragment)) {
+            $filter = urldecode($proposal_name_fragment);
+            $filter_terms = explode(' ',$filter);
+            foreach($filter_terms as $term){
+                $DB_eus->like('LOWER(title)', strtolower($term));
+            }
+        }else{
+            $DB_eus->where_in('proposal_id',$my_proposals);
+        }
+
         $query = $DB_eus->get('proposals');
 
         $results = array();
@@ -359,6 +380,7 @@ class EUS
                 }
 
                 $results[$row->proposal_id] = array(
+                    'id' => $row->proposal_id,
                     'title' => trim($row->title, '.'),
                     'currently_active' => $currently_active ? 'yes' : 'no',
                     'start_date' => $start_date ? $start_date->format('Y-m-d') : '---',

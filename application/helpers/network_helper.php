@@ -9,7 +9,7 @@ function verify_macaddr_format($macaddr){
   $match_results = preg_match($pattern,$macaddr,$matches);
   if($match_results || $match_results > 0) {
     for($i=1;$i<7;$i++){
-      if(strLen($v_macaddr)>0) $v_macaddr .= ':'; 
+      if(strLen($v_macaddr)>0) $v_macaddr .= ':';
       $v_macaddr .= $matches[$i];
     }
   }else{
@@ -28,12 +28,12 @@ function verify_ip_address_format($ip){
 function transmit_array_with_json_header($response, $statusMessage = '', $operationSuccessful = true) {
   header("Content-type: text/json");
   $headerArray = array();
-  $headerArray['status'] = $operationSuccessful ? "ok" : "fail"; 
+  $headerArray['status'] = $operationSuccessful ? "ok" : "fail";
   $headerArray['message'] = !empty($statusMessage) ? $statusMessage : "";
   header("X-JSON: (".json_encode($headerArray).")");
-  
+
   $response = !is_array($response) ? array('results' => $response) : $response;
-  
+
   if(is_array($response) && sizeof($response) > 0){
     print(json_encode($response));
   }else{
@@ -41,23 +41,38 @@ function transmit_array_with_json_header($response, $statusMessage = '', $operat
   }
 }
 
+function send_json_array($response_array){
+  $CI =& get_instance();
+
+  $CI->output->set_content_type("text/json");
+  $array_size = sizeof($response_array);
+  $status_header = $array_size > 0 ? 200 : 404;
+  $CI->output->set_status_header($status_header);
+  $CI->output->set_header("Operation-message:{$array_size} record".$array_size != 1 ? 's' : ''." returned");
+
+  $CI->output->set_output(json_encode($response_array));
+  $CI->output->set_header("Operation-status:ok");
+
+}
+
+
 function format_array_for_select2($response){
   header("Content-type: text/json");
-  
+
   $results = array();
-  
+
   foreach($response['items'] as $id => $text){
     $results[] = array('id' => $id, 'text' => $text);
   }
-  
+
   $ret_object = array(
     'total_count' => sizeof($results),
     'incomplete_results' => FALSE,
     'items' => $results
   );
-  
+
   print(json_encode($ret_object));
-  
+
 }
 
 

@@ -59,7 +59,8 @@ class Status extends Baseline_controller
         $this->page_data['title'] = 'Upload Report';
         $this->page_data['css_uris'] = array(
             '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
-            '/resources/scripts/select2/select2.css',
+            // '/resources/scripts/select2/select2.css',
+            '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/status.css',
             '/resources/stylesheets/status_style.css',
             '/resources/stylesheets/file_directory_styling.css',
@@ -70,9 +71,10 @@ class Status extends Baseline_controller
             '/resources/scripts/fancytree/jquery.fancytree-all.js',
             '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
-            '/resources/scripts/select2/select2.min.js',
+            // '/resources/scripts/select2/select2.min.js',
+            '/resources/scripts/select2-4/dist/js/select2.full.js',
             '/resources/scripts/myemsl_file_download.js',
-            '/resources/scripts/status_common.js',
+            '/project_resources/scripts/status_common.js',
             '/resources/scripts/moment.min.js',
             '/resources/scripts/single_item_view.js',
         );
@@ -131,7 +133,8 @@ class Status extends Baseline_controller
                 '/resources/scripts/fancytree/skin-lion/ui.fancytree.css',
                 '/resources/stylesheets/status.css',
                 '/resources/stylesheets/status_style.css',
-                '/resources/scripts/select2/select2.css',
+                // '/resources/scripts/select2/select2.css',
+                '/resources/scripts/select2-4/dist/css/select2.css',
                 '/resources/stylesheets/file_directory_styling.css',
                 '/resources/stylesheets/bread_crumbs.css',
             );
@@ -140,9 +143,10 @@ class Status extends Baseline_controller
                 '/resources/scripts/fancytree/jquery.fancytree-all.js',
                 '/resources/scripts/jquery-crypt/jquery.crypt.js',
                 '/resources/scripts/myemsl_file_download.js',
-                '/resources/scripts/status_common.js',
-                '/resources/scripts/emsl_mgmt_view.js',
-                '/resources/scripts/select2/select2.js',
+                '/project_resources/scripts/status_common.js',
+                '/project_resources/scripts/emsl_mgmt_view.js',
+                // '/resources/scripts/select2/select2.min.js',
+                '/resources/scripts/select2-4/dist/js/select2.full.js',
                 '/resources/scripts/moment.min.js',
             );
             $this->benchmark->mark('get_user_info_from_ws_start');
@@ -182,13 +186,13 @@ class Status extends Baseline_controller
         if (isset($instrument_id) && isset($time_period) && $time_period > 0) {
             // $inst_lookup_id = $instrument_id >= 0 ? $instrument_id : "";
             $group_lookup_list = $this->status->get_instrument_group_list($instrument_id);
-            if (array_key_exists($instrument_id, $group_lookup_list['by_inst_id'])) {
+            if ($instrument_id > 0 && array_key_exists($instrument_id, $group_lookup_list['by_inst_id'])) {
                 $results = $this->status->get_transactions_for_group(
                 array_keys($group_lookup_list['by_inst_id'][$instrument_id]),
                     $time_period,
                     $proposal_id
                 );
-            } elseif ($instrument_id < 0) {
+            } elseif ($instrument_id <= 0) {
                 //this should be the "all instruments" trigger
                 //  get all the instruments for this proposal
 
@@ -362,11 +366,15 @@ class Status extends Baseline_controller
         // $instruments = $this->eus->get_instruments_for_proposal($proposal_id);
         $full_user_info = $this->myemsl->get_user_info();
         $instruments = array();
-        $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
-        $instruments[-1] = "All Available Instruments for Proposal {$proposal_id}";
-        foreach ($instruments_available as $inst_id) {
-            $instruments[$inst_id] = "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}";
+        if($this->is_emsl_staff){
+            $instruments = $this->eus->get_instruments_for_proposal($proposal_id);
+        }else{
+            $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
+            foreach ($instruments_available as $inst_id) {
+                $instruments[$inst_id] = "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}";
+            }
         }
+        $instruments[-1] = "All Available Instruments for Proposal {$proposal_id}";
 
         asort($instruments);
 
