@@ -105,13 +105,14 @@ class Myemsl_model extends CI_Model
             'instrument_id','proposal_id'
         );
         $DB_eus->select($prop_inst_select_array)->where_in('proposal_id', $prop_id_list);
+        $DB_eus->distinct();
         $prop_inst_query = $DB_eus->get('proposal_instruments');
         if($prop_inst_query && $prop_inst_query->num_rows() > 0){
             foreach($prop_inst_query->result() as $row){
                 $user_info['proposals'][$row->proposal_id]['instruments'][] = $row->instrument_id;
                 $inst_list[] = $row->instrument_id;
             }
-            $inst_list = array_unique($inst_list);
+            sort($inst_list);
         }
 
         $inst_query_select_array = array(
@@ -119,7 +120,8 @@ class Myemsl_model extends CI_Model
             'eus_display_name','active_sw'
         );
         $DB_eus->select($inst_query_select_array)->where_in('instrument_id', $inst_list);
-        $inst_query = $DB_eus->get_where('instruments', array('active_sw' => 'Y'));
+        // $inst_query = $DB_eus->get_where('instruments', array('active_sw' => 'Y'));
+        $inst_query = $DB_eus->get('instruments');
 
         if($inst_query && $inst_query->num_rows() > 0){
             foreach($inst_query->result_array() as $row){

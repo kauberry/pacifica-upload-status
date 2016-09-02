@@ -59,7 +59,6 @@ class Status extends Baseline_controller
         $this->page_data['title'] = 'Upload Report';
         $this->page_data['css_uris'] = array(
             '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
-            // '/resources/scripts/select2/select2.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/status.css',
             '/resources/stylesheets/status_style.css',
@@ -71,7 +70,6 @@ class Status extends Baseline_controller
             '/resources/scripts/fancytree/jquery.fancytree-all.js',
             '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
-            // '/resources/scripts/select2/select2.min.js',
             '/resources/scripts/select2-4/dist/js/select2.full.js',
             '/resources/scripts/myemsl_file_download.js',
             '/project_resources/scripts/status_common.js',
@@ -133,7 +131,7 @@ class Status extends Baseline_controller
                 '/resources/scripts/fancytree/skin-lion/ui.fancytree.css',
                 '/resources/stylesheets/status.css',
                 '/resources/stylesheets/status_style.css',
-                // '/resources/scripts/select2/select2.css',
+                '/project_resources/stylesheets/selector.css',
                 '/resources/scripts/select2-4/dist/css/select2.css',
                 '/resources/stylesheets/file_directory_styling.css',
                 '/resources/stylesheets/bread_crumbs.css',
@@ -145,7 +143,6 @@ class Status extends Baseline_controller
                 '/resources/scripts/myemsl_file_download.js',
                 '/project_resources/scripts/status_common.js',
                 '/project_resources/scripts/emsl_mgmt_view.js',
-                // '/resources/scripts/select2/select2.min.js',
                 '/resources/scripts/select2-4/dist/js/select2.full.js',
                 '/resources/scripts/moment.min.js',
             );
@@ -153,7 +150,6 @@ class Status extends Baseline_controller
             $full_user_info = $this->myemsl->get_user_info();
             $this->benchmark->mark('get_user_info_from_ws_end');
 
-            // print(json_encode($full_user_info));
             $proposal_list = array();
             if (array_key_exists('proposals', $full_user_info)) {
                 foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
@@ -177,7 +173,6 @@ class Status extends Baseline_controller
             $this->page_data['selected_proposal'] = isset($proposal_id) ? $proposal_id : false;
             $this->page_data['time_period'] = $time_period;
             $this->page_data['instrument_id'] = $instrument_id;
-            // $this->page_data['instrument_list'] = $instrument_group_xref;
             $this->page_data['js'] = $js;
         } else {
             $view_name = 'upload_item_view.html';

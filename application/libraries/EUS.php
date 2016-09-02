@@ -352,6 +352,7 @@ class EUS
             'actual_end_date as end_date', )
         );
         $DB_eus->where('closed_date');
+        $DB_eus->where('actual_start_date is not null');
 
         if (!empty($proposal_name_fragment)) {
             $filter = urldecode($proposal_name_fragment);
@@ -359,21 +360,26 @@ class EUS
             foreach($filter_terms as $term){
                 $DB_eus->like('LOWER(title)', strtolower($term));
             }
+            if(!$this->CI->is_emsl_staff){
+                $DB_eus->where_in('proposal_id',$my_proposals);
+            }
         }else{
             $DB_eus->where_in('proposal_id',$my_proposals);
         }
 
         $query = $DB_eus->get('proposals');
-
         $results = array();
 
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $start_date = strtotime($row->start_date) ? date_create($row->start_date) : false;
                 $end_date = strtotime($row->end_date) ? date_create($row->end_date) : false;
-
+                $state = 'inactive';
                 $currently_active = $start_date && $start_date->getTimestamp() < time() ? true : false;
-                $currently_active = $currently_active && (!$end_date || $end_date->getTimestamp() >= time()) ? true : false;
+                $state = $currently_active ? 'active' : 'preactive';
+                $currently_active = $state == 'active' && (!$end_date || $end_date->getTimestamp() >= time()) ? true : false;
+                // $state = $currently_active ? 'active' : 'inactive';
+                $state = !$start_date || !$end_date ? 'invalid' : $state;
 
                 if ($is_active == 'active' && !$currently_active) {
                     continue;
@@ -383,6 +389,7 @@ class EUS
                     'id' => $row->proposal_id,
                     'title' => trim($row->title, '.'),
                     'currently_active' => $currently_active ? 'yes' : 'no',
+                    'state' => $state,
                     'start_date' => $start_date ? $start_date->format('Y-m-d') : '---',
                     'end_date' => $end_date ? $end_date->format('Y-m-d') : '---',
                     'group_id' => $row->group_id,

@@ -115,7 +115,6 @@ var update_content = function(event){
   var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : initial_instrument_id;
   var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
   var ts = moment().format('YYYYMMDDHHmmss');
-  // var url = base_url + 'index.php/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
   var url = '/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
   if(proposal_id && instrument_id && time_frame){
     inital_load = false;
@@ -162,14 +161,18 @@ var update_content = function(event){
 };
 
 var get_instrument_list = function(proposal_id){
-  // var inst_url = base_url + 'index.php/status/get_instrument_list/' + proposal_id;
-  var inst_url = '/status/get_instrument_list/' + proposal_id;
+  var inst_url = '/ajax/get_instruments_for_proposal/' + proposal_id;
   var target = document.getElementById('instrument_selector_spinner');
   var spinner = new Spinner(spinner_opts).spin(target);
   $.getJSON(inst_url,function(data){
     $('#instrument_selector').select2({
       data: data.items,
-      placeholder: "Select an Instrument..."
+      placeholder: "Select an Instrument...",
+      templateResult: formatInstrument,
+      templateSelection: formatInstrumentSelection,
+      escapeMarkup: function(markup) {
+          return markup;
+      }
     });
     $('#instrument_selector').enable();
     initial_instrument_list = [];
@@ -186,6 +189,39 @@ var get_instrument_list = function(proposal_id){
       update_content();
     }
   });
+};
+
+var formatInstrument = function(item){
+    var markup = false;
+    var current_proposal_id = $('#proposal_selector').val();
+    var active = item.active == 'Y' ? 'active' : 'inactive';
+    if(item.id){
+        if(item.id > 0){
+            markup = "<div id='inst_info_" + item.id + "' class='inst_info'>";
+            markup += "  <div class='" + active + "_instrument'>";
+            markup += "     <strong>Instrument " + item.id + "</strong>";
+            markup += "  </div>";
+            markup += "</div>";
+            markup += "<div class='inst_description'>" + item.name + "</div>";
+        }else if (item.id == -1) {
+            markup = "<div id='inst_info_" + item.id + "' class='inst_info'>";
+            markup += "<strong>All Instruments for Proposal " + current_proposal_id + "</strong>";
+            markup += "</div>"
+        }
+    }
+
+    return markup;
+};
+
+var formatInstrumentSelection = function(item){
+    var markup = "Select an Instrument...";
+    var current_proposal_id = $('#proposal_selector').val();
+    if(item.id > 0){
+        markup = item.text;
+    }else if(item.id <= 0){
+        markup = "All Instruments for Proposal " + current_proposal_id;
+    }
+    return markup;
 };
 
 var setup_metadata_disclosure = function(){
