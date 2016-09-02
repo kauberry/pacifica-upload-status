@@ -347,27 +347,29 @@ class EUS
         $my_proposals = $this->get_proposals_for_user($eus_id);
         $DB_eus = $this->CI->load->database('eus_for_myemsl', true);
         $DB_eus->select(array(
-            'proposal_id', 'title', 'group_id',
-            'actual_start_date as start_date',
-            'actual_end_date as end_date', )
+            'p.proposal_id', 'p.title', 'p.group_id',
+            'p.actual_start_date as start_date',
+            'p.actual_end_date as end_date')
         );
-        $DB_eus->where('closed_date');
-        $DB_eus->where('actual_start_date is not null');
+        $DB_eus->from('proposals p');
+        $DB_eus->join('v_proposal_search vs', 'vs.id = p.proposal_id');
+        $DB_eus->where('p.closed_date');
+        $DB_eus->where('p.actual_start_date is not null');
 
         if (!empty($proposal_name_fragment)) {
             $filter = urldecode($proposal_name_fragment);
             $filter_terms = explode(' ',$filter);
             foreach($filter_terms as $term){
-                $DB_eus->like('LOWER(title)', strtolower($term));
+                $DB_eus->like('vs.search_field', strtolower($term));
             }
             if(!$this->CI->is_emsl_staff){
-                $DB_eus->where_in('proposal_id',$my_proposals);
+                $DB_eus->where_in('p.proposal_id',$my_proposals);
             }
         }else{
-            $DB_eus->where_in('proposal_id',$my_proposals);
+            $DB_eus->where_in('p.proposal_id',$my_proposals);
         }
 
-        $query = $DB_eus->get('proposals');
+        $query = $DB_eus->get();
         $results = array();
 
         if ($query && $query->num_rows() > 0) {

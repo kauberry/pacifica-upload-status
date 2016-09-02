@@ -101,7 +101,7 @@ $(function() {
     function formatProposalSelection(item) {
         var markup = 'Please Select an EUS Proposal...';
         if (item.id.length > 0) {
-            markup = "Proposal " + item.id + ": " + item.title;
+            markup = "<span title='" + item.title + "'>" + item.text + "</span>";
         }
         return markup;
     }

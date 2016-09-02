@@ -43,6 +43,10 @@ class Ajax extends Baseline_controller
         $total_count = sizeof($instruments_available) + 1;
         asort($instruments_available);
         $instruments[] = array(
+            'id' => 0,
+            'text' => null
+        );
+        $instruments[] = array(
             'id' => -1,
             'text' => "All Available Instruments for Proposal {$proposal_id}",
             'name' => "All Instruments",

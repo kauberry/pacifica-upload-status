@@ -70,7 +70,7 @@ class Status extends Baseline_controller
             '/resources/scripts/fancytree/jquery.fancytree-all.js',
             '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
-            '/resources/scripts/select2-4/dist/js/select2.full.js',
+            '/resources/scripts/select2-4/dist/js/select2.js',
             '/resources/scripts/myemsl_file_download.js',
             '/project_resources/scripts/status_common.js',
             '/resources/scripts/moment.min.js',
@@ -143,7 +143,7 @@ class Status extends Baseline_controller
                 '/resources/scripts/myemsl_file_download.js',
                 '/project_resources/scripts/status_common.js',
                 '/project_resources/scripts/emsl_mgmt_view.js',
-                '/resources/scripts/select2-4/dist/js/select2.full.js',
+                '/resources/scripts/select2-4/dist/js/select2.js',
                 '/resources/scripts/moment.min.js',
             );
             $this->benchmark->mark('get_user_info_from_ws_start');

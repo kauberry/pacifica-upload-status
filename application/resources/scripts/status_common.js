@@ -111,9 +111,9 @@ var update_content = function(event){
       $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 30, path: '/' });
     }
   }
-  var proposal_id = $('#proposal_selector').select2('val').length > 0 ? $('#proposal_selector').select2('val') : initial_proposal_id;
-  var instrument_id = $('#instrument_selector').select2('val').length > 0 ? $('#instrument_selector').select2('val') : initial_instrument_id;
-  var time_frame = $('#timeframe_selector').select2('val').length > 0 ? $('#timeframe_selector').select2('val') : 0;
+  var proposal_id = $('#proposal_selector').val() != null ? $('#proposal_selector').val() : initial_proposal_id;
+  var instrument_id = $('#instrument_selector').val() != null ? $('#instrument_selector').val() : initial_instrument_id;
+  var time_frame = $('#timeframe_selector').val() != null ? $('#timeframe_selector').val() : 0;
   var ts = moment().format('YYYYMMDDHHmmss');
   var url = '/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
   if(proposal_id && instrument_id && time_frame){
@@ -164,6 +164,7 @@ var get_instrument_list = function(proposal_id){
   var inst_url = '/ajax/get_instruments_for_proposal/' + proposal_id;
   var target = document.getElementById('instrument_selector_spinner');
   var spinner = new Spinner(spinner_opts).spin(target);
+  $('#instrument_selector').empty();
   $.getJSON(inst_url,function(data){
     $('#instrument_selector').select2({
       data: data.items,
