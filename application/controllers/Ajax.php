@@ -45,6 +45,7 @@ class Ajax extends Baseline_controller
         $instruments[] = array(
             'id' => -1,
             'text' => "All Available Instruments for Proposal {$proposal_id}",
+            'name' => "All Instruments",
             'active' => 'Y'
         );
         foreach ($instruments_available as $inst_id) {

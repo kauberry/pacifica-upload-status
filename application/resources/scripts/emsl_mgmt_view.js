@@ -10,6 +10,7 @@ $(function() {
         ajax: {
             dataType: 'json',
             delay: 250,
+            cache: true,
             url: function(params) {
                 var myURL = base_url + "ajax/get_proposals_by_name/";
                 if (params.term != undefined) {
@@ -40,10 +41,6 @@ $(function() {
     // $('#proposal_selector').select2("search","nmr");
 
     $("#instrument_selector").select2({
-        data: [{
-            id: 0,
-            text: ""
-        }],
         placeholder: "Select an Instrument..."
     });
     if (initial_proposal_id.length > 0) {

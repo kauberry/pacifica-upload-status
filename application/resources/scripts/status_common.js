@@ -192,6 +192,7 @@ var get_instrument_list = function(proposal_id){
 };
 
 var formatInstrument = function(item){
+    if (item.loading) return item.text;
     var markup = false;
     var current_proposal_id = $('#proposal_selector').val();
     var active = item.active == 'Y' ? 'active' : 'inactive';
