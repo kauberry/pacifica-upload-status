@@ -19,6 +19,8 @@ class Baseline_controller extends CI_Controller
         $user_info = get_user_details_myemsl($this->user_id);
         $this->username = $user_info['first_name'] != null ? $user_info['first_name'] : 'Anonymous Stranger';
         $this->fullname = "{$this->username} {$user_info['last_name']}";
+        $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;
+        $this->is_emsl_staff = true;
         $this->site_color = $this->config->item('site_color');
 
         $this->email = $user_info['email_address'];

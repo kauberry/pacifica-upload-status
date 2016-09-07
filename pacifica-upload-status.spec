@@ -1,6 +1,6 @@
 Name:		pacifica-upload-status
 Epoch:		1
-Version:	0.99.4
+Version:	0.99.6
 Release:	1%{?dist}
 Summary:	The pacifica upload status web page
 Group:		System Environment/Libraries

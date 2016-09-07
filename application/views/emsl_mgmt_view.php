@@ -19,25 +19,20 @@
             <form id="instrument_selection" class="themed">
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
-                <div class="full_width_block">
+                <div class="full_width_block" id="proposal_selector_container">
                   <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:96%;">
-                    <option></option>
-                    <?php foreach($proposal_list as $prop_id => $prop_title): ?>
-                      <?php $selected_state = $prop_id == $selected_proposal ? ' selected="selected"' : ''; ?>
-                      <?php $trunc_prop_title = truncate_text($prop_title, 110); ?>
-                    <option value="<?= $prop_id ?>"<?= $selected_state ?> title="<?= $prop_title ?>">Proposal <?= $prop_id ?>: <?= $trunc_prop_title ?></option>
-                    <?php endforeach; ?><br />
-                    <?php $prop_list_object = "var initial_proposal_list = ['".implode("','",array_keys($proposal_list))."'];"; ?>
-                    <?php $js .= "\n".$prop_list_object; ?>
+                  <?php $this->load->view('proposal_selector_insert.html', array('proposal_list' => $proposal_list, 'selected_proposal' => $selected_proposal)); ?>
                   </select>
                 </div>
 
                 <div class="full_width_block" style="margin-top:1em;">
-                  <div class="left_block">
-                    <input id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" type="hidden" style="width:95%;"/>
+                  <div class="left_block" id="instrument_selector_container">
+                    <select id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" style="width:95%;">
+                        <option></option>
+                    </select>
                     <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
                   </div>
-                  <div class="right_block">
+                  <div class="right_block" id="timeframe_selector_container">
                     <select id="timeframe_selector" class="criterion_selector" name="timeframe_selector" style="width:100%;">
                       <?php $period_list = array(
                         '1' => "Last 24 Hours",
