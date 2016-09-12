@@ -28,6 +28,12 @@ mkdir -p %{buildroot}/var/www/myemsl/status
 mkdir -p %{buildroot}/etc/php.d
 rsync -r application index.php system %{buildroot}/var/www/myemsl/status/
 mkdir -p %{buildroot}/var/www/myemsl/status/application/logs
+cp a*.png %{buildroot}/var/www/myemsl/status/
+cp favicon*.* %{buildroot}/var/www/myemsl/status/
+cp ms*.png %{buildroot}/var/www/myemsl/status/
+cp manifest.json %{buildroot}/var/www/myemsl/status/
+cp browserconfig.xml %{buildroot}/var/www/myemsl/status/
+cp safari*.svg %{buildroot}/var/www/myemsl/status/
 cp php_myemsl.ini %{buildroot}/etc/php.d/myemsl.ini
 
 %clean
