@@ -13,6 +13,7 @@ BuildArch:      noarch
 BuildRequires:	rsync
 
 %description
+This is a short description
 
 %prep
 %setup -q
