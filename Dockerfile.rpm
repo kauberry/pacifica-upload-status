@@ -7,8 +7,7 @@ run yum -y install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-
 run mkdir /app
 copy . /app/
 workdir /app
-run export V=pacifica-upload-status-0.99.0 && \
+run export V=pacifica-upload-status-0.99.6 && \
     ln -s . $V && \
-    tar -czf $V.tar.gz $V/application $V/index.php $V/pacifica-upload-status.spec \
-             $V/php_myemsl.ini $V/resources $V/system $V/websystem && \
-    rpmbuild -ta $V.tar.gz
+    tar --exclude=$V/$V --exclude=$V/$V.tar.gz -czf $V.tar.gz $V/* && \
+    rpmbuild -ba --define '_sourcedir '$PWD pacifica-upload-status.spec
