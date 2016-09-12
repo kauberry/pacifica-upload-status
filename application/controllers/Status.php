@@ -140,7 +140,7 @@ class Status extends Baseline_controller
                 '/resources/scripts/spinner/spin.min.js',
                 '/resources/scripts/fancytree/jquery.fancytree-all.js',
                 '/resources/scripts/jquery-crypt/jquery.crypt.js',
-                '/resources/scripts/myemsl_file_download.js',
+                '/project_resources/scripts/myemsl_file_download.js',
                 '/project_resources/scripts/status_common.js',
                 '/project_resources/scripts/emsl_mgmt_view.js',
                 '/resources/scripts/select2-4/dist/js/select2.js',
