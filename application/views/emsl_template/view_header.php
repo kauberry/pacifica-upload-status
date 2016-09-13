@@ -2,13 +2,14 @@
 <?php
   $page_header = isset($page_header) ? $page_header : "Untitled Page";
   $title = isset($title) ? $title : $page_header;
-  $rss_link = isset($rss_link) ? $rss_link : "";  
-?>  
+  $rss_link = isset($rss_link) ? $rss_link : "";
+?>
 <html>
   <head>
     <title>MyEMSL Status - <?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <meta  name="description" content="" />
+    <meta name="description" content="" />
+    <?php $this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>
     <meta name="keywords" content="" />
 <?php $this->load->view("{$this->template_version}_template/globals"); ?>
 
