@@ -1,6 +1,6 @@
 var bearer_token = "";
 // var url_base = '/myemsl/status/index.php';
-var url_base = 'https://statusdev1.my.emsl.pnl.gov';
+var url_base = '';
 var token_url_base = '/cart/get_cart_token/';
 var cart_url_base = url_base + '/myemsl/api/2/cart/';
 var cart_info_url = '/cart/listing/';
