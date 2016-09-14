@@ -395,12 +395,18 @@ class Status_model extends CI_Model
 
     public function get_job_status($job_id_list, $status_list = false)
     {
+        if(empty($job_id_list)){
+            return false;
+        }
         $status_list = !empty($status_list) ? $status_list : $this->status_list;
         $DB_myemsl = $this->load->database('default', true);
         $select_array = array(
             'jobid', 'min(trans_id) as trans_id', 'max(step) as step', 'max(person_id) as person_id',
         );
-        $DB_myemsl->select($select_array)->where_in('jobid', $job_id_list)->group_by('jobid');
+        if(!empty($job_id_list)){
+            $DB_myemsl->where_in('jobid', $job_id_list);
+        }
+        $DB_myemsl->select($select_array)->group_by('jobid');
         $query = $DB_myemsl->get('ingest_state');
         $results = array();
         if ($query && $query->num_rows() > 0) {
