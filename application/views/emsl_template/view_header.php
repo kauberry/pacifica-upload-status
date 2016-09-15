@@ -9,7 +9,7 @@
     <title>MyEMSL Status - <?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="description" content="" />
-    <?php $this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>
+    <?php //$this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>
     <meta name="keywords" content="" />
 <?php $this->load->view("{$this->template_version}_template/globals"); ?>
 

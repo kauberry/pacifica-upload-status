@@ -279,7 +279,6 @@ class Status extends Baseline_controller
         $this->page_data['status_list'] = $this->status_list;
         $this->page_data['transaction_data'] = $results;
         $view_name = 'upload_item_view.html';
-    // var_dump($results);
         if (!empty($results['times'])) {
             $this->load->view($view_name, $this->page_data);
         } else {
@@ -353,7 +352,12 @@ class Status extends Baseline_controller
             $values = array($job_id);
         }
         $results = $this->status->get_job_status($values, $this->status_list);
-        transmit_array_with_json_header($results);
+        // send_json_array($results);
+        if($results){
+            transmit_array_with_json_header($results);
+        }else{
+            send_json_array(array());
+        }
     }
 
     public function get_instrument_list($proposal_id)
