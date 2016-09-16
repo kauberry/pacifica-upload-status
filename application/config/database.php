@@ -64,33 +64,11 @@ $db['default'] = array(
   'cachedir' => ""
 );
 
+$db['eus_for_myemsl'] = $db['default'];
+$db['eus_for_myemsl']['dbprefix'] = 'eus.';
 
-$db['eus_for_myemsl'] = array(
-  'hostname' => $myemsl_array['metadata']['host'],
-  'username' => $myemsl_array['metadata']['user'],
-  'password' => $myemsl_array['metadata']['password'],
-  'database' => $myemsl_array['metadata']['database'],
-  'dbdriver' => "postgre",
-  'dbprefix' => "eus.",
-  'pconnect' => TRUE,
-  'db_debug' => TRUE,
-  'cache_on' => FALSE,
-  'cachedir' => ""
-);
-
-
-$db['website_prefs'] = array(
-  'hostname' => $myemsl_array['metadata']['host'],
-  'username' => $myemsl_array['metadata']['user'],
-  'password' => $myemsl_array['metadata']['password'],
-  'database' => $myemsl_array['metadata']['database'],
-  'dbdriver' => "postgre",
-  'dbprefix' => "website_prefs.",
-  'pconnect' => TRUE,
-  'db_debug' => TRUE,
-  'cache_on' => FALSE,
-  'cachedir' => ""
-);
+$db['website_prefs'] = $db['default'];
+$db['website_prefs']['dbprefix'] = 'website_prefs.';
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

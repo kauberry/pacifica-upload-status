@@ -22,14 +22,14 @@ class EUS
         define('USERS_TABLE', 'users');
 
         if (!$this->CI->load->database('eus_for_myemsl')) {
-            $myemsl_array = parse_ini_file('/etc/myemsl/general.ini', true);
+            $this->CI->load->database('eus_for_myemsl');
             $db_config = array(
-                'hostname' => $myemsl_array['metadata']['host'],
-                'username' => $myemsl_array['metadata']['user'],
-                'password' => $myemsl_array['metadata']['password'],
-                'database' => $myemsl_array['metadata']['database'],
-                'dbdriver' => 'postgre',
-                'dbprefix' => 'eus.',
+                'hostname' => 'localhost',
+                'username' => 'eus_access',
+                'password' => 'changeme',
+                'database' => 'EUS',
+                'dbdriver' => 'mysqli',
+                'dbprefix' => '',
                 'pconnect' => true,
                 'db_debug' => true,
                 'cache_on' => false,
