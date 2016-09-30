@@ -30,9 +30,9 @@ class EUS
                 'database' => 'EUS',
                 'dbdriver' => 'mysqli',
                 'dbprefix' => '',
-                'pconnect' => true,
-                'db_debug' => true,
-                'cache_on' => false,
+                'pconnect' => TRUE,
+                'db_debug' => TRUE,
+                'cache_on' => FALSE,
                 'cachedir' => '',
             );
             $this->CI->load->database($db_config);
@@ -40,9 +40,9 @@ class EUS
     }
 
 
-    public function get_ers_instruments_list($unused_only = false, $filter = '')
+    public function get_ers_instruments_list($unused_only = FALSE, $filter = '')
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
 
         $select_array = array(
             'instrument_id',
@@ -59,9 +59,10 @@ class EUS
             $DB_ers->or_like('eus_display_name', $filter);
         }
 
-        $DB_ers->select($select_array, true)->where('active_sw', 'Y');
+        $DB_ers->select($select_array, TRUE)->where('active_sw', 'Y');
         $DB_ers->order_by('eus_display_name');
-        if ($unused_only) {}
+        if ($unused_only) {
+        }
 
         $query = $DB_ers->get(INST_TABLE);
         $results = array();
@@ -89,7 +90,7 @@ class EUS
 
     public function get_eus_user_list($filter = '')
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
 
         $select_array = array(
             'person_id as eus_id', 'first_name', 'last_name', 'email_address',
@@ -102,7 +103,7 @@ class EUS
         $query = $DB_ers->select($select_array)->get(USERS_TABLE);
 
         $results_array = array(
-            'success' => false,
+            'success' => FALSE,
             'message' => "No EUS users found using the filter '*{$filter}*'",
             'names' => array(),
         );
@@ -110,7 +111,7 @@ class EUS
         if ($query && $query->num_rows() > 0) {
             $plural_mod = $query->num_rows() > 1 ? 's' : '';
             $results_array['message'] = $query->num_rows()." EUS user{$plural_mod} found with filter '*{$filter}*'";
-            $results_array['success'] = true;
+            $results_array['success'] = TRUE;
             foreach ($query->result() as $row) {
                 $display_name = ucwords("{$row->first_name} {$row->last_name}");
                 $display_name .= !empty($row->email_address) ? " <{$row->email_address}>" : '';
@@ -143,10 +144,10 @@ class EUS
 
     public function get_instruments_for_proposal($eus_proposal_id, $filter = '')
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
 
         $result_array = array(
-            'success' => false,
+            'success' => FALSE,
             'message' => '',
             'instruments' => array(),
         );
@@ -154,7 +155,7 @@ class EUS
         $closing_date = new DateTime();
         $closing_date->modify('-6 months');
 
-    // print_r($closing_date);
+        // print_r($closing_date);
 
         $where_array = array(
             'proposal_id' => $eus_proposal_id,
@@ -162,7 +163,7 @@ class EUS
         );
         $DB_ers->where($where_array);
 
-        $prop_exists = $DB_ers->count_all_results(PROPOSALS_TABLE) > 0 ? true : false;
+        $prop_exists = $DB_ers->count_all_results(PROPOSALS_TABLE) > 0 ? TRUE : FALSE;
 
         if (!$prop_exists) {
             $result_array['message'] = "No proposal with ID = {$eus_proposal_id} was found";
@@ -181,7 +182,7 @@ class EUS
 
         if (!empty($filter)) {
             $filter = urldecode($filter);
-            $filter_terms = explode(' ',$filter);
+            $filter_terms = explode(' ', $filter);
             foreach($filter_terms as $term){
                 $DB_ers->like('LOWER(i.eus_display_name)', strtolower($term));
             }
@@ -191,7 +192,7 @@ class EUS
 
         if ($inst_query && $inst_query->num_rows() > 0) {
             $plural_mod = $inst_query->num_rows() > 1 ? 's' : '';
-            $result_array['success'] = true;
+            $result_array['success'] = TRUE;
             $result_array['message'] = $inst_query->num_rows()." instrument{$plural_mod} located for proposal {$eus_proposal_id}";
             foreach ($inst_query->result() as $row) {
                 $result_array['instruments'][$row->instrument_id] = $row->eus_display_name;
@@ -205,16 +206,16 @@ class EUS
 
     public function get_proposals_for_instrument($eus_instrument_id, $filter = '')
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
 
         //check that instrument_id is legal and active
         $where_array = array(
             'active_sw' => 'Y',
             'instrument_id' => $eus_instrument_id,
         );
-        $inst_exists = $DB_ers->where($where_array)->count_all_results(INST_TABLE) > 0 ? true : false;
+        $inst_exists = $DB_ers->where($where_array)->count_all_results(INST_TABLE) > 0 ? TRUE : FALSE;
 
-        $result_array = array('success' => false);
+        $result_array = array('success' => FALSE);
 
         if (!$inst_exists) {
             $result_array['message'] = 'No instrument with ID = '.$eus_instrument_id.' was found';
@@ -232,7 +233,7 @@ class EUS
 
         if (!empty($filter)) {
             $filter = urldecode($filter);
-            $filter_terms = explode(' ',$filter);
+            $filter_terms = explode(' ', $filter);
             foreach($filter_terms as $term){
                 $DB_ers->like('LOWER(p.title)', strtolower($term));
             }
@@ -243,7 +244,7 @@ class EUS
         $proposal_list = array();
         if ($proposal_query && $proposal_query->num_rows() > 0) {
             $plural_mod = $proposal_query->num_rows > 1 ? 's' : '';
-            $result_array['success'] = true;
+            $result_array['success'] = TRUE;
             $result_array['message'] = $proposal_query->num_rows()." proposal{$plural_mod} located for instrument {$eus_instrument_id}";
             foreach ($proposal_query->result() as $row) {
                 $clean_proposal_name = trim(str_replace("\n", ' ', $row->proposal_name));
@@ -259,7 +260,7 @@ class EUS
 
     public function get_proposal_name($eus_proposal_id)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         $query = $DB_ers->select('title as proposal_name')->get_where(PROPOSALS_TABLE, array('proposal_id' => strval($eus_proposal_id)), 1);
         if ($query && $query->num_rows() > 0) {
             $result = $query->row()->proposal_name;
@@ -268,9 +269,9 @@ class EUS
         return $result;
     }
 
-    public function get_object_list($object_type, $search_terms = false, $my_objects = false)
+    public function get_object_list($object_type, $search_terms = FALSE, $my_objects = FALSE)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         if ($my_objects) {
             $DB_ers->where_in('id', array_map('strval', array_keys($my_objects)));
         }
@@ -294,7 +295,7 @@ class EUS
 
     public function get_object_info($object_id_list, $object_type)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         $DB_ers->where_in('id', $object_id_list);
         $query = $DB_ers->get("v_{$object_type}_search");
 
@@ -310,7 +311,7 @@ class EUS
 
     public function get_name_from_eus_id($eus_id)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         $select_array = array(
             'person_id as eus_id', 'first_name', 'last_name', 'email_address',
         );
@@ -326,10 +327,10 @@ class EUS
 
     public function get_proposals_for_user($eus_user_id)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         $select_array = array('proposal_id');
         $DB_ers->select($select_array)->where('active', 'Y');
-        $DB_ers->where('person_id',$eus_user_id)->distinct();
+        $DB_ers->where('person_id', $eus_user_id)->distinct();
         $query = $DB_ers->get(PROPOSAL_MEMBERS);
 
         $results = array();
@@ -345,8 +346,9 @@ class EUS
     public function get_proposals_by_name($proposal_name_fragment, $eus_id, $is_active = 'active')
     {
         $my_proposals = $this->get_proposals_for_user($eus_id);
-        $DB_eus = $this->CI->load->database('eus_for_myemsl', true);
-        $DB_eus->select(array(
+        $DB_eus = $this->CI->load->database('eus_for_myemsl', TRUE);
+        $DB_eus->select(
+            array(
             'p.proposal_id', 'p.title', 'p.group_id',
             'p.actual_start_date as start_date',
             'p.actual_end_date as end_date')
@@ -358,15 +360,15 @@ class EUS
 
         if (!empty($proposal_name_fragment)) {
             $filter = urldecode($proposal_name_fragment);
-            $filter_terms = explode(' ',$filter);
+            $filter_terms = explode(' ', $filter);
             foreach($filter_terms as $term){
                 $DB_eus->like('vs.search_field', strtolower($term));
             }
-            if(!$this->CI->is_emsl_staff){
-                $DB_eus->where_in('p.proposal_id',$my_proposals);
+            if(!$this->CI->is_emsl_staff) {
+                $DB_eus->where_in('p.proposal_id', $my_proposals);
             }
         }else{
-            $DB_eus->where_in('p.proposal_id',$my_proposals);
+            $DB_eus->where_in('p.proposal_id', $my_proposals);
         }
 
         $query = $DB_eus->get();
@@ -374,12 +376,12 @@ class EUS
 
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $start_date = strtotime($row->start_date) ? date_create($row->start_date) : false;
-                $end_date = strtotime($row->end_date) ? date_create($row->end_date) : false;
+                $start_date = strtotime($row->start_date) ? date_create($row->start_date) : FALSE;
+                $end_date = strtotime($row->end_date) ? date_create($row->end_date) : FALSE;
                 $state = 'inactive';
-                $currently_active = $start_date && $start_date->getTimestamp() < time() ? true : false;
+                $currently_active = $start_date && $start_date->getTimestamp() < time() ? TRUE : FALSE;
                 $state = $currently_active ? 'active' : 'preactive';
-                $currently_active = $state == 'active' && (!$end_date || $end_date->getTimestamp() >= time()) ? true : false;
+                $currently_active = $state == 'active' && (!$end_date || $end_date->getTimestamp() >= time()) ? TRUE : FALSE;
                 // $state = $currently_active ? 'active' : 'inactive';
                 $state = !$start_date || !$end_date ? 'invalid' : $state;
 
@@ -404,7 +406,7 @@ class EUS
 
     public function get_instrument_name($eus_instrument_id)
     {
-        $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
+        $DB_ers = $this->CI->load->database('eus_for_myemsl', TRUE);
         $select_array = array('eus_display_name as display_name', 'instrument_name', 'name_short as short_name', 'instrument_id');
         $query = $DB_ers->select($select_array)->get_where(INST_TABLE, array('instrument_id' => $eus_instrument_id), 1);
         $results = array();

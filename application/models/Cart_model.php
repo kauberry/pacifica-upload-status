@@ -1,13 +1,45 @@
 <?php
+/**
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-upload-status module provides an interface to
+ *  the ingester status reporting backend, allowing users to view
+ *  the current state of any uploads they may have performed, as
+ *  well as enabling the download and retrieval of that data.
+ *
+ * PHP Version 5
+ *
+ * @package Pacifica-upload-status
+ * @author  Ken Auberry  <Kenneth.Auberry@pnnl.gov>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link    http://github.com/EMSL-MSC/pacifica-upload-status
+ */
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                             */
-/*     Cart Model                                                              */
-/*                                                                             */
-/*                                                                             */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/**
+ *  Cart Model
+ *
+ *  The **Cart_model** class interacts with the metadata database
+ *  to get lists of active carts for a given user, and to provide
+ *  a means to remove carts that have outlived their usefulness.
+ *
+ * @category CI_Model
+ * @package  Pacifica-upload-status
+ * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ *
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link    http://github.com/EMSL-MSC/pacifica-upload-status
+ */
 class Cart_model extends CI_Model
 {
+    /**
+     *  Class constructor
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         parent::__construct();
@@ -20,9 +52,21 @@ class Cart_model extends CI_Model
         define('CART_URL_BASE', '/myemsl/cart/download/');
     }
 
-    public function get_active_carts($eus_id, $show_expired = true, $new_tx_id = false)
+    /**
+     *  Retrieves the list of carts that are currently owned by/
+     *  assigned to a given user. Can be filtered to hide carts
+     *  that have already expired
+     *
+     *  @param integer $eus_id       The user_id of the cart owner
+     *  @param boolean $show_expired should we show expired entries?
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_active_carts($eus_id, $show_expired = TRUE)
     {
-        $DB_myemsl = $this->load->database('default', true);
+        $DB_myemsl = $this->load->database('default', TRUE);
         $select_array = array(
             'cart_id', 'submit_time', 'last_mtime as modification_time',
             'last_email as last_email_time', 'state',
@@ -69,7 +113,7 @@ class Cart_model extends CI_Model
                         'formatted_submit' => format_cart_display_time_element($submit_time),
                         'formatted_modified' => format_cart_display_time_element($modified_time),
                         'formatted_email' => format_cart_display_time_element($email_time),
-                        'generation_time' => friendlyElapsedTime($submit_time, $email_time, false),
+                        'generation_time' => friendlyElapsedTime($submit_time, $email_time, FALSE),
                     ),
                 );
                 $cart_items_query = $DB_myemsl->select('item_id')->get_where(ITEMS_TABLE, array('cart_id' => $cart_id));
@@ -127,10 +171,21 @@ class Cart_model extends CI_Model
         return $cart_list;
     }
 
+    /**
+     *  Performs the steps required to process the removal/expiration
+     *  of a cart entity from the database
+     *
+     *  @param integer $cart_id The identifier of the cart entity to expire/delete to expire/delete
+     *                                 to expire/delete
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function delete_dead_cart($cart_id)
     {
-        $DB_myemsl = $this->load->database('default', true);
-        $success_info = array('success' => false, 'message' => '');
+        $DB_myemsl = $this->load->database('default', TRUE);
+        $success_info = array('success' => FALSE, 'message' => '');
         //make sure that this cart even exists.....
         $get_query = $DB_myemsl->get_where(CART_TABLE, array('cart_id' => $cart_id, 'state !=' => 'expired'), 1);
         if ($get_query && $get_query->num_rows() > 0) {
@@ -146,7 +201,7 @@ class Cart_model extends CI_Model
                     $new_data = array('state' => 'expired', 'last_mtime' => $now_time->format('Y-m-d H:i:s'));
                     $delete_query = $DB_myemsl->where('cart_id', $cart_id)->where('person_id', $this->user_id)->update(CART_TABLE, $new_data);
                     if ($DB_myemsl->affected_rows() > 0) {
-                        $success_info['success'] = true;
+                        $success_info['success'] = TRUE;
                         $success_info['message'] = "Cart #{$cart_id} (Submitted by User {$cart_info->person_id} on {$cart_create_time->format('d M Y g:ia')}) was successfully expired";
                     } else {
                         $success_info['message'] = "Cart #{$cart_id} could not be deleted because an error occurred";

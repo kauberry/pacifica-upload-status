@@ -2,7 +2,7 @@
 /**
  * Class to validate and to work with IPv6 addresses
  *
- * @package Requests
+ * @package    Requests
  * @subpackage Utilities
  */
 
@@ -12,7 +12,7 @@
  * This was originally based on the PEAR class of the same name, but has been
  * entirely rewritten.
  *
- * @package Requests
+ * @package    Requests
  * @subpackage Utilities
  */
 class Requests_IPv6
@@ -27,55 +27,48 @@ class Requests_IPv6
      * Example:  FF01::101   ->  FF01:0:0:0:0:0:0:101
      *           ::1         ->  0:0:0:0:0:0:0:1
      *
-     * @author Alexander Merz <alexander.merz@web.de>
-     * @author elfrink at introweb dot nl
-     * @author Josh Peck <jmp at joshpeck dot org>
+     * @author    Alexander Merz <alexander.merz@web.de>
+     * @author    elfrink at introweb dot nl
+     * @author    Josh Peck <jmp at joshpeck dot org>
      * @copyright 2003-2005 The PHP Group
-     * @license http://www.opensource.org/licenses/bsd-license.php
-     * @param string $ip An IPv6 address
-     * @return string The uncompressed IPv6 address
+     * @license   http://www.opensource.org/licenses/bsd-license.php
+     * @param     string $ip An IPv6 address
+     * @return    string The uncompressed IPv6 address
      */
     public static function uncompress($ip)
     {
         $c1 = -1;
         $c2 = -1;
-        if (substr_count($ip, '::') === 1)
-        {
+        if (substr_count($ip, '::') === 1) {
             list($ip1, $ip2) = explode('::', $ip);
-            if ($ip1 === '')
-            {
+            if ($ip1 === '') {
                 $c1 = -1;
             }
             else
             {
                 $c1 = substr_count($ip1, ':');
             }
-            if ($ip2 === '')
-            {
+            if ($ip2 === '') {
                 $c2 = -1;
             }
             else
             {
                 $c2 = substr_count($ip2, ':');
             }
-            if (strpos($ip2, '.') !== false)
-            {
+            if (strpos($ip2, '.') !== FALSE) {
                 $c2++;
             }
             // ::
-            if ($c1 === -1 && $c2 === -1)
-            {
+            if ($c1 === -1 && $c2 === -1) {
                 $ip = '0:0:0:0:0:0:0:0';
             }
             // ::xxx
-            else if ($c1 === -1)
-            {
+            else if ($c1 === -1) {
                 $fill = str_repeat('0:', 7 - $c2);
                 $ip = str_replace('::', $fill, $ip);
             }
             // xxx::
-            else if ($c2 === -1)
-            {
+            else if ($c2 === -1) {
                 $fill = str_repeat(':0', 7 - $c1);
                 $ip = str_replace('::', $fill, $ip);
             }
@@ -99,8 +92,8 @@ class Requests_IPv6
      * Example:  FF01:0:0:0:0:0:0:101   ->  FF01::101
      *           0:0:0:0:0:0:0:1        ->  ::1
      *
-     * @see uncompress()
-     * @param string $ip An IPv6 address
+     * @see    uncompress()
+     * @param  string $ip An IPv6 address
      * @return string The compressed IPv6 address
      */
     public static function compress($ip)
@@ -113,14 +106,12 @@ class Requests_IPv6
         $ip_parts[0] = preg_replace('/(^|:)0+([0-9])/', '\1\2', $ip_parts[0]);
 
         // Find bunches of zeros
-        if (preg_match_all('/(?:^|:)(?:0(?::|$))+/', $ip_parts[0], $matches, PREG_OFFSET_CAPTURE))
-        {
+        if (preg_match_all('/(?:^|:)(?:0(?::|$))+/', $ip_parts[0], $matches, PREG_OFFSET_CAPTURE)) {
             $max = 0;
-            $pos = null;
+            $pos = NULL;
             foreach ($matches[0] as $match)
             {
-                if (strlen($match[0]) > $max)
-                {
+                if (strlen($match[0]) > $max) {
                     $max = strlen($match[0]);
                     $pos = $match[1];
                 }
@@ -129,8 +120,7 @@ class Requests_IPv6
             $ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
         }
 
-        if ($ip_parts[1] !== '')
-        {
+        if ($ip_parts[1] !== '') {
             return implode(':', $ip_parts);
         }
         else
@@ -148,13 +138,12 @@ class Requests_IPv6
      * Example:  0:0:0:0:0:0:13.1.68.3
      *           0:0:0:0:0:FFFF:129.144.52.38
      *
-     * @param string $ip An IPv6 address
+     * @param  string $ip An IPv6 address
      * @return array [0] contains the IPv6 represented part, and [1] the IPv4 represented part
      */
     private static function split_v6_v4($ip)
     {
-        if (strpos($ip, '.') !== false)
-        {
+        if (strpos($ip, '.') !== FALSE) {
             $pos = strrpos($ip, ':');
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
@@ -171,7 +160,7 @@ class Requests_IPv6
      *
      * Checks if the given IP is a valid IPv6 address
      *
-     * @param string $ip An IPv6 address
+     * @param  string $ip An IPv6 address
      * @return bool true if $ip is a valid IPv6 address
      */
     public static function check_ipv6($ip)
@@ -180,17 +169,16 @@ class Requests_IPv6
         list($ipv6, $ipv4) = self::split_v6_v4($ip);
         $ipv6 = explode(':', $ipv6);
         $ipv4 = explode('.', $ipv4);
-        if (count($ipv6) === 8 && count($ipv4) === 1 || count($ipv6) === 6 && count($ipv4) === 4)
-        {
+        if (count($ipv6) === 8 && count($ipv4) === 1 || count($ipv6) === 6 && count($ipv4) === 4) {
             foreach ($ipv6 as $ipv6_part)
             {
                 // The section can't be empty
                 if ($ipv6_part === '')
-                    return false;
+                    return FALSE;
 
                 // Nor can it be over four characters
                 if (strlen($ipv6_part) > 4)
-                    return false;
+                    return FALSE;
 
                 // Remove leading zeros (this is safe because of the above)
                 $ipv6_part = ltrim($ipv6_part, '0');
@@ -200,22 +188,21 @@ class Requests_IPv6
                 // Check the value is valid
                 $value = hexdec($ipv6_part);
                 if (dechex($value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF)
-                    return false;
+                    return FALSE;
             }
-            if (count($ipv4) === 4)
-            {
+            if (count($ipv4) === 4) {
                 foreach ($ipv4 as $ipv4_part)
                 {
                     $value = (int) $ipv4_part;
                     if ((string) $value !== $ipv4_part || $value < 0 || $value > 0xFF)
-                        return false;
+                        return FALSE;
                 }
             }
-            return true;
+            return TRUE;
         }
         else
         {
-            return false;
+            return FALSE;
         }
     }
 }

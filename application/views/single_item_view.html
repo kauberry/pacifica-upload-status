@@ -17,7 +17,7 @@
           </div>
         </div>
         <div style="position:relative;">
-          <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
+            <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
           <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
             <fieldset id="cart_listing_fieldset">
               <legend>Download Queue</legend>
@@ -32,10 +32,10 @@
             <span id="loading_status_text">Loading...</span>
           </div>
           <div class="themed" id="item_info_container" style="margin-top:20px;">
-            <?php if(!empty($message)): ?>
+            <?php if(!empty($message)) : ?>
             <h2><?= $message ?></h2>
             <?php else: ?>
-            <?php  $this->load->view('upload_item_view.html',$transaction_data); ?>
+            <?php  $this->load->view('upload_item_view.html', $transaction_data); ?>
             <?php endif; ?>
           </div>
         </div>

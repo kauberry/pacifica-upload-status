@@ -2,4 +2,4 @@
     $rsrcs = $this->config->item('allowed-resources');
     $rsrc_string = implode(" ",$rsrcs);
 ?>
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' <?= $rsrc_string ?> 'unsafe-inline' 'unsafe-eval'; connect-src 'self' <?= $rsrc_string ?>">
+<!--- meta http-equiv="Content-Security-Policy" content="script-src 'self' <?= $rsrc_string ?> 'unsafe-inline' 'unsafe-eval'; connect-src 'self' <?= $rsrc_string ?>" --->

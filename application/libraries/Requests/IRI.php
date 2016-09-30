@@ -2,7 +2,7 @@
 /**
  * IRI parser/serialiser/normaliser
  *
- * @package Requests
+ * @package    Requests
  * @subpackage Utilities
  */
 
@@ -38,13 +38,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package Requests
+ * @package    Requests
  * @subpackage Utilities
- * @author Geoffrey Sneddon
- * @author Steve Minutillo
- * @copyright 2007-2009 Geoffrey Sneddon and Steve Minutillo
- * @license http://www.opensource.org/licenses/bsd-license.php
- * @link http://hg.gsnedders.com/iri/
+ * @author     Geoffrey Sneddon
+ * @author     Steve Minutillo
+ * @copyright  2007-2009 Geoffrey Sneddon and Steve Minutillo
+ * @license    http://www.opensource.org/licenses/bsd-license.php
+ * @link       http://hg.gsnedders.com/iri/
  */
 class Requests_IRI
 {
@@ -53,28 +53,28 @@ class Requests_IRI
      *
      * @var string
      */
-    protected $scheme = null;
+    protected $scheme = NULL;
 
     /**
      * User Information
      *
      * @var string
      */
-    protected $iuserinfo = null;
+    protected $iuserinfo = NULL;
 
     /**
      * ihost
      *
      * @var string
      */
-    protected $ihost = null;
+    protected $ihost = NULL;
 
     /**
      * Port
      *
      * @var string
      */
-    protected $port = null;
+    protected $port = NULL;
 
     /**
      * ipath
@@ -88,14 +88,14 @@ class Requests_IRI
      *
      * @var string
      */
-    protected $iquery = null;
+    protected $iquery = NULL;
 
     /**
      * ifragment
      *
      * @var string
      */
-    protected $ifragment = null;
+    protected $ifragment = NULL;
 
     /**
      * Normalization database
@@ -134,24 +134,21 @@ class Requests_IRI
     /**
      * Overload __set() to provide access via properties
      *
-     * @param string $name Property name
-     * @param mixed $value Property value
+     * @param string $name  Property name
+     * @param mixed  $value Property value
      */
     public function __set($name, $value)
     {
-        if (method_exists($this, 'set_' . $name))
-        {
+        if (method_exists($this, 'set_' . $name)) {
             call_user_func(array($this, 'set_' . $name), $value);
         }
-        elseif (
-               $name === 'iauthority'
+        elseif ($name === 'iauthority'
             || $name === 'iuserinfo'
             || $name === 'ihost'
             || $name === 'ipath'
             || $name === 'iquery'
             || $name === 'ifragment'
-        )
-        {
+        ) {
             call_user_func(array($this, 'set_' . substr($name, 1)), $value);
         }
     }
@@ -159,7 +156,7 @@ class Requests_IRI
     /**
      * Overload __get() to provide access via properties
      *
-     * @param string $name Property name
+     * @param  string $name Property name
      * @return mixed
      */
     public function __get($name)
@@ -168,39 +165,33 @@ class Requests_IRI
         // Also why we use array_key_exists below instead of isset()
         $props = get_object_vars($this);
 
-        if (
-            $name === 'iri' ||
-            $name === 'uri' ||
-            $name === 'iauthority' ||
-            $name === 'authority'
-        )
-        {
+        if ($name === 'iri' 
+            || $name === 'uri' 
+            || $name === 'iauthority' 
+            || $name === 'authority'
+        ) {
             $return = $this->{"get_$name"}();
         }
-        elseif (array_key_exists($name, $props))
-        {
+        elseif (array_key_exists($name, $props)) {
             $return = $this->$name;
         }
         // host -> ihost
-        elseif (($prop = 'i' . $name) && array_key_exists($prop, $props))
-        {
+        elseif (($prop = 'i' . $name) && array_key_exists($prop, $props)) {
             $name = $prop;
             $return = $this->$prop;
         }
         // ischeme -> scheme
-        elseif (($prop = substr($name, 1)) && array_key_exists($prop, $props))
-        {
+        elseif (($prop = substr($name, 1)) && array_key_exists($prop, $props)) {
             $name = $prop;
             $return = $this->$prop;
         }
         else
         {
             trigger_error('Undefined property: ' . get_class($this) . '::' . $name, E_USER_NOTICE);
-            $return = null;
+            $return = NULL;
         }
 
-        if ($return === null && isset($this->normalization[$this->scheme][$name]))
-        {
+        if ($return === NULL && isset($this->normalization[$this->scheme][$name])) {
             return $this->normalization[$this->scheme][$name];
         }
         else
@@ -212,18 +203,17 @@ class Requests_IRI
     /**
      * Overload __isset() to provide access via properties
      *
-     * @param string $name Property name
+     * @param  string $name Property name
      * @return bool
      */
     public function __isset($name)
     {
-        if (method_exists($this, 'get_' . $name) || isset($this->$name))
-        {
-            return true;
+        if (method_exists($this, 'get_' . $name) || isset($this->$name)) {
+            return TRUE;
         }
         else
         {
-            return false;
+            return FALSE;
         }
     }
 
@@ -234,8 +224,7 @@ class Requests_IRI
      */
     public function __unset($name)
     {
-        if (method_exists($this, 'set_' . $name))
-        {
+        if (method_exists($this, 'set_' . $name)) {
             call_user_func(array($this, 'set_' . $name), '');
         }
     }
@@ -245,7 +234,7 @@ class Requests_IRI
      *
      * @param string $iri
      */
-    public function __construct($iri = null)
+    public function __construct($iri = NULL)
     {
         $this->set_iri($iri);
     }
@@ -255,36 +244,29 @@ class Requests_IRI
      *
      * Returns false if $base is not absolute, otherwise an IRI.
      *
-     * @param IRI|string $base (Absolute) Base IRI
-     * @param IRI|string $relative Relative IRI
+     * @param  IRI|string $base     (Absolute) Base IRI
+     * @param  IRI|string $relative Relative IRI
      * @return IRI|false
      */
     public static function absolutize($base, $relative)
     {
-        if (!($relative instanceof Requests_IRI))
-        {
+        if (!($relative instanceof Requests_IRI)) {
             $relative = new Requests_IRI($relative);
         }
-        if (!$relative->is_valid())
-        {
-            return false;
+        if (!$relative->is_valid()) {
+            return FALSE;
         }
-        elseif ($relative->scheme !== null)
-        {
+        elseif ($relative->scheme !== NULL) {
             return clone $relative;
         }
         else
         {
-            if (!($base instanceof Requests_IRI))
-            {
+            if (!($base instanceof Requests_IRI)) {
                 $base = new Requests_IRI($base);
             }
-            if ($base->scheme !== null && $base->is_valid())
-            {
-                if ($relative->get_iri() !== '')
-                {
-                    if ($relative->iuserinfo !== null || $relative->ihost !== null || $relative->port !== null)
-                    {
+            if ($base->scheme !== NULL && $base->is_valid()) {
+                if ($relative->get_iri() !== '') {
+                    if ($relative->iuserinfo !== NULL || $relative->ihost !== NULL || $relative->port !== NULL) {
                         $target = clone $relative;
                         $target->scheme = $base->scheme;
                     }
@@ -295,18 +277,14 @@ class Requests_IRI
                         $target->iuserinfo = $base->iuserinfo;
                         $target->ihost = $base->ihost;
                         $target->port = $base->port;
-                        if ($relative->ipath !== '')
-                        {
-                            if ($relative->ipath[0] === '/')
-                            {
+                        if ($relative->ipath !== '') {
+                            if ($relative->ipath[0] === '/') {
                                 $target->ipath = $relative->ipath;
                             }
-                            elseif (($base->iuserinfo !== null || $base->ihost !== null || $base->port !== null) && $base->ipath === '')
-                            {
+                            elseif (($base->iuserinfo !== NULL || $base->ihost !== NULL || $base->port !== NULL) && $base->ipath === '') {
                                 $target->ipath = '/' . $relative->ipath;
                             }
-                            elseif (($last_segment = strrpos($base->ipath, '/')) !== false)
-                            {
+                            elseif (($last_segment = strrpos($base->ipath, '/')) !== FALSE) {
                                 $target->ipath = substr($base->ipath, 0, $last_segment + 1) . $relative->ipath;
                             }
                             else
@@ -319,12 +297,10 @@ class Requests_IRI
                         else
                         {
                             $target->ipath = $base->ipath;
-                            if ($relative->iquery !== null)
-                            {
+                            if ($relative->iquery !== NULL) {
                                 $target->iquery = $relative->iquery;
                             }
-                            elseif ($base->iquery !== null)
-                            {
+                            elseif ($base->iquery !== NULL) {
                                 $target->iquery = $base->iquery;
                             }
                         }
@@ -334,14 +310,14 @@ class Requests_IRI
                 else
                 {
                     $target = clone $base;
-                    $target->ifragment = null;
+                    $target->ifragment = NULL;
                 }
                 $target->scheme_normalization();
                 return $target;
             }
             else
             {
-                return false;
+                return FALSE;
             }
         }
     }
@@ -349,33 +325,27 @@ class Requests_IRI
     /**
      * Parse an IRI into scheme/authority/path/query/fragment segments
      *
-     * @param string $iri
+     * @param  string $iri
      * @return array
      */
     protected function parse_iri($iri)
     {
         $iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
-        if (preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match))
-        {
-            if ($match[1] === '')
-            {
-                $match['scheme'] = null;
+        if (preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match)) {
+            if ($match[1] === '') {
+                $match['scheme'] = NULL;
             }
-            if (!isset($match[3]) || $match[3] === '')
-            {
-                $match['authority'] = null;
+            if (!isset($match[3]) || $match[3] === '') {
+                $match['authority'] = NULL;
             }
-            if (!isset($match[5]))
-            {
+            if (!isset($match[5])) {
                 $match['path'] = '';
             }
-            if (!isset($match[6]) || $match[6] === '')
-            {
-                $match['query'] = null;
+            if (!isset($match[6]) || $match[6] === '') {
+                $match['query'] = NULL;
             }
-            if (!isset($match[8]) || $match[8] === '')
-            {
-                $match['fragment'] = null;
+            if (!isset($match[8]) || $match[8] === '') {
+                $match['fragment'] = NULL;
             }
             return $match;
         }
@@ -389,51 +359,43 @@ class Requests_IRI
     /**
      * Remove dot segments from a path
      *
-     * @param string $input
+     * @param  string $input
      * @return string
      */
     protected function remove_dot_segments($input)
     {
         $output = '';
-        while (strpos($input, './') !== false || strpos($input, '/.') !== false || $input === '.' || $input === '..')
+        while (strpos($input, './') !== FALSE || strpos($input, '/.') !== FALSE || $input === '.' || $input === '..')
         {
             // A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
-            if (strpos($input, '../') === 0)
-            {
+            if (strpos($input, '../') === 0) {
                 $input = substr($input, 3);
             }
-            elseif (strpos($input, './') === 0)
-            {
+            elseif (strpos($input, './') === 0) {
                 $input = substr($input, 2);
             }
             // B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
-            elseif (strpos($input, '/./') === 0)
-            {
+            elseif (strpos($input, '/./') === 0) {
                 $input = substr($input, 2);
             }
-            elseif ($input === '/.')
-            {
+            elseif ($input === '/.') {
                 $input = '/';
             }
             // C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
-            elseif (strpos($input, '/../') === 0)
-            {
+            elseif (strpos($input, '/../') === 0) {
                 $input = substr($input, 3);
                 $output = substr_replace($output, '', strrpos($output, '/'));
             }
-            elseif ($input === '/..')
-            {
+            elseif ($input === '/..') {
                 $input = '/';
                 $output = substr_replace($output, '', strrpos($output, '/'));
             }
             // D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
-            elseif ($input === '.' || $input === '..')
-            {
+            elseif ($input === '.' || $input === '..') {
                 $input = '';
             }
             // E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
-            elseif (($pos = strpos($input, '/', 1)) !== false)
-            {
+            elseif (($pos = strpos($input, '/', 1)) !== FALSE) {
                 $output .= substr($input, 0, $pos);
                 $input = substr_replace($input, '', 0, $pos);
             }
@@ -449,13 +411,13 @@ class Requests_IRI
     /**
      * Replace invalid character with percent encoding
      *
-     * @param string $string Input string
-     * @param string $extra_chars Valid characters not in iunreserved or
+     * @param  string $string      Input string
+     * @param  string $extra_chars Valid characters not in iunreserved or
      *                            iprivate (this is ASCII-only)
-     * @param bool $iprivate Allow iprivate
+     * @param  bool   $iprivate    Allow iprivate
      * @return string
      */
-    protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = false)
+    protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = FALSE)
     {
         // Normalize as many pct-encoded sections as possible
         $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array(&$this, 'remove_iunreserved_percent_encoded'), $string);
@@ -478,26 +440,23 @@ class Requests_IRI
             $start = $position;
 
             // By default we are valid
-            $valid = true;
+            $valid = TRUE;
 
             // No one byte sequences are valid due to the while.
             // Two byte sequence:
-            if (($value & 0xE0) === 0xC0)
-            {
+            if (($value & 0xE0) === 0xC0) {
                 $character = ($value & 0x1F) << 6;
                 $length = 2;
                 $remaining = 1;
             }
             // Three byte sequence:
-            elseif (($value & 0xF0) === 0xE0)
-            {
+            elseif (($value & 0xF0) === 0xE0) {
                 $character = ($value & 0x0F) << 12;
                 $length = 3;
                 $remaining = 2;
             }
             // Four byte sequence:
-            elseif (($value & 0xF8) === 0xF0)
-            {
+            elseif (($value & 0xF8) === 0xF0) {
                 $character = ($value & 0x07) << 18;
                 $length = 4;
                 $remaining = 3;
@@ -505,28 +464,25 @@ class Requests_IRI
             // Invalid byte:
             else
             {
-                $valid = false;
+                $valid = FALSE;
                 $length = 1;
                 $remaining = 0;
             }
 
-            if ($remaining)
-            {
-                if ($position + $length <= $strlen)
-                {
+            if ($remaining) {
+                if ($position + $length <= $strlen) {
                     for ($position++; $remaining; $position++)
                     {
                         $value = ord($string[$position]);
 
                         // Check that the byte is valid, then add it to the character:
-                        if (($value & 0xC0) === 0x80)
-                        {
+                        if (($value & 0xC0) === 0x80) {
                             $character |= ($value & 0x3F) << (--$remaining * 6);
                         }
                         // If it is invalid, count the sequence as invalid and reprocess the current byte:
                         else
                         {
-                            $valid = false;
+                            $valid = FALSE;
                             $position--;
                             break;
                         }
@@ -535,14 +491,12 @@ class Requests_IRI
                 else
                 {
                     $position = $strlen - 1;
-                    $valid = false;
+                    $valid = FALSE;
                 }
             }
 
             // Percent encode anything invalid or not in ucschar
-            if (
-                // Invalid sequences
-                !$valid
+            if (!$valid
                 // Non-shortest form sequences are invalid
                 || $length > 1 && $character <= 0x7F
                 || $length > 2 && $character <= 0x7FF
@@ -551,20 +505,13 @@ class Requests_IRI
                 // Noncharacters
                 || ($character & 0xFFFE) === 0xFFFE
                 || $character >= 0xFDD0 && $character <= 0xFDEF
-                || (
-                    // Everything else not in ucschar
-                       $character > 0xD7FF && $character < 0xF900
-                    || $character < 0xA0
-                    || $character > 0xEFFFD
-                )
-                && (
-                    // Everything not in iprivate, if it applies
-                       !$iprivate
-                    || $character < 0xE000
-                    || $character > 0x10FFFD
-                )
-            )
-            {
+                || (                $character > 0xD7FF && $character < 0xF900
+                || $character < 0xA0
+                || $character > 0xEFFFD)
+                && (                !$iprivate
+                || $character < 0xE000
+                || $character > 0x10FFFD)
+            ) {
                 // If we were a character, pretend we weren't, but rather an error.
                 if ($valid)
                     $position--;
@@ -588,7 +535,7 @@ class Requests_IRI
      * Removes sequences of percent encoded bytes that represent UTF-8
      * encoded characters in iunreserved
      *
-     * @param array $match PCRE match
+     * @param  array $match PCRE match
      * @return string Replacement
      */
     protected function remove_iunreserved_percent_encoded($match)
@@ -609,37 +556,32 @@ class Requests_IRI
             $value = hexdec($bytes[$i]);
 
             // If we're the first byte of sequence:
-            if (!$remaining)
-            {
+            if (!$remaining) {
                 // Start position
                 $start = $i;
 
                 // By default we are valid
-                $valid = true;
+                $valid = TRUE;
 
                 // One byte sequence:
-                if ($value <= 0x7F)
-                {
+                if ($value <= 0x7F) {
                     $character = $value;
                     $length = 1;
                 }
                 // Two byte sequence:
-                elseif (($value & 0xE0) === 0xC0)
-                {
+                elseif (($value & 0xE0) === 0xC0) {
                     $character = ($value & 0x1F) << 6;
                     $length = 2;
                     $remaining = 1;
                 }
                 // Three byte sequence:
-                elseif (($value & 0xF0) === 0xE0)
-                {
+                elseif (($value & 0xF0) === 0xE0) {
                     $character = ($value & 0x0F) << 12;
                     $length = 3;
                     $remaining = 2;
                 }
                 // Four byte sequence:
-                elseif (($value & 0xF8) === 0xF0)
-                {
+                elseif (($value & 0xF8) === 0xF0) {
                     $character = ($value & 0x07) << 18;
                     $length = 4;
                     $remaining = 3;
@@ -647,7 +589,7 @@ class Requests_IRI
                 // Invalid byte:
                 else
                 {
-                    $valid = false;
+                    $valid = FALSE;
                     $remaining = 0;
                 }
             }
@@ -655,27 +597,23 @@ class Requests_IRI
             else
             {
                 // Check that the byte is valid, then add it to the character:
-                if (($value & 0xC0) === 0x80)
-                {
+                if (($value & 0xC0) === 0x80) {
                     $remaining--;
                     $character |= ($value & 0x3F) << ($remaining * 6);
                 }
                 // If it is invalid, count the sequence as invalid and reprocess the current byte as the start of a sequence:
                 else
                 {
-                    $valid = false;
+                    $valid = FALSE;
                     $remaining = 0;
                     $i--;
                 }
             }
 
             // If we've reached the end of the current byte sequence, append it to Unicode::$data
-            if (!$remaining)
-            {
+            if (!$remaining) {
                 // Percent encode anything invalid or not in iunreserved
-                if (
-                    // Invalid sequences
-                    !$valid
+                if (!$valid
                     // Non-shortest form sequences are invalid
                     || $length > 1 && $character <= 0x7F
                     || $length > 2 && $character <= 0x7FF
@@ -693,8 +631,7 @@ class Requests_IRI
                     || $character > 0x7A && $character < 0x7E
                     || $character > 0x7E && $character < 0xA0
                     || $character > 0xD7FF && $character < 0xF900
-                )
-                {
+                ) {
                     for ($j = $start; $j <= $i; $j++)
                     {
                         $string .= '%' . strtoupper($bytes[$j]);
@@ -712,8 +649,7 @@ class Requests_IRI
 
         // If we have any bytes left over they are invalid (i.e., we are
         // mid-way through a multi-byte sequence)
-        if ($remaining)
-        {
+        if ($remaining) {
             for ($j = $start; $j < $len; $j++)
             {
                 $string .= '%' . strtoupper($bytes[$j]);
@@ -725,33 +661,26 @@ class Requests_IRI
 
     protected function scheme_normalization()
     {
-        if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo'])
-        {
-            $this->iuserinfo = null;
+        if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo']) {
+            $this->iuserinfo = NULL;
         }
-        if (isset($this->normalization[$this->scheme]['ihost']) && $this->ihost === $this->normalization[$this->scheme]['ihost'])
-        {
-            $this->ihost = null;
+        if (isset($this->normalization[$this->scheme]['ihost']) && $this->ihost === $this->normalization[$this->scheme]['ihost']) {
+            $this->ihost = NULL;
         }
-        if (isset($this->normalization[$this->scheme]['port']) && $this->port === $this->normalization[$this->scheme]['port'])
-        {
-            $this->port = null;
+        if (isset($this->normalization[$this->scheme]['port']) && $this->port === $this->normalization[$this->scheme]['port']) {
+            $this->port = NULL;
         }
-        if (isset($this->normalization[$this->scheme]['ipath']) && $this->ipath === $this->normalization[$this->scheme]['ipath'])
-        {
+        if (isset($this->normalization[$this->scheme]['ipath']) && $this->ipath === $this->normalization[$this->scheme]['ipath']) {
             $this->ipath = '';
         }
-        if (isset($this->ihost) && empty($this->ipath))
-        {
+        if (isset($this->ihost) && empty($this->ipath)) {
             $this->ipath = '/';
         }
-        if (isset($this->normalization[$this->scheme]['iquery']) && $this->iquery === $this->normalization[$this->scheme]['iquery'])
-        {
-            $this->iquery = null;
+        if (isset($this->normalization[$this->scheme]['iquery']) && $this->iquery === $this->normalization[$this->scheme]['iquery']) {
+            $this->iquery = NULL;
         }
-        if (isset($this->normalization[$this->scheme]['ifragment']) && $this->ifragment === $this->normalization[$this->scheme]['ifragment'])
-        {
-            $this->ifragment = null;
+        if (isset($this->normalization[$this->scheme]['ifragment']) && $this->ifragment === $this->normalization[$this->scheme]['ifragment']) {
+            $this->ifragment = NULL;
         }
     }
 
@@ -763,49 +692,39 @@ class Requests_IRI
      */
     public function is_valid()
     {
-        $isauthority = $this->iuserinfo !== null || $this->ihost !== null || $this->port !== null;
-        if ($this->ipath !== '' &&
-            (
-                $isauthority && (
-                    $this->ipath[0] !== '/' ||
-                    substr($this->ipath, 0, 2) === '//'
-                ) ||
-                (
-                    $this->scheme === null &&
-                    !$isauthority &&
-                    strpos($this->ipath, ':') !== false &&
-                    (strpos($this->ipath, '/') === false ? true : strpos($this->ipath, ':') < strpos($this->ipath, '/'))
-                )
-            )
-        )
-        {
-            return false;
+        $isauthority = $this->iuserinfo !== NULL || $this->ihost !== NULL || $this->port !== NULL;
+        if ($this->ipath !== '' 
+            && (            $isauthority && (            $this->ipath[0] !== '/' 
+            || substr($this->ipath, 0, 2) === '//'            ) 
+            || (            $this->scheme === NULL 
+            && !$isauthority 
+            && strpos($this->ipath, ':') !== FALSE 
+            && (strpos($this->ipath, '/') === FALSE ? TRUE : strpos($this->ipath, ':') < strpos($this->ipath, '/'))            ))
+        ) {
+            return FALSE;
         }
 
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the entire IRI. Returns true on success, false on failure (if there
      * are any invalid characters).
      *
-     * @param string $iri
+     * @param  string $iri
      * @return bool
      */
     protected function set_iri($iri)
     {
         static $cache;
-        if (!$cache)
-        {
+        if (!$cache) {
             $cache = array();
         }
 
-        if ($iri === null)
-        {
-            return true;
+        if ($iri === NULL) {
+            return TRUE;
         }
-        elseif (isset($cache[$iri]))
-        {
+        elseif (isset($cache[$iri])) {
             list($this->scheme,
                  $this->iuserinfo,
                  $this->ihost,
@@ -842,32 +761,30 @@ class Requests_IRI
      * Set the scheme. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $scheme
+     * @param  string $scheme
      * @return bool
      */
     protected function set_scheme($scheme)
     {
-        if ($scheme === null)
-        {
-            $this->scheme = null;
+        if ($scheme === NULL) {
+            $this->scheme = NULL;
         }
-        elseif (!preg_match('/^[A-Za-z][0-9A-Za-z+\-.]*$/', $scheme))
-        {
-            $this->scheme = null;
-            return false;
+        elseif (!preg_match('/^[A-Za-z][0-9A-Za-z+\-.]*$/', $scheme)) {
+            $this->scheme = NULL;
+            return FALSE;
         }
         else
         {
             $this->scheme = strtolower($scheme);
         }
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the authority. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $authority
+     * @param  string $authority
      * @return bool
      */
     protected function set_authority($authority)
@@ -876,15 +793,13 @@ class Requests_IRI
         if (!$cache)
             $cache = array();
 
-        if ($authority === null)
-        {
-            $this->iuserinfo = null;
-            $this->ihost = null;
-            $this->port = null;
-            return true;
+        if ($authority === NULL) {
+            $this->iuserinfo = NULL;
+            $this->ihost = NULL;
+            $this->port = NULL;
+            return TRUE;
         }
-        elseif (isset($cache[$authority]))
-        {
+        elseif (isset($cache[$authority])) {
             list($this->iuserinfo,
                  $this->ihost,
                  $this->port,
@@ -895,26 +810,23 @@ class Requests_IRI
         else
         {
             $remaining = $authority;
-            if (($iuserinfo_end = strrpos($remaining, '@')) !== false)
-            {
+            if (($iuserinfo_end = strrpos($remaining, '@')) !== FALSE) {
                 $iuserinfo = substr($remaining, 0, $iuserinfo_end);
                 $remaining = substr($remaining, $iuserinfo_end + 1);
             }
             else
             {
-                $iuserinfo = null;
+                $iuserinfo = NULL;
             }
-            if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false)
-            {
-                if (($port = substr($remaining, $port_start + 1)) === false)
-                {
-                    $port = null;
+            if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== FALSE) {
+                if (($port = substr($remaining, $port_start + 1)) === FALSE) {
+                    $port = NULL;
                 }
                 $remaining = substr($remaining, 0, $port_start);
             }
             else
             {
-                $port = null;
+                $port = NULL;
             }
 
             $return = $this->set_userinfo($iuserinfo) &&
@@ -933,14 +845,13 @@ class Requests_IRI
     /**
      * Set the iuserinfo.
      *
-     * @param string $iuserinfo
+     * @param  string $iuserinfo
      * @return bool
      */
     protected function set_userinfo($iuserinfo)
     {
-        if ($iuserinfo === null)
-        {
-            $this->iuserinfo = null;
+        if ($iuserinfo === NULL) {
+            $this->iuserinfo = NULL;
         }
         else
         {
@@ -948,33 +859,30 @@ class Requests_IRI
             $this->scheme_normalization();
         }
 
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the ihost. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $ihost
+     * @param  string $ihost
      * @return bool
      */
     protected function set_host($ihost)
     {
-        if ($ihost === null)
-        {
-            $this->ihost = null;
-            return true;
+        if ($ihost === NULL) {
+            $this->ihost = NULL;
+            return TRUE;
         }
-        elseif (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']')
-        {
-            if (Requests_IPv6::check_ipv6(substr($ihost, 1, -1)))
-            {
+        elseif (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']') {
+            if (Requests_IPv6::check_ipv6(substr($ihost, 1, -1))) {
                 $this->ihost = '[' . Requests_IPv6::compress(substr($ihost, 1, -1)) . ']';
             }
             else
             {
-                $this->ihost = null;
-                return false;
+                $this->ihost = NULL;
+                return FALSE;
             }
         }
         else
@@ -988,8 +896,7 @@ class Requests_IRI
             $strlen = strlen($ihost);
             while (($position += strcspn($ihost, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ%', $position)) < $strlen)
             {
-                if ($ihost[$position] === '%')
-                {
+                if ($ihost[$position] === '%') {
                     $position += 3;
                 }
                 else
@@ -1004,55 +911,51 @@ class Requests_IRI
 
         $this->scheme_normalization();
 
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the port. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $port
+     * @param  string $port
      * @return bool
      */
     protected function set_port($port)
     {
-        if ($port === null)
-        {
-            $this->port = null;
-            return true;
+        if ($port === NULL) {
+            $this->port = NULL;
+            return TRUE;
         }
-        elseif (strspn($port, '0123456789') === strlen($port))
-        {
+        elseif (strspn($port, '0123456789') === strlen($port)) {
             $this->port = (int) $port;
             $this->scheme_normalization();
-            return true;
+            return TRUE;
         }
         else
         {
-            $this->port = null;
-            return false;
+            $this->port = NULL;
+            return FALSE;
         }
     }
 
     /**
      * Set the ipath.
      *
-     * @param string $ipath
+     * @param  string $ipath
      * @return bool
      */
     protected function set_path($ipath)
     {
         static $cache;
-        if (!$cache)
-        {
+        if (!$cache) {
             $cache = array();
         }
 
         $ipath = (string) $ipath;
 
-        if (isset($cache[$ipath]))
-        {
-            $this->ipath = $cache[$ipath][(int) ($this->scheme !== null)];
+        if (isset($cache[$ipath])) {
+            $this->ipath = $cache[$ipath][(int) ($this->scheme !== NULL)];
         }
         else
         {
@@ -1060,50 +963,48 @@ class Requests_IRI
             $removed = $this->remove_dot_segments($valid);
 
             $cache[$ipath] = array($valid, $removed);
-            $this->ipath =  ($this->scheme !== null) ? $removed : $valid;
+            $this->ipath =  ($this->scheme !== NULL) ? $removed : $valid;
         }
         $this->scheme_normalization();
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the iquery.
      *
-     * @param string $iquery
+     * @param  string $iquery
      * @return bool
      */
     protected function set_query($iquery)
     {
-        if ($iquery === null)
-        {
-            $this->iquery = null;
+        if ($iquery === NULL) {
+            $this->iquery = NULL;
         }
         else
         {
-            $this->iquery = $this->replace_invalid_with_pct_encoding($iquery, '!$&\'()*+,;=:@/?', true);
+            $this->iquery = $this->replace_invalid_with_pct_encoding($iquery, '!$&\'()*+,;=:@/?', TRUE);
             $this->scheme_normalization();
         }
-        return true;
+        return TRUE;
     }
 
     /**
      * Set the ifragment.
      *
-     * @param string $ifragment
+     * @param  string $ifragment
      * @return bool
      */
     protected function set_fragment($ifragment)
     {
-        if ($ifragment === null)
-        {
-            $this->ifragment = null;
+        if ($ifragment === NULL) {
+            $this->ifragment = NULL;
         }
         else
         {
             $this->ifragment = $this->replace_invalid_with_pct_encoding($ifragment, '!$&\'()*+,;=:@/?');
             $this->scheme_normalization();
         }
-        return true;
+        return TRUE;
     }
 
     /**
@@ -1114,8 +1015,7 @@ class Requests_IRI
     protected function to_uri($string)
     {
         static $non_ascii;
-        if (!$non_ascii)
-        {
+        if (!$non_ascii) {
             $non_ascii = implode('', range("\x80", "\xFF"));
         }
 
@@ -1138,27 +1038,22 @@ class Requests_IRI
      */
     protected function get_iri()
     {
-        if (!$this->is_valid())
-        {
-            return false;
+        if (!$this->is_valid()) {
+            return FALSE;
         }
 
         $iri = '';
-        if ($this->scheme !== null)
-        {
+        if ($this->scheme !== NULL) {
             $iri .= $this->scheme . ':';
         }
-        if (($iauthority = $this->get_iauthority()) !== null)
-        {
+        if (($iauthority = $this->get_iauthority()) !== NULL) {
             $iri .= '//' . $iauthority;
         }
         $iri .= $this->ipath;
-        if ($this->iquery !== null)
-        {
+        if ($this->iquery !== NULL) {
             $iri .= '?' . $this->iquery;
         }
-        if ($this->ifragment !== null)
-        {
+        if ($this->ifragment !== NULL) {
             $iri .= '#' . $this->ifragment;
         }
 
@@ -1182,26 +1077,22 @@ class Requests_IRI
      */
     protected function get_iauthority()
     {
-        if ($this->iuserinfo !== null || $this->ihost !== null || $this->port !== null)
-        {
+        if ($this->iuserinfo !== NULL || $this->ihost !== NULL || $this->port !== NULL) {
             $iauthority = '';
-            if ($this->iuserinfo !== null)
-            {
+            if ($this->iuserinfo !== NULL) {
                 $iauthority .= $this->iuserinfo . '@';
             }
-            if ($this->ihost !== null)
-            {
+            if ($this->ihost !== NULL) {
                 $iauthority .= $this->ihost;
             }
-            if ($this->port !== null)
-            {
+            if ($this->port !== NULL) {
                 $iauthority .= ':' . $this->port;
             }
             return $iauthority;
         }
         else
         {
-            return null;
+            return NULL;
         }
     }
 

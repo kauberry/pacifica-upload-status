@@ -1,3 +1,4 @@
+// @codingStandardsIgnoreFile
 <?php
   //$this->load->view('pnnl_template/leftnav');
 //  var_dump($infoData);
