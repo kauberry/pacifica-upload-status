@@ -1,4 +1,6 @@
+<?php
 // @codingStandardsIgnoreFile
+?>
 <?= doctype('html5'); ?>
 <?php
   $page_header = isset($page_header) ? $page_header : "Untitled Page";

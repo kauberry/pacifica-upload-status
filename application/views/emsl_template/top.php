@@ -1,4 +1,6 @@
+<?php
 // @codingStandardsIgnoreFile
+?>
 <div id="subBanner" style="position:relative;">
   <?php if(empty($banner_file)) : ?>
   <div class="banner_bar_background">

@@ -1,4 +1,6 @@
+<?php
 // @codingStandardsIgnoreFile
+?>
 <?= doctype('html5'); ?>
 <?php
   $form_object = isset($form_object) ? $form_object : '';

@@ -1,5 +1,5 @@
+<?php
 // @codingStandardsIgnoreFile
-<?php 
 $first_used = FALSE;
 $current_page = $current_page_info['uri'];
 ?>

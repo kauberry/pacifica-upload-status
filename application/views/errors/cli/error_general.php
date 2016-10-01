@@ -1,5 +1,5 @@
-// @codingStandardsIgnoreFile
 <?php
+// @codingStandardsIgnoreFile
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 echo "\nERROR: ",

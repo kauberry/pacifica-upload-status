@@ -1,4 +1,6 @@
+<?php
 // @codingStandardsIgnoreFile
+?>
 <div id="topBanner">
   <a id="pnnlLogo" href="http://www.pnl.gov/">Pacific Northwest National Laboratory</a>
   <a id="skipNav" href="#main"><span>Skip to Main Content</span></a>
