@@ -111,19 +111,26 @@ var get_latest_transactions = function(){
 };
 
 var update_content = function(event){
-    var el = null;
-    if(event != null) {
-        el = $(event.target);
-        if(el.prop('id') == 'instrument_selector' && el.val() == initial_instrument_id && !initial_load) {
-            return false;
-        }
-        if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0) {
-            $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 30, path: '/' });
-        }
-    }
     var proposal_id = $('#proposal_selector').val() != null ? $('#proposal_selector').val() : initial_proposal_id;
     var instrument_id = $('#instrument_selector').val() != null ? $('#instrument_selector').val() : initial_instrument_id;
     var time_frame = $('#timeframe_selector').val() != null ? $('#timeframe_selector').val() : 0;
+    var el = null;
+    if(event != null) {
+        el = $(event.target);
+        if(!initial_load){
+            if(el.prop('id') == 'instrument_selector' && el.val() == initial_instrument_id) {
+                return false;
+            }
+            if(['proposal_selector','instrument_selector','timeframe_selector'].indexOf(el.prop('id')) >= 0) {
+                $.cookie('myemsl_status_last_' + el.prop('id'), el.val(),{ expires: 30, path: '/' });
+            }
+        }else{
+            if(initial_instrument_id > 0){
+                $('#instrument_selector').val(initial_instrument_id);
+            }
+        }
+    }
+    initial_load = false;
     var ts = moment().format('YYYYMMDDHHmmss');
     var url = '/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
     if(proposal_id && instrument_id && time_frame) {
@@ -249,7 +256,7 @@ var formatInstrumentSelection = function(item){
     var current_proposal_id = $('#proposal_selector').val();
     if(item.id > 0) {
         markup = item.text;
-    }else if(item.id <= 0) {
+    }else if(item.id < 0) {
         markup = "All Instruments for Proposal " + current_proposal_id;
     }
     return markup;

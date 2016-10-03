@@ -35,7 +35,7 @@
             <?php endif; ?>
             <div class="full_width_block">
                 <h3><span>Metadata Uploaded</span><span id='metadata_<?= $transaction_id ?>_dc' class="disclosure_button dc_up"></span></h3>
-                <ul class="metadata_container">
+                <ul class="metadata_container" style="display:none;">
                     <div class='left_block'>
                         <li>
                             <span class="metadata_term">Transaction ID: </span>
@@ -59,7 +59,7 @@
                 </ul>
             </div>
             <?php if($request_type == 't'): ?>
-            <div class="full_width_block" style="width:95%;">
+            <div class="full_width_block" style="width:95%;float:left;">
                 <h3>File List</h3>
                 <div class="disclosure_block">
                     <div id="tree_<?= $transaction_id ?>" class="tree_holder">
