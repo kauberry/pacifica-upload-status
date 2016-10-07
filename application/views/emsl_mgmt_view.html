@@ -21,7 +21,7 @@
                 <legend>Instrument Selection</legend>
                 <div class="full_width_block" id="proposal_selector_container">
                   <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:96%;">
-                  <?php $this->load->view('proposal_selector_insert.html', array('proposal_list' => $proposal_list, 'selected_proposal' => $selected_proposal)); ?>
+                    <?php $this->load->view('proposal_selector_insert.html', array('proposal_list' => $proposal_list, 'selected_proposal' => $selected_proposal)); ?>
                   </select>
                 </div>
 
@@ -34,7 +34,7 @@
                   </div>
                   <div class="right_block" id="timeframe_selector_container">
                     <select id="timeframe_selector" class="criterion_selector" name="timeframe_selector" style="width:100%;">
-                      <?php $period_list = array(
+                        <?php $period_list = array(
                         '1' => "Last 24 Hours",
                         '2' => "Last 48 Hours",
                         '7' => "Last 7 Days",
@@ -42,10 +42,10 @@
                         '30' => "Last Month",
                         '365' => "Last Year"); ?>
                       <option></option>
-                      <?php foreach($period_list as $period => $desc): ?>
+                        <?php foreach($period_list as $period => $desc): ?>
                         <?php $selected_state = $period == $time_period ? ' selected="selected"' : ''; ?>
                       <option value="<?= $period ?>"<?= $selected_state ?>><?= $desc ?></option>
-                      <?php endforeach; ?>
+                        <?php endforeach; ?>
                     </select>
                   </div>
                 </div>
@@ -53,7 +53,7 @@
             </form>
 
           </div>
-          <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
+            <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
           <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
             <fieldset id="cart_listing_fieldset">
               <legend>Download Queue</legend>
@@ -74,7 +74,7 @@
   </div>
 <script type='text/javascript'>
 //<![CDATA[
-  <?= $js ?>
+    <?= $js ?>
 //]]>
 </script>
 

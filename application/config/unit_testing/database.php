@@ -1,17 +1,15 @@
 <?php
 /**
- * CI Default Database
+ * CI Unit Testing Database Config
  *
  * PHP Version 5
  *
  * @category Configuration
- * @package  Default_Database
+ * @package  Unit_Testing_Database
  * @author   Ken Auberry <Kenneth.Auberry@pnnl.gov>
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://github.com/EMSL-MSC/pacifica-upload-status
+ * @link     http://github.com/EMSL-MSC/pacifica-reporting
  */
-
- if (! defined('BASEPATH')) exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -30,7 +28,7 @@
 | ['password'] The password used to connect to the database
 | ['database'] The name of the database you want to connect to
 | ['dbdriver'] The database type. ie: mysql.  Currently supported:
-				 mysql, mysqli, postgre, odbc, mssql, sqlite, oci8
+         mysql, mysqli, postgre, odbc, mssql, sqlite, oci8
 | ['dbprefix'] You can add an optional prefix, which will be added
 |        to the table name when using the  Active Record class
 | ['pconnect'] TRUE/FALSE - Whether to use a persistent connection
@@ -59,31 +57,39 @@
 */
 
 $active_group = 'default';
-// $active_record = TRUE;
 $query_builder = TRUE;
-
-// $ini_file_name = stristr($_SERVER['SERVER_NAME'], 'dev1.my') === FALSE ? 'general.ini' : 'general_dpp.ini';
-$ini_file_name = 'general.ini';
-$myemsl_array = parse_ini_file("/etc/myemsl/".$ini_file_name, TRUE);
-
+$self = pathinfo(__FILE__, PATHINFO_DIRNAME);
+$db_dir = dirname(dirname(dirname($self))).DIRECTORY_SEPARATOR."tests/database/";
+//myemsl db
 $db['default'] = array(
-  'hostname' => $myemsl_array['metadata']['host'],
-  'username' => $myemsl_array['metadata']['user'],
-  'password' => $myemsl_array['metadata']['password'],
-  'database' => $myemsl_array['metadata']['database'],
-  'dbdriver' => "postgre",
-  'dbprefix' => "myemsl.",
-  'pconnect' => TRUE,
-  'db_debug' => TRUE,
-  'cache_on' => FALSE,
-  'cachedir' => ""
+    'database' => $db_dir.'myemsl_metadata-myemsl.sqlite3',
+    'dbdriver' => "sqlite3",
+    'pconnect' => TRUE,
+    'db_debug' => TRUE,
+    'cache_on' => FALSE,
+    'cachedir' => ""
 );
 
-$db['eus_for_myemsl'] = $db['default'];
-$db['eus_for_myemsl']['dbprefix'] = 'eus.';
 
-$db['website_prefs'] = $db['default'];
-$db['website_prefs']['dbprefix'] = 'website_prefs.';
+$db['eus_for_myemsl'] = array(
+    'database' => $db_dir.'myemsl_metadata-eus.sqlite3',
+    'dbdriver' => "sqlite3",
+    'pconnect' => TRUE,
+    'db_debug' => TRUE,
+    'cache_on' => FALSE,
+'cachedir' => ""
+);
+
+
+$db['website_prefs'] = array(
+    'database' => $db_dir.'myemsl_metadata-website_prefs.sqlite3',
+    'dbdriver' => "sqlite3",
+    'pconnect' => TRUE,
+    'db_debug' => TRUE,
+    'cache_on' => FALSE,
+    'cachedir' => ""
+);
+
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

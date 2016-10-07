@@ -1,4 +1,18 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+/**
+ * CI Default Hooks
+ *
+ * PHP Version 5
+ *
+ * @category Configuration
+ * @package  Default_Hooks
+ * @author   Ken Auberry <Kenneth.Auberry@pnnl.gov>
+ * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link     http://github.com/EMSL-MSC/pacifica-upload-status
+ */
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 /*
 | -------------------------------------------------------------------------
 | Hooks
@@ -9,8 +23,3 @@
 |	http://codeigniter.com/user_guide/general/hooks.html
 |
 */
-
-
-
-/* End of file hooks.php */
-/* Location: ./application/config/hooks.php */

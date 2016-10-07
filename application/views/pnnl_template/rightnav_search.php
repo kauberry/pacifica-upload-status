@@ -20,7 +20,7 @@
 <div id="rightCol">
   <h2>User Information</h2>
   <h3>Logged in as</h3>
-  <p><?= anchor('/edit/my_user_details',$full_name, array('title'=>'Edit User Information')) ?></p>
+  <p><?= anchor('/edit/my_user_details', $full_name, array('title'=>'Edit User Information')) ?></p>
   <h2>Additional Information</h2>
   <h3>Contacts</h3>
   <p>WebMaster<br /><a href="mailto:ken.auberry@pnl.gov" class="email">Ken Auberry</a></p>

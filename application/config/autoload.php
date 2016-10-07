@@ -1,4 +1,16 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+/**
+ * CI Auto Loader
+ *
+ * PHP Version 5
+ *
+ * @category Configuration
+ * @package  AutoLoader
+ * @author   Ken Auberry <Kenneth.Auberry@pnnl.gov>
+ * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link     http://github.com/EMSL-MSC/pacifica-upload-status
+ */
+ defined('BASEPATH') OR exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | AUTO-LOADER
@@ -20,40 +32,58 @@
 |
 | 1. Packages
 | 2. Libraries
-| 3. Helper files
-| 4. Custom config files
-| 5. Language files
-| 6. Models
+| 3. Drivers
+| 4. Helper files
+| 5. Custom config files
+| 6. Language files
+| 7. Models
 |
 */
 
 /*
 | -------------------------------------------------------------------
-|  Auto-load Packges
+|  Auto-load Packages
 | -------------------------------------------------------------------
 | Prototype:
 |
 |  $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
 |
 */
-
 $autoload['packages'] = array();
-
 
 /*
 | -------------------------------------------------------------------
 |  Auto-load Libraries
 | -------------------------------------------------------------------
-| These are the classes located in the system/libraries folder
-| or in your application/libraries folder.
+| These are the classes located in system/libraries/ or your
+| application/libraries/ directory, with the addition of the
+| 'database' library, which is somewhat of a special case.
 |
 | Prototype:
 |
-|	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
+|	$autoload['libraries'] = array('database', 'email', 'session');
+|
+| You can also supply an alternative library name to be assigned
+| in the controller:
+|
+|	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-
 $autoload['libraries'] = array();
 
+/*
+| -------------------------------------------------------------------
+|  Auto-load Drivers
+| -------------------------------------------------------------------
+| These classes are located in system/libraries/ or in your
+| application/libraries/ directory, but are also placed inside their
+| own subdirectory and they extend the CI_Driver_Library class. They
+| offer multiple interchangeable driver options.
+|
+| Prototype:
+|
+|	$autoload['drivers'] = array('cache');
+*/
+$autoload['drivers'] = array();
 
 /*
 | -------------------------------------------------------------------
@@ -63,9 +93,7 @@ $autoload['libraries'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-
 $autoload['helper'] = array();
-
 
 /*
 | -------------------------------------------------------------------
@@ -79,9 +107,7 @@ $autoload['helper'] = array();
 | config files.  Otherwise, leave it blank.
 |
 */
-
 $autoload['config'] = array('pacifica');
-
 
 /*
 | -------------------------------------------------------------------
@@ -95,9 +121,7 @@ $autoload['config'] = array('pacifica');
 | "codeigniter_lang.php" would be referenced as array('codeigniter');
 |
 */
-
 $autoload['language'] = array();
-
 
 /*
 | -------------------------------------------------------------------
@@ -105,12 +129,11 @@ $autoload['language'] = array();
 | -------------------------------------------------------------------
 | Prototype:
 |
-|	$autoload['model'] = array('model1', 'model2');
+|	$autoload['model'] = array('first_model', 'second_model');
 |
+| You can also supply an alternative model name to be assigned
+| in the controller:
+|
+|	$autoload['model'] = array('first_model' => 'first');
 */
-
 $autoload['model'] = array();
-
-
-/* End of file autoload.php */
-/* Location: ./application/config/autoload.php */
