@@ -70,9 +70,10 @@ class Ajax extends Baseline_controller
         $results = array(
             'total_count' => sizeof($prop_list),
             'incomplete_results' => FALSE,
+            'more' => FALSE,
             'items' => array()
         );
-        $max_text_len = 110;
+        $max_text_len = 200;
         foreach($prop_list as $item){
             $textLength = strlen($item['title']);
             $result = substr_replace(

@@ -27,11 +27,12 @@ var spinner_opts = {
 
 $(
     function(){
-        if($('#instrument_selector')) {
-            inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
-        }else{
-            inst_id = -1;
-        }
+        // if($('#instrument_selector')) {
+        //     inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
+        // }else{
+        //     inst_id = -1;
+        // }
+        update_content();
     }
 );
 
@@ -114,6 +115,14 @@ var update_content = function(event){
     var proposal_id = $('#proposal_selector').val() != null ? $('#proposal_selector').val() : initial_proposal_id;
     var instrument_id = $('#instrument_selector').val() != null ? $('#instrument_selector').val() : initial_instrument_id;
     var time_frame = $('#timeframe_selector').val() != null ? $('#timeframe_selector').val() : 0;
+    // if($('#proposal_selector').val() == null){
+    //     if(initial_proposal_id != null){
+    //         $('#proposal_selector').val(initial_proposal_id).trigger('change');
+    //     }else{
+    //         $('#instrument_selector').val('').trigger('change');
+    //     }
+    // }
+    // debugger;
     var el = null;
     if(event != null) {
         el = $(event.target);
