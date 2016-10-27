@@ -241,7 +241,7 @@ class Status extends Baseline_controller
             $this->page_data['script_uris']
                 = array_merge(
                     $this->page_data['script_uris'], array(
-                    '/resources/scripts/emsl_mgmt_view.js'
+                    '/project_resources/scripts/emsl_mgmt_view.js'
                     )
                 );
 
@@ -372,8 +372,14 @@ class Status extends Baseline_controller
         $this->page_data['cart_data'] = array(
             'carts' => $this->cart->get_active_carts($this->user_id, FALSE)
         );
-        krsort($results['transaction_list']['transactions']);
-        krsort($results['transaction_list']['times']);
+        if(!empty($results) && array_key_exists('transaction_list', $results)) {
+            if(array_key_exists('transactions', $results['transaction_list'])) {
+                krsort($results['transaction_list']['transactions']);
+            }
+            if(array_key_exists('times', $results['transaction_list'])) {
+                krsort($results['transaction_list']['times']);
+            }
+        }
         $this->page_data['enable_breadcrumbs'] = FALSE;
         $this->page_data['status_list'] = $this->status_list;
         $this->page_data['transaction_data'] = $results['transaction_list'];
