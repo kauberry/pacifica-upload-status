@@ -44,7 +44,7 @@ class Ajax extends Baseline_controller
         $this->load->model('myemsl_model', 'myemsl');
         $this->load->helper(
             array(
-                'inflector', 'item', 'url', 'opwhse_search',
+                'inflector', 'item', 'url',
                 'form', 'network', 'myemsl'
             )
         );

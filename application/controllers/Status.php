@@ -51,7 +51,7 @@ class Status extends Baseline_controller
         $this->load->helper(
             array(
             'inflector', 'item', 'url',
-            'opwhse_search', 'form', 'network'
+            'form', 'network'
             )
         );
         $this->load->library(array('table'));
