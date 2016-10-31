@@ -29,7 +29,7 @@ $(
                         return {
                             results: data.items,
                             pagination: {
-                                more: (params.page * 30) < data.total_count
+                                more: (params.page * 300) < data.total_count
                             }
                         }
                     }
@@ -49,8 +49,13 @@ $(
             }
         );
         if (initial_proposal_id.length > 0) {
+            var current_prop_val = $('#proposal_selector').val();
             $('#proposal_selector').val(initial_proposal_id);
-            get_instrument_list(initial_proposal_id);
+            if($('#proposal_selector').val() != null){
+                get_instrument_list(initial_proposal_id);
+            }else{
+                $('#proposal_selector').val(current_prop_val);
+            }
         }
 
         $("#timeframe_selector").select2(

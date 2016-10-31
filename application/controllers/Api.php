@@ -48,7 +48,7 @@ class API extends Baseline_controller
         $this->load->model('Api_model', 'api');
         $this->load->helper(
             array(
-                'inflector', 'item', 'url', 'opwhse_search',
+                'inflector', 'item', 'url',
                 'form', 'network', 'myemsl'
             )
         );

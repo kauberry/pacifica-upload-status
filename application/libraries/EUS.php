@@ -349,14 +349,15 @@ class EUS
         $DB_eus = $this->CI->load->database('eus_for_myemsl', TRUE);
         $DB_eus->select(
             array(
-            'p.proposal_id', 'p.title', 'p.group_id',
-            'p.actual_start_date as start_date',
-            'p.actual_end_date as end_date')
-        );
+                'p.proposal_id', 'p.title', 'p.group_id',
+                'p.actual_start_date as start_date',
+                'p.actual_end_date as end_date',
+                'p.closed_date')
+            );
         $DB_eus->from('proposals p');
         $DB_eus->join('v_proposal_search vs', 'vs.id = p.proposal_id');
-        $DB_eus->where('p.closed_date');
-        $DB_eus->where('p.actual_start_date is not null');
+        // $DB_eus->where('p.closed_date');
+        // $DB_eus->where('p.actual_start_date is not null');
 
         if (!empty($proposal_name_fragment)) {
             $filter = urldecode($proposal_name_fragment);
@@ -373,14 +374,33 @@ class EUS
 
         $query = $DB_eus->get();
         $results = array();
+        $inactive_results = array();
 
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $start_date = strtotime($row->start_date) ? date_create($row->start_date) : FALSE;
                 $end_date = strtotime($row->end_date) ? date_create($row->end_date) : FALSE;
+                $closed_date = strtotime($row->closed_date) ? date_create($row->end_date) : FALSE;
+                if($closed_date && $end_date){
+                    $end_date = $end_date < $closed_date ? $end_date : $closed_date;
+                }else{
+                    if($closed_date && !$end_date){
+                        $end_date = $closed_date;
+                    }
+                }
                 $state = 'inactive';
                 $currently_active = $start_date && $start_date->getTimestamp() < time() ? TRUE : FALSE;
-                $state = $currently_active ? 'active' : 'preactive';
+                $currently_closed = $currently_active && $end_date && $end_date->getTimestamp() < time() ? TRUE : FALSE;
+                if(!$currently_active){
+                    $state = 'preactive';
+                }else{
+                    if(!$currently_closed){
+                        $state = 'active';
+                    }else{
+                        $state = 'closed';
+                    }
+                }
+                // $state = $currently_active ? 'active' : 'preactive';
                 $currently_active = $state == 'active' && (!$end_date || $end_date->getTimestamp() >= time()) ? TRUE : FALSE;
                 // $state = $currently_active ? 'active' : 'inactive';
                 $state = !$start_date || !$end_date ? 'invalid' : $state;
@@ -388,19 +408,28 @@ class EUS
                 if ($is_active == 'active' && !$currently_active) {
                     continue;
                 }
-
-                $results[$row->proposal_id] = array(
+                if ($state == 'invalid'){
+                    continue;
+                }
+                $results_array =  array(
                     'id' => $row->proposal_id,
                     'title' => trim($row->title, '.'),
                     'currently_active' => $currently_active ? 'yes' : 'no',
                     'state' => $state,
                     'start_date' => $start_date ? $start_date->format('Y-m-d') : '---',
                     'end_date' => $end_date ? $end_date->format('Y-m-d') : '---',
+                    'closed_date' => $closed_date ? $closed_date->format('Y-m-d') : '---',
                     'group_id' => $row->group_id,
                 );
+                if($currently_active){
+                    $results[$row->proposal_id] = $results_array;
+                }else{
+                    $inactive_results[$row->proposal_id] = $results_array;
+                }
+
             }
         }
-
+        $results = array_merge($results,$inactive_results);
         return $results;
     }
 

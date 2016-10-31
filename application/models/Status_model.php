@@ -43,6 +43,7 @@ class Status_model extends CI_Model
         parent::__construct();
         $this->local_timezone = 'US/Pacific';
         $this->load->library('EUS', '', 'eus');
+        $this->load->helper('item');
         $this->status_list = array(
             0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
             3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived',

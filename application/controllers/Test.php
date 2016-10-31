@@ -202,4 +202,92 @@ class Test extends Baseline_controller
         var_dump($inst_list);
         echo '</pre>';
     }
+
+    /**
+     *  Test get_formatted_object_for_transactions
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_formatted_object_for_transactions()
+    {
+        $trans_list = array(56,57,58);
+        $obj = $this->status->get_formatted_object_for_transactions($trans_list);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
+
+    /**
+     *  Test get_formatted_object_for_job
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_formatted_object_for_job()
+    {
+        $job_list = array(2000056,2000057,2000058);
+        $obj = $this->status->get_formatted_object_for_job(2000056);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
+    /**
+     *  Test get_total_size_for_transactions
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_total_size_for_transactions()
+    {
+        $trans_list = array(56,57,58);
+        $obj = $this->status->get_total_size_for_transactions($trans_list);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
+    /**
+     *  Test get_transaction_info
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_transaction_info()
+    {
+        $trans_list = array(56,57,58);
+        $job_list = array(2000056,2000057,2000058);
+        $job_id = array_pop($job_list);
+        $obj = $this->status->get_transaction_info($job_id);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
+
+    /**
+     *  Test get_files_for_transaction
+     *
+     *  @param integer $trans_id transaction id to check
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_files_for_transaction($trans_id = FALSE)
+    {
+        $trans_list = array(56,57,58);
+        $trans_id = $trans_id ? $trans_id : array_pop($trans_list);
+        $obj = $this->status->get_files_for_transaction($trans_id);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
 }
