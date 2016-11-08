@@ -361,7 +361,6 @@ class Status_model extends CI_Model
                 $results['transactions'][$tx_id]['groups'] = $group_info;
             }
         }
-
         return array('transaction_list' => $results, 'time_period_empty' => $is_empty, 'message' => $message);
     }
 
