@@ -66,6 +66,8 @@ $route['default_controller'] = "status";
 $route['404_override'] = '';
 
 $route['view/overview'] = "status/overview";
+$route['view/([tj])/(:num)'] = "status/view/$1/$2";
+$route['overview'] = "status/overview";
 
 
 /* End of file routes.php */

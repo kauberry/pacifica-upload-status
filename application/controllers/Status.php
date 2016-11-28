@@ -141,6 +141,14 @@ class Status extends Baseline_controller
         $this->page_data['page_header'] = 'Upload Report';
         $this->page_data['title'] = 'Upload Report';
 
+        $this->page_data['css_uris']
+            = array_merge(
+                $this->page_data['css_uris'], array(
+                '/project_resources/stylesheets/view.css'
+                )
+            );
+
+
         $this->page_data['script_uris']
             = array_merge(
                 $this->page_data['script_uris'], array(
@@ -155,7 +163,7 @@ class Status extends Baseline_controller
             $tx_info = $this->status->get_transaction_info($id);
             $tx_id = $tx_info['transaction_id'];
             if ($tx_info['transaction_id'] > 0 && $tx_info['current_step'] >= 5) {
-                redirect(base_url()."index.php/status/view/t/{$tx_id}");
+                redirect(base_url()."view/t/{$tx_id}");
             } else {
                 $job_status_info = $this->status->get_formatted_object_for_job($id);
                 if (empty($job_status_info)) {
@@ -235,7 +243,8 @@ class Status extends Baseline_controller
             $this->page_data['css_uris']
                 = array_merge(
                     $this->page_data['css_uris'], array(
-                    '/project_resources/stylesheets/selector.css'
+                    '/project_resources/stylesheets/selector.css',
+                    '/project_resources/stylesheets/overview.css'
                     )
                 );
             $this->page_data['script_uris']

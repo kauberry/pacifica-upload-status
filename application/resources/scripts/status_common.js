@@ -32,7 +32,7 @@ $(
         // }else{
         //     inst_id = -1;
         // }
-        update_content();
+        update_breadcrumbs();
     }
 );
 
@@ -75,7 +75,7 @@ var update_breadcrumbs = function(){
                                     var new_tx_id = trans_entry.transaction_id;
                                     var current_step = trans_entry.current_step;
                                     if(lookup_type == 'j' && new_tx_id != null && current_step >= 5) {
-                                        window.location = "/status/view/t/" + new_tx_id;
+                                        window.location = "/view/t/" + new_tx_id;
                                     }
                                     if(!new_item.html().length == 0 || (trans_id_list[new_tx_id].length) == 0) {
                                         var hash = new_item.crypt({method:"sha1"});
