@@ -158,8 +158,8 @@ class EUS
         // print_r($closing_date);
 
         $where_array = array(
-            'proposal_id' => $eus_proposal_id,
-            'actual_end_date <' => $closing_date->format('Y-m-d'),
+            'proposal_id' => $eus_proposal_id
+            // 'actual_end_date <' => $closing_date->format('Y-m-d'),
         );
         $DB_ers->where($where_array);
 
@@ -176,7 +176,10 @@ class EUS
         $select_array = array(
             'i.instrument_id', 'i.eus_display_name',
         );
-
+        $where_array = array(
+            'proposal_id' => $eus_proposal_id
+        );
+        $DB_ers->where($where_array);
         $DB_ers->select($select_array)->from(INST_TABLE.' i');
         $DB_ers->join(INST_PROPOSAL_XREF.' pi', 'i.instrument_id = pi.instrument_id');
 

@@ -73,17 +73,10 @@ class Ajax extends Baseline_controller
             'more' => FALSE,
             'items' => array()
         );
-        $max_text_len = 200;
+        $max_text_len = 180;
         foreach($prop_list as $item){
             $textLength = strlen($item['title']);
-            $result = substr_replace(
-                $item['title'],
-                '...',
-                $max_text_len/2,
-                $textLength-$max_text_len
-            );
-
-            $item['text'] = "<span title='{$item['title']}'>{$result}</span>";
+            $item['text'] = truncate_text($item['title'], $max_text_len, " ", "...");
             $results['items'][] = $item;
         }
         send_json_array($results);
@@ -114,14 +107,29 @@ class Ajax extends Baseline_controller
         $full_user_info = $this->myemsl->get_user_info();
         $instruments = array();
         $inst_list = $full_user_info['instruments'];
-        if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
-            $instruments_available
-                = $full_user_info['proposals'][$proposal_id]['instruments'];
-        } else {
-            $instruments_available = array();
+        $instruments_available = array();
+        if($this->is_emsl_staff) {
+            $inst_list = $this->eus->get_instruments_for_proposal($proposal_id);
+            foreach($inst_list['instruments'] as $inst_id => $name_text){
+                $instruments_available[] = intval($inst_id);
+            }
+        }else{
+            if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
+                $inst_list
+                    = $full_user_info['instruments'];
+                $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
+                foreach($inst_list as $inst_id => $info){
+                    $new_inst_available[intval($inst_id)] = $info['eus_display_name'];
+                    // $instruments_available[] = intval($inst_id);
+                }
+                $inst_list['instruments'] = $new_inst_available;
+            } else {
+                $instruments_available = array();
+                $inst_list['instruments'] = array();
+            }
         }
         $total_count = sizeof($instruments_available) + 1;
-        asort($instruments_available);
+        sort($instruments_available);
         $instruments[] = array(
             'id' => 0,
             'text' => NULL
@@ -134,10 +142,10 @@ class Ajax extends Baseline_controller
         );
         foreach ($instruments_available as $inst_id) {
             $instruments[] = array(
-                'id' => $inst_id,
-                'text' => "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}",
-                'name' => $full_user_info['instruments'][$inst_id]['eus_display_name'],
-                'active' => $inst_list[$inst_id]['active_sw']
+                'id' => intval($inst_id),
+                'text' => "Instrument {$inst_id}: {$inst_list['instruments'][$inst_id]}",
+                'name' => $inst_list['instruments'][$inst_id],
+                'active' => "Y"
             );
         }
         // $instruments[-1] = "All Available Instruments for Proposal {$proposal_id}";

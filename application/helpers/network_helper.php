@@ -133,15 +133,17 @@ function format_array_for_select2($response)
  */
 function truncate_text($string, $limit, $break=" ", $pad="...")
 {
-    // return with no change if string is shorter than $limit
-    if(strlen($string) <= $limit) return $string;
-
-    $string = substr($string, 0, $limit);
-    if(FALSE !== ($breakpoint = strrpos($string, $break))) {
-        $string = substr($string, 0, $breakpoint);
+    $textLength = strlen($string);
+    $result = $string;
+    if($textLength > $limit) {
+        $result = substr_replace(
+            $string,
+            '...',
+            $limit/2,
+            $textLength-$limit
+        );
     }
-
-    return $string . $pad;
+    return $result;
 }
 
 ?>

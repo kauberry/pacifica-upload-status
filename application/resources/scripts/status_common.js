@@ -182,10 +182,10 @@ var update_content = function(event){
     }
     if(el && el.prop('id') == 'proposal_selector') {
         //check to see if instrument list is current
-        if(el.val() != initial_proposal_id) {
-            get_instrument_list(el.val());
-            initial_proposal_id = el.val();
-        }
+        // if(el.val() != initial_proposal_id) {
+        get_instrument_list(el.val());
+        initial_proposal_id = el.val();
+        // }
     }
     if(el) {
         var identifier = el.prop('id').replace('_selector','');
