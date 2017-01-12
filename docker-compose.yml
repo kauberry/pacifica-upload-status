@@ -1,0 +1,93 @@
+version: '2'
+services:
+    uploadstatus:
+        container_name: uploadstatus
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./:/var/www/html
+        links:
+            - metadataserver:metadata
+            - policyserver:policy
+        ports:
+            - 80:80
+        environment:
+            METADATA_PORT: tcp://metadata:8121
+            POLICY_PORT: tcp://policy:8181
+
+    metadataserver:
+        build:
+            context: ../metadata
+            dockerfile: Dockerfile
+        container_name: metadataserver
+        links:
+            - metadatadb:postgres
+            - elasticmaster
+            - elasticlb
+        ports:
+            - 8121:8121
+        environment:
+            ELASTICDB_PORT: tcp://elasticmaster:9200
+            POSTGRES_ENV_POSTGRES_DB: pacifica_metadata
+            POSTGRES_ENV_POSTGRES_USER: pacifica
+            POSTGRES_PORT_5432_TCP_ADDR: postgres
+            POSTGRES_PORT_5432_TCP_PORT: 5432
+            POSTGRES_ENV_POSTGRES_PASSWORD: pacifica
+
+
+    policyserver:
+        build:
+            context: ../policy
+            dockerfile: Dockerfile
+        container_name: policyserver
+        restart: unless-stopped
+        links:
+            - metadataserver:metadata
+        ports:
+            - 8181:8181
+        environment:
+            METADATA_PORT: tcp://metadata:8121
+
+    elasticmaster:
+        build:
+            context: ../metadata
+            dockerfile: docker-compose/Dockerfile.elastic
+        # volumes:
+        #     - /Volumes/Storage/data_persist/elasticsearch/logs/:/usr/share/elasticsearch/logs/
+        #     - /Volumes/Storage/data_persist/elasticsearch/data/:/usr/share/elasticsearch/data/
+        container_name: elasticmaster
+
+    elasticslave:
+        build:
+            context: ../metadata
+            dockerfile: docker-compose/Dockerfile.elastic
+        # volumes:
+        #     - /Volumes/Storage/data_persist/elasticsearch/logs/:/usr/share/elasticsearch/logs/
+        #     - /Volumes/Storage/data_persist/elasticsearch/data/:/usr/share/elasticsearch/data/
+        links:
+            - elasticmaster
+        environment:
+            UNICAST_HOST: elasticmaster
+            EXCLUDE_PORTS: 9300
+
+    elasticlb:
+        image: dockercloud/haproxy
+        links:
+            - elasticslave:elasticslave
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - 9200:9200
+
+    metadatadb:
+        image: postgres
+        container_name: metadatadb
+        environment:
+            POSTGRES_PASSWORD: pacifica
+            POSTGRES_DB: pacifica_metadata
+            POSTGRES_USER: pacifica
+        # volumes:
+        #     - /Volumes/Storage/data_persist/postgresql/data/:/var/lib/postgresql/data/
+        ports:
+            - 5432:5432

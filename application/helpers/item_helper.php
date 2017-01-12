@@ -48,9 +48,9 @@ function build_folder_structure(&$dirs, $path_array, $item_info)
         build_folder_structure($dirs['folders'][$path_array[0]], array_splice($path_array, 1), $item_info);
     } else {
         $size_string = format_bytes($item_info['size']);
-        $m_time = new DateTime($item_info['modified_time']);
+        $m_time = new DateTime($item_info['mtime']);
         $date_string = $m_time->format('n/j/Y g:ia');
-        $item_id = $item_info['item_id'];
+        $item_id = $item_info['_id'];
         $url = base_url()."myemsl/itemauth/{$item_id}";
         $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
@@ -72,7 +72,6 @@ function build_folder_structure(&$dirs, $path_array, $item_info)
 function format_folder_object_json($folder_obj,$folder_name)
 {
     $output = array();
-
     if(array_key_exists('folders', $folder_obj)) {
         foreach($folder_obj['folders'] as $folder_entry => $folder_tree){
             $folder_output = array('title' => $folder_entry, 'folder' => TRUE);

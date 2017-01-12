@@ -62,12 +62,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 
-$route['default_controller'] = "status";
+$route['default_controller'] = "status_api";
 $route['404_override'] = '';
 
-$route['view/overview'] = "status/overview";
-$route['view/([tj])/(:num)'] = "status/view/$1/$2";
-$route['overview'] = "status/overview";
+$route['view/overview'] = "status_api/overview";
+$route['view/([tj])/(:num)'] = "status_api/view/$1/$2";
+$route['overview'] = "status_api/overview";
 
 
 /* End of file routes.php */

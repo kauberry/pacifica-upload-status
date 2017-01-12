@@ -108,28 +108,18 @@ class Ajax extends Baseline_controller
         $instruments = array();
         $inst_list = $full_user_info['instruments'];
         $instruments_available = array();
-        if($this->is_emsl_staff) {
-            $inst_list = $this->eus->get_instruments_for_proposal($proposal_id);
-            foreach($inst_list['instruments'] as $inst_id => $name_text){
-                $instruments_available[] = intval($inst_id);
-            }
-        }else{
-            if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
-                $inst_list
-                    = $full_user_info['instruments'];
-                $instruments_available = $full_user_info['proposals'][$proposal_id]['instruments'];
-                foreach($inst_list as $inst_id => $info){
-                    $new_inst_available[intval($inst_id)] = $info['eus_display_name'];
-                    // $instruments_available[] = intval($inst_id);
-                }
-                $inst_list['instruments'] = $new_inst_available;
-            } else {
-                $instruments_available = array();
-                $inst_list['instruments'] = array();
+        if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
+            if(array_key_exists('instruments', $full_user_info['proposals'][$proposal_id])) {
+                $instruments_available
+                    = $full_user_info['proposals'][$proposal_id]['instruments'];
             }
         }
-        $total_count = sizeof($instruments_available) + 1;
-        sort($instruments_available);
+        if(!empty($instruments_available)) {
+            $total_count = sizeof($instruments_available) + 1;
+            asort($instruments_available);
+        }else{
+            $total_count = 0;
+        }
         $instruments[] = array(
             'id' => 0,
             'text' => NULL

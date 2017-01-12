@@ -21,7 +21,17 @@
                 <legend>Instrument Selection</legend>
                 <div class="full_width_block" id="proposal_selector_container">
                   <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:96%;">
-                    <?php $this->load->view('proposal_selector_insert.html', array('proposal_list' => $proposal_list, 'selected_proposal' => $selected_proposal)); ?>
+                    <?php
+                        if(!empty($proposal_list)){
+                            $this->load->view(
+                                'proposal_selector_insert.html',
+                                array(
+                                    'proposal_list' => $proposal_list,
+                                    'selected_proposal' => $selected_proposal
+                                )
+                            );
+                        }
+                    ?>
                   </select>
                 </div>
 

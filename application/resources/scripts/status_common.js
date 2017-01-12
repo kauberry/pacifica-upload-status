@@ -27,11 +27,6 @@ var spinner_opts = {
 
 $(
     function(){
-        // if($('#instrument_selector')) {
-        //     inst_id = $('#instrument_selector').length > 0 ? $('#instrument_selector').val() : initial_inst_id;
-        // }else{
-        //     inst_id = -1;
-        // }
         update_breadcrumbs();
     }
 );
@@ -112,16 +107,17 @@ var get_latest_transactions = function(){
 };
 
 var update_content = function(event){
+    // debugger;
     var proposal_id = $('#proposal_selector').val() != null ? $('#proposal_selector').val() : initial_proposal_id;
     var instrument_id = $('#instrument_selector').val() != null ? $('#instrument_selector').val() : initial_instrument_id;
     var time_frame = $('#timeframe_selector').val() != null ? $('#timeframe_selector').val() : 0;
-    // if($('#proposal_selector').val() == null){
-    //     if(initial_proposal_id != null){
-    //         $('#proposal_selector').val(initial_proposal_id).trigger('change');
-    //     }else{
-    //         $('#instrument_selector').val('').trigger('change');
-    //     }
-    // }
+    if($('#proposal_selector').val() == null){
+        if(initial_proposal_id != null){
+            $('#proposal_selector').val(initial_proposal_id).trigger('change');
+        }else{
+            $('#instrument_selector').val('').trigger('change');
+        }
+    }
     // debugger;
     var el = null;
     if(event != null) {
@@ -141,15 +137,17 @@ var update_content = function(event){
     }
     initial_load = false;
     var ts = moment().format('YYYYMMDDHHmmss');
-    var url = '/status/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
     if(proposal_id && instrument_id && time_frame) {
-        inital_load = false;
+        var url = '/status_api/overview/' + proposal_id + '/' + instrument_id + '/' + time_frame + '/ovr_' + ts;
+        initial_load = false;
         $('#item_info_container').hide();
         $('#loading_status').fadeIn(
             "slow", function(){
+                $('.criterion_selector').off("change");
                 var getting = $.get(url);
                 getting.done(
                     function(data){
+                        // debugger;
                         if(data) {
                             $('#loading_status').fadeOut(
                                 200,function(){
@@ -177,10 +175,16 @@ var update_content = function(event){
                         );
                     }
                 );
+                getting.always(
+                    function(){
+                        $('.criterion_selector').change(update_content);
+                    }
+                );
             }
         );
     }
     if(el && el.prop('id') == 'proposal_selector') {
+        // debugger;
         //check to see if instrument list is current
         // if(el.val() != initial_proposal_id) {
         get_instrument_list(el.val());
@@ -199,7 +203,7 @@ var update_content = function(event){
 };
 
 var get_instrument_list = function(proposal_id){
-    var inst_url = '/ajax/get_instruments_for_proposal/' + proposal_id;
+    var inst_url = '/ajax_api/get_instruments_for_proposal/' + proposal_id;
     var target = document.getElementById('instrument_selector_spinner');
     var spinner = new Spinner(spinner_opts).spin(target);
     $('#instrument_selector').empty();

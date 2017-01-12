@@ -23,7 +23,8 @@
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) { exit('No direct script access allowed');
+}
 
 /**
  *  Properly formats the user returned in the ['REMOTE_USER']
@@ -36,10 +37,23 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 function get_user()
 {
     $user = '(unknown)';
+    $CI =& get_instance();
+    $CI->load->library('PHPRequests');
+    $md_url = $CI->metadata_url_base;
     if(isset($_SERVER["REMOTE_USER"])) {
         $user = str_replace('@PNL.GOV', '', $_SERVER["REMOTE_USER"]);
+    } else if (isset($_SERVER["PHP_AUTH_USER"])) {
+        $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
     }
-    return strtolower($user);
+    $url_args_array = array(
+        'network_id' => $user
+    );
+    $query_url = "{$md_url}/users?";
+    $query_url .= http_build_query($url_args_array, '', '&');
+    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    $results_body = $query->body;
+    $results_json = json_decode($results_body, TRUE);
+    return strtolower($results_json[0]['_id']);
 }
 
 /**
@@ -52,7 +66,7 @@ function get_user()
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function get_user_details($user_id)
+function get_user_details_server_vars($user_id)
 {
     $user_info = array(
     'user_id' => strtolower($_SERVER['REMOTE_USER']),

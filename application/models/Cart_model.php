@@ -149,9 +149,9 @@ class Cart_model extends CI_Model
                             }
                         }
                     }
-                    $DB_myemsl->select(array('max(t.transaction) as tx_id', 'max(t.stime) as upload_time'));
-                    $DB_myemsl->from('transactions t')->join('files f', 'f.transaction = t.transaction');
-                    $DB_myemsl->group_by('t.transaction')->where_in('f.item_id', $cart_item_list);
+                    $DB_myemsl->select(array('max(t."transaction") as tx_id', 'max(t.stime) as upload_time'));
+                    $DB_myemsl->from('transactions t')->join('files f', 'f."transaction" = t."transaction"');
+                    $DB_myemsl->group_by('t."transaction"')->where_in('f.item_id', $cart_item_list);
                     $tx_query = $DB_myemsl->limit(1)->get();
                     if ($tx_query && $tx_query->num_rows() > 0) {
                         $cart_list[$display_state][$row->cart_id]['transaction_id'] = $tx_query->row()->tx_id;

@@ -43,7 +43,8 @@ class Status_model extends CI_Model
         parent::__construct();
         $this->local_timezone = 'US/Pacific';
         $this->load->library('EUS', '', 'eus');
-        $this->load->helper('item');
+        $this->load->model('Myemsl_model', 'myemsl');
+        $this->load->helper(array('item','cookie'));
         $this->status_list = array(
             0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
             3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived',
@@ -91,9 +92,11 @@ class Status_model extends CI_Model
         $DB_metadata = $this->load->database('default', TRUE);
 
         $DB_metadata->select(array('group_id', 'name', 'type'));
-        $where_clause = "(type = 'omics.dms.instrument_id' or type ilike 'instrument.%') and name not in ('foo')";
 
-        $DB_metadata->where($where_clause);
+        // $where_clause = "(type = 'omics.dms.instrument_id' or type like 'instrument.%') and name not in ('foo')";
+        $DB_metadata->where('LOWER(type)', 'omics.dms.instrument_id');
+        $DB_metadata->or_like('LOWER(type)', 'instrument.');
+        // $DB_metadata->where($where_clause);
         $query = $DB_metadata->order_by('name')->get('groups');
         $results_by_group = array();
         $results_by_inst_id = array();
@@ -164,21 +167,36 @@ class Status_model extends CI_Model
     {
         $DB_metadata = $this->load->database('default', TRUE);
 
-        $file_select_array = array(
-            'f.item_id',
-            'f.name',
-            'f.subdir',
-            "DATE_TRUNC('second',t.stime) AT TIME ZONE 'US/Pacific' as stime",
-            'f.mtime as modified_time',
-            'f.ctime as created_time',
-            'f.transaction',
-            'f.size',
-        );
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $file_select_array = array(
+                'f.item_id',
+                'f.name',
+                'f.subdir',
+                "DATE_TRUNC('second',t.stime) AT TIME ZONE 'US/Pacific' as stime",
+                'f.mtime as modified_time',
+                'f.ctime as created_time',
+                'f."transaction"',
+                'f.size',
+            );
+        }else{
+            $file_select_array = array(
+                'f.item_id',
+                'f.name',
+                'f.subdir',
+                "DATE_TRUNC('second',t.stime) as stime",
+                'f.mtime as modified_time',
+                'f.ctime as created_time',
+                'f."transaction"',
+                'f.size',
+            );
+        }
 
         $DB_metadata->trans_start();
-        $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
-        $DB_metadata->select($file_select_array)->from('transactions t')->join('files f', 't.transaction = f.transaction');
-        $DB_metadata->where('f.transaction', $transaction_id);
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        }
+        $DB_metadata->select($file_select_array)->from('transactions t')->join('files f', 't."transaction" = f."transaction"');
+        $DB_metadata->where('f."transaction"', $transaction_id);
         $DB_metadata->order_by('f.subdir, f.name');
         $files_query = $DB_metadata->get();
         $DB_metadata->trans_complete();
@@ -221,7 +239,7 @@ class Status_model extends CI_Model
         $transaction_list = array();
         $DB_metadata = $this->load->database('default', TRUE);
         $select_array = array(
-            'max(f.transaction) as transaction_id',
+            'max(f."transaction") as transaction_id',
             'max(gi.group_id) as group_id',
         );
         if (!is_array($group_id_list)) {
@@ -234,14 +252,16 @@ class Status_model extends CI_Model
 
         $raw_transaction_list = array();
         $DB_metadata->trans_start();
-        $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        }
         $DB_metadata->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
-        $DB_metadata->group_by('f.transaction')->order_by('f.transaction desc');
+        $DB_metadata->group_by('f."transaction"')->order_by('f."transaction" desc');
         $DB_metadata->where_in('gi.group_id', $group_id_list);
         $DB_metadata->where('gi.group_id', $proposal_group_id);
-        $DB_metadata->order_by('f.transaction desc');
+        $DB_metadata->order_by('f."transaction" desc');
         if ($last_id > 0) {
-            $DB_metadata->where_in('gi.group_id', $group_id_list)->where('f.transaction >', $last_id);
+            $DB_metadata->where_in('gi.group_id', $group_id_list)->where('f."transaction" >', $last_id);
         } else {
             $DB_metadata->limit(1);
         }
@@ -290,9 +310,9 @@ class Status_model extends CI_Model
             $proposal_group_id = $prop_query && $prop_query->num_rows() > 0 ? $prop_query->row()->group_id : -1;
 
             //go grab the list of eligible tx_id's
-            $DB_metadata->select('max(f.transaction) as transaction_id');
+            $DB_metadata->select('max(f."transaction") as transaction_id');
             $DB_metadata->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
-            $DB_metadata->group_by('f.transaction')->order_by('f.transaction desc');
+            $DB_metadata->group_by('f."transaction"')->order_by('f."transaction" desc');
             $query = $DB_metadata->where('gi.group_id', $proposal_group_id)->get();
             if ($query && $query->num_rows() > 0) {
                 foreach ($query->result() as $row) {
@@ -306,13 +326,15 @@ class Status_model extends CI_Model
         }
 
         $select_array = array(
-            'max(f.transaction) as transaction_id',
+            'max(f."transaction") as transaction_id',
             'max(gi.group_id) as group_id',
         );
         $DB_metadata->trans_start();
-        $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        }
         $DB_metadata->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
-        $DB_metadata->group_by('f.transaction')->order_by('f.transaction desc');
+        $DB_metadata->group_by('f."transaction"')->order_by('f."transaction" desc');
         if ($group_id && $group_id > 0) {
             if (is_array($group_id)) {
                 $DB_metadata->where_in('gi.group_id', $group_id);
@@ -321,7 +343,7 @@ class Status_model extends CI_Model
             }
         }
         if (!empty($eligible_tx_list)) {
-            $DB_metadata->where_in('f.transaction', $eligible_tx_list);
+            $DB_metadata->where_in('f."transaction"', $eligible_tx_list);
             $query = $DB_metadata->get();
         }
         $DB_metadata->trans_complete();
@@ -334,8 +356,15 @@ class Status_model extends CI_Model
             $earliest_date = clone $today;
             $earliest_date->modify("-{$num_days_back} days");
             $DB_metadata->trans_start();
-            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
-            $DB_metadata->select('transaction')->where_in('transaction', $raw_transaction_list)->where("stime AT TIME ZONE 'US/Pacific' >=", $earliest_date->format('Y-m-d'));
+            if($DB_metadata->dbdriver != 'sqlite3') {
+                $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+            }
+            if($DB_metadata->dbdriver != 'sqlite3') {
+                $DB_metadata->where("stime AT TIME ZONE 'US/Pacific' >=", $earliest_date->format('Y-m-d'));
+            }else{
+                $DB_metadata->where("stime >=", $earliest_date->format('Y-m-d'));
+            }
+            $DB_metadata->select('transaction')->where_in('transaction', $raw_transaction_list);
             $trans_query = $DB_metadata->get('transactions');
             $DB_metadata->trans_complete();
             if ($trans_query && $trans_query->num_rows() > 0) {
@@ -414,13 +443,13 @@ class Status_model extends CI_Model
 
         $select_array = array(
             'g.group_id as group_id', 'g.name as group_name',
-            'g.type as group_type', 'f.transaction as tx_id',
+            'g.type as group_type', 'f."transaction" as tx_id',
         );
 
         $DB_metadata->select($select_array)->distinct();
         $DB_metadata->from('files f')->join('group_items gi', 'gi.item_id = f.item_id');
         $DB_metadata->join('groups g', 'g.group_id = gi.group_id')->order_by('g.name');
-        $query = $DB_metadata->where_in('f.transaction', $transaction_id_list)->get();
+        $query = $DB_metadata->where_in('f."transaction"', $transaction_id_list)->get();
 
         $inst_group_pattern = '/Instrument\.(\d+)/i';
         if ($query && $query->num_rows() > 0) {
@@ -607,7 +636,9 @@ class Status_model extends CI_Model
             'jobid', 'trans_id', 'person_id', 'step', 'message', 'status',
         );
         $DB_metadata->trans_start();
-        $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        }
         $DB_metadata->select($select_array)->where_in($lookup_field, $id_list);
         $ingest_query = $DB_metadata->get('ingest_state');
         $DB_metadata->trans_complete();
@@ -663,11 +694,11 @@ class Status_model extends CI_Model
         $DB_metadata = $this->load->database('default', TRUE);
         $inst_id = FALSE;
         $select_array = array(
-            'MAX(f.transaction) as transaction_id',
+            'MAX(f."transaction") as transaction_id',
             'MAX(gi.group_id) as instrument_id',
         );
         $DB_metadata->select($select_array)->from('group_items gi')->join('files f', 'gi.item_id = f.item_id');
-        $DB_metadata->having('f.transaction', $id)->group_by('f.transaction')->order_by('f.transaction DESC')->limit(1);
+        $DB_metadata->having('f."transaction"', $id)->group_by('f."transaction"')->order_by('f."transaction" DESC')->limit(1);
         $query = $DB_metadata->get();
 
         if ($query && $query->num_rows() > 0) {
@@ -692,7 +723,9 @@ class Status_model extends CI_Model
         $DB_metadata = $this->load->database('default', TRUE);
         $current_step = 0;
         $DB_metadata->trans_start();
-        $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        if($DB_metadata->dbdriver != 'sqlite3') {
+            $DB_metadata->query("set local timezone to '{$this->local_timezone}';");
+        }
         $query = $DB_metadata->select(array('trans_id as transaction_id', 'step'))->get_where('ingest_state', array('jobid' => $job_id), 1);
         $DB_metadata->trans_complete();
         $transaction_id = -1;

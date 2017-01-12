@@ -38,14 +38,10 @@ date_default_timezone_set('America/Los_Angeles');
 | a PHP script and you can easily do that on your own.
 |
 */
-$protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
-$rooted = getenv('CI_ROOTED');
-$rooted = !empty($rooted) && $rooted == TRUE ? TRUE : FALSE;
-// $rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == TRUE ? TRUE : FALSE;
-$basedir = $rooted ? '' : '/myemsl/reporting';
-$config['base_url']    = "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
-$config['base_dir'] = $basedir;
-$config['local_resources_folder'] = "application/resources";
+// $config['base_url']    = 'http://dmlb2000.emsl.pnl.gov:8192';
+$config['base_url']    = 'http://127.0.0.1';
+$config['base_dir'] = '';
+
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -56,7 +52,7 @@ $config['local_resources_folder'] = "application/resources";
 | variable so that it is blank.
 |
 */
-$config['index_page'] = $rooted ? '' : 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -411,8 +407,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']    = '';
-$config['cookie_domain']    = '';
+$config['cookie_prefix']    = 'myemsl_status_';
+$config['cookie_domain']    = '.my.emsl.pnl.gov';
 $config['cookie_path']        = '/';
 $config['cookie_secure']    = FALSE;
 $config['cookie_httponly']     = FALSE;

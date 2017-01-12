@@ -183,7 +183,7 @@ class Api_model extends CI_Model
         $fi_row = array('error_message' => 'Could not find item.');
         $DB_metadata->select($select_array)->where('f.item_id', $item_id);
         $DB_metadata->from('files f')->join('hashsums h', 'f.item_id = h.item_id');
-        $DB_metadata->join('transactions t', 't.transaction = f.transaction');
+        $DB_metadata->join('transactions t', 't."transaction" = f."transaction"');
         $file_info_query = $DB_metadata->limit(1)->get();
         if ($file_info_query && $file_info_query->num_rows() > 0) {
             $fi_row = $file_info_query->row_array();
@@ -210,7 +210,7 @@ class Api_model extends CI_Model
         $DB_metadata = $this->load->database('default', TRUE);
 
         //get a list of transactions for this list of item_id's
-        $trans_query = $DB_metadata->select('transaction')->distinct()->where_in('item_id', $item_list)->get('files');
+        $trans_query = $DB_metadata->select('f."transaction"')->distinct()->where_in('f.item_id', $item_list)->get('files f');
         $transaction_list = array();
         if ($trans_query && $trans_query->num_rows() > 0) {
             foreach ($trans_query->result() as $row) {
@@ -220,8 +220,8 @@ class Api_model extends CI_Model
         $file_info = array();
         if (!empty($transaction_list)) {
             //first, get the submission times for each transaction
-            $DB_metadata->select(array("stime AT TIME ZONE 'US/Pacific' as stime", 'transaction'));
-            $stime_query = $DB_metadata->where_in('transaction', array_keys($transaction_list))->get('transactions');
+            $DB_metadata->select(array("t.stime AT TIME ZONE 'US/Pacific' as stime", 't."transaction"'));
+            $stime_query = $DB_metadata->where_in('t."transaction"', array_keys($transaction_list))->get('transactions t');
             if ($stime_query && $stime_query->num_rows() > 0) {
                 foreach ($stime_query->result() as $stime_row) {
                     $stime = new DateTime($stime_row->stime);
@@ -232,7 +232,7 @@ class Api_model extends CI_Model
             $select_array = array(
                 'f.item_id', "CONCAT(f.subdir,'/',f.name) as full_path",
                 'f.name as filename', 'f.size as size_in_bytes',
-                'f.transaction', 'h.hashsum', 'f.verified', 'f.aged',
+                'f."transaction"', 'h.hashsum', 'f.verified', 'f.aged',
             );
             $file_info = array();
             $DB_metadata->select($select_array)->where_in('transaction', array_keys($transaction_list));

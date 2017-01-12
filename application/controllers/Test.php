@@ -37,7 +37,7 @@ class Test extends Baseline_controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('status_model', 'status');
+        $this->load->model('Status_model', 'status');
         /* already loaded in status model
         $this->load->model('Myemsl_model', 'myemsl');
         $this->load->model('Cart_model', 'cart');
@@ -135,7 +135,7 @@ class Test extends Baseline_controller
     public function test_get_userinfo()
     {
         $user_info = $this->myemsl->get_user_info();
-        // var_dump($user_info);
+        var_dump($user_info);
     }
 
     /**
@@ -285,6 +285,23 @@ class Test extends Baseline_controller
         $trans_list = array(56,57,58);
         $trans_id = $trans_id ? $trans_id : array_pop($trans_list);
         $obj = $this->status->get_files_for_transaction($trans_id);
+        echo '<pre>';
+        var_dump($obj);
+        echo '</pre>';
+    }
+
+    /**
+     *  [get_instrument_group_list description]
+     *
+     *  @param integer $inst_id instrument to get group list for
+     *
+     *  @return void
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_instrument_group_list($inst_id)
+    {
+        $obj = $this->status->get_instrument_group_list($inst_id);
         echo '<pre>';
         var_dump($obj);
         echo '</pre>';

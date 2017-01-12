@@ -114,11 +114,15 @@ function get_last_update()
     if (func_num_args() < 1 ) return 0;
     $dirs = func_get_args();
     $files = array();
+    $accepted_subdirs = array('controllers','models','views','helpers');
     foreach ( $dirs as $dir )
-    {
+    foreach($accepted_subdirs as $subdir){
+        {
         // $directory = new RecursiveDirectoryIterator($dir);
-        $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY);
-        $files = array_keys(iterator_to_array($objects, TRUE));
+        $fulldir = $dir . $subdir;
+        $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($fulldir), RecursiveIteratorIterator::LEAVES_ONLY);
+        $files = array_merge($files, array_keys(iterator_to_array($objects, TRUE)));
+        }
     }
     $maxtimestamp = 0;
     $maxfilename = "";
@@ -129,6 +133,9 @@ function get_last_update()
             $maxtimestamp = $timestamp;
             $maxfilename = $file;
         }
+        // $t = new Datetime();
+        // $t->setTimestamp($timestamp);
+        // echo "{$file} => {$t->format('Y-m-d H:i:s e')}<br />\n";
     }
     $d = new DateTime();
     $d->setTimestamp($maxtimestamp);
