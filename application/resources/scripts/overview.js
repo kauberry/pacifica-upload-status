@@ -36,17 +36,24 @@ $(function(){
 		current_proposal_id = $('#proposal_selector').val();
 		get_instrument_list(current_proposal_id);
 	}
-    setup_selectors();
+    setup_selectors(true);
 });
 
 
-var setup_selectors = function(initial_load){
+var setup_selectors = function(initial_load = false){
     $('#timeframe_selector')
         .select2(
 		    {placeholder: "Select a Time Frame..."}
         )
         .off('change')
         .change(update_content);
+
+    if(current_proposal_id == undefined || initial_load){
+        $('#instrument_selector')
+            .select2(
+                {placeholder: "Select an Instrument..."}
+            )
+    }
 
 	$('#proposal_selector')
         .select2(
