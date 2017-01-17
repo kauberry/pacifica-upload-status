@@ -270,21 +270,25 @@ class Status_api extends Baseline_api_controller
         $this->page_data['script_uris']
             = array_merge(
                 $this->page_data['script_uris'], array(
-                '/resources/scripts/single_item_view.js',
+                '/project_resources/scripts/single_item_view.js',
                 '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js'
                 )
             );
-
         $transaction_info = $this->status->get_formatted_transaction($id);
-        $this->page_data['transaction_sizes'] = $transaction_info['transactions'][$id]['file_size_bytes'];
-        $inst_id = $transaction_info['transactions'][$id]['groups']['instrument_id'];
+        $file_size = 0;
+        $inst_id = -1;
+        if(array_key_exists($id, $transaction_info['transactions'])) {
+            $file_size = $transaction_info['transactions'][$id]['file_size_bytes'];
+            $inst_id = $transaction_info['transactions'][$id]['groups']['instrument_id'];
+        }
+        $this->page_data['transaction_sizes'][] = $file_size;
 
         $this->page_data['transaction_data'] = $transaction_info;
         $this->page_data['cart_data'] = array(
             'carts' => array()
         );
         $this->page_data['request_type'] = 't';
-        $this->page_data['enable_breadcrumbs'] = TRUE;
+        $this->page_data['enable_breadcrumbs'] = FALSE;
         $this->page_data['js'] = "var initial_inst_id = '{$inst_id}';
                             var lookup_type = 't';
                             var email_address = '{$this->email}';
