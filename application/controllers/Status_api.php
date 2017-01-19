@@ -183,11 +183,10 @@ class Status_api extends Baseline_api_controller
             //all criteria set, proceed with load
             $now = new DateTime();
             $end = clone $now;
-            $end->modify('+1 days');
-            $end_time = $end->format('Y-m-d');
+            $end_time = $end->format('Y-m-d H:i');
             $start = clone $now;
             $start->modify("-{$time_period} days");
-            $start_time = $start->format('Y-m-d');
+            $start_time = $start->format('Y-m-d H:i');
             $transaction_list = $this->status->get_transactions(
                 $instrument_id, $proposal_id, $start_time, $end_time
             );
@@ -245,6 +244,8 @@ class Status_api extends Baseline_api_controller
      */
     public function view($id)
     {
+        $lookup_type_description = 'Transaction';
+        $lookup_type = 'transaction';
         $instrument_id = -1;
         if (!is_numeric($id) || $id < 0) {
             //that doesn't look like a real id
@@ -256,6 +257,19 @@ class Status_api extends Baseline_api_controller
             $this->page_data['lookup_type'] = $lookup_type;
             $this->load->view('status_error_page.html', $this->page_data);
         }
+
+        $transaction_info = $this->status->get_formatted_transaction($id);
+        if(sizeof($transaction_info['transactions']) == 0) {
+            $this->page_data['page_header'] = 'Missing Transaction';
+            $this->page_data['title'] = 'Transaction not available';
+            $err_msg = "No transaction with an ID of {$id} could be found in the system";
+            $this->page_data['error_message'] = $err_msg;
+            $this->page_data['lookup_type_desc'] = $lookup_type_description;
+            $this->page_data['lookup_type'] = $lookup_type;
+            $this->load->view('status_error_page.html', $this->page_data);
+
+        }
+
         $this->page_data['page_header'] = 'Upload Report';
         $this->page_data['title'] = 'Upload Report';
 
@@ -274,7 +288,6 @@ class Status_api extends Baseline_api_controller
                 '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js'
                 )
             );
-        $transaction_info = $this->status->get_formatted_transaction($id);
         $file_size = 0;
         $inst_id = -1;
         if(array_key_exists($id, $transaction_info['transactions'])) {

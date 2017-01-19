@@ -66,7 +66,7 @@ $route['default_controller'] = "status_api";
 $route['404_override'] = '';
 
 $route['view/overview'] = "status_api/overview";
-$route['view/([tj])/(:num)'] = "status_api/view/$1/$2";
+$route['view/(:num)'] = "status_api/view/$1";
 $route['overview'] = "status_api/overview";
 
 

@@ -1,0 +1,5 @@
+# Pull the base PostgreSQL image
+FROM postgres:9.6
+
+# Set up initial database structure
+ADD ./docker-compose/scripts/upload-status-setup.sql /docker-entrypoint-initdb.d/

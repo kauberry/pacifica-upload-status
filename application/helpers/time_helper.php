@@ -150,5 +150,57 @@ function format_cart_display_time_element($time_obj)
     return "<time title='{$formatted_time}' datetime='{$iso_time}'>{$elapsed_time}</time>";
 
 }
-  
+
+/**
+ * Convert local time to UTC for backend storage
+ *
+ * @param string $time          a strtotime parseable datetime string
+ * @param string $string_format Output format for the new timestring
+ *
+ * @return string new timestring in UTC
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function local_time_to_utc($time, $string_format=FALSE)
+{
+    $tz_utc = new DateTimeZone('UTC');
+    if(is_string($time) && strtotime($time)) {
+        $time = new Datetime($time);
+    }
+    if(is_a($time, 'DateTime')) {
+        $time->setTimeZone($tz_utc);
+    }
+    if($string_format) {
+        $time = $time->format($string_format);
+    }
+    return $time;
+}
+
+/**
+ * Convert UTC to local time for end user display
+ *
+ * @param string $time          a strtotime parseable datetime string
+ * @param string $string_format Output format for the new timestring
+ *
+ * @return string new timestring in local timezone time
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function utc_to_local_time($time, $string_format=FALSE)
+{
+    $CI =& get_instance();
+    $tz_local = new DateTimeZone($CI->config->item('local_timezone'));
+    $tz_utc = new DateTimeZone('UTC');
+    if(is_string($time) && strtotime($time)) {
+        $time = new Datetime($time, $tz_utc);
+    }
+    if(is_a($time, 'DateTime')) {
+        $time->setTimeZone($tz_local);
+    }
+    if($string_format) {
+        $time = $time->format($string_format);
+    }
+    return $time;
+}
+
 ?>

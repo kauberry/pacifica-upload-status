@@ -41,10 +41,10 @@ class Status_api_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->local_timezone = 'US/Pacific';
+        $this->local_timezone = $this->config->item('local_timezone');
         // $this->load->library('EUS', '', 'eus');
         $this->load->model('Myemsl_api_model', 'myemsl');
-        $this->load->helper('item', 'network');
+        $this->load->helper(array('item', 'network', 'time'));
 
         $this->status_list = array(
             0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
@@ -73,8 +73,8 @@ class Status_api_model extends CI_Model
         $url_args_array = array(
             'instrument' => isset($instrument_id) ? $instrument_id : -1,
             'proposal' => isset($proposal_id) ? $proposal_id : -1,
-            'start' => $start_time,
-            'end' => $end_time,
+            'start' => local_time_to_utc($start_time, 'Y-m-d H:i:s'),
+            'end' => local_time_to_utc($end_time, 'Y-m-d H:i:s'),
             'submitter' => isset($submitter) ? $submitter : -1,
             'requesting_user' => $this->user_id
         );

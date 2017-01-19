@@ -1,16 +1,29 @@
-<?php $this->load->view('pnnl_template/view_header'); ?>
-<body>
-  <?php $this->load->view('pnnl_template/intranet_banner'); ?>
-  <div id="page">
-  <?php $this->load->view('pnnl_template/top',$navData['current_page_info']); ?>
-  <div id="container">
-    <div id="main">
-      <h2>Missing <?= ucwords($lookup_type_desc) ?> Error</h2>
-      <span class="error_container"><?= $error_message ?></span>
+<?php
+  $this->template_version = $this->config->item('template');
+  $this->load->view("{$this->template_version}_template/view_header");
+  $js = isset($js) ?
+"<script type='text/javascript'>
+//<![CDATA[
+  {$js}
+//]]>
+</script>" : '';
+?>
+    <div id="container">
+      <div id="main">
+        <div id="header_container">
+          <h1 class="underline"><?= $page_header ?></h1>
+          <div id="login_id_container">
+            <em><?= $this->nav_info['current_page_info']['logged_in_user'] ?></em>
+          </div>
+        </div>
+        <div style="text-align:center">
+            <h2>Missing <?= ucwords($lookup_type_desc) ?></h2>
+            <span class="error_container" style="font-size:1.2em;"><?= $error_message ?></span>
+        </div>
+      </div>
     </div>
-  </div>
-    <?php $this->load->view('pnnl_template/view_footer'); ?>
-  </div>
+    <?php $this->load->view("{$this->template_version}_template/view_footer_short"); ?>
+<?= $js ?>
 </body>
 </html>
-<?php exit; ?>
+<?php exit;?>

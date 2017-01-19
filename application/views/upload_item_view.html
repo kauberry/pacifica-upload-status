@@ -13,9 +13,8 @@
       $status_info = $transaction_info['status'];
       $groups = $transaction_info['groups'];
       $submitter_id = $groups['submitter_id'];
-      // $submitter_info = $this->eus->get_name_from_eus_id($submitter_id);
       $submitter_name = $groups['submitter_name'];
-      $friendly_upload_time = $upload_time->format('g:ia \o\n D, M j Y');
+      $friendly_upload_time = utc_to_local_time($upload_time_string, 'g:ia \o\n D, M j Y');
       // $status_steps = !empty($transaction_info['status']) ?
       // array_pop($transaction_info['status']) :
       // array('0' => array('trans_id' => $transaction_id, 'step' => '0'));
