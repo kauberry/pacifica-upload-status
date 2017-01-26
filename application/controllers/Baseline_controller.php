@@ -35,7 +35,7 @@ class Baseline_controller extends CI_Controller
      */
     public function __construct()
     {
-        date_default_timezone_set('America/Los_Angeles');
+        date_default_timezone_set($this->config->item('local_timezone'));
         parent::__construct();
         $this->load->helper(array('user', 'url', 'html', 'myemsl', 'file_info'));
         $this->output->enable_profiler(FALSE);

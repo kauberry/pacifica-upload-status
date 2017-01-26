@@ -43,8 +43,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function friendlyElapsedTime($datetime_object, $base_time_obj = FALSE, $use_ago = TRUE)
 {
-    date_default_timezone_set('America/Los_Angeles');
-
     if(!$base_time_obj) {
         $base_time_obj = new DateTime();
     }
