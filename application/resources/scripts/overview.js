@@ -37,6 +37,7 @@ $(function(){
 		get_instrument_list(current_proposal_id);
 	}
     setup_selectors(true);
+    cart_status();
 });
 
 

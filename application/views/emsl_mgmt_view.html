@@ -67,9 +67,7 @@
           <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
             <fieldset id="cart_listing_fieldset">
               <legend>Download Queue</legend>
-              <div id="cart_listing">
-                <?php $this->load->view('cart_list_insert.html', $cart_data); ?>
-              </div>
+              <div id="cart_listing"></div>
             </fieldset>
           </div>
 
@@ -89,4 +87,5 @@
 </script>
 
 </body>
+<?php $this->load->view("cart_create_dialog_view.html"); ?>
 </html>

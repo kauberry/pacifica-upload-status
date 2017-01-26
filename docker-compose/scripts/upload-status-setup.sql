@@ -11,7 +11,7 @@ CREATE TABLE "cart_items" (
 	"id" int8 NOT NULL DEFAULT nextval('cart_items_id_seq'::regclass),
 	"file_id" int8 NOT NULL,
 	"cart_uuid" varchar(64) NOT NULL COLLATE "default",
-	"relative_path_location" varchar NOT NULL COLLATE "default",
+	"relative_local_path" varchar NOT NULL COLLATE "default",
 	"file_size_bytes" int8 NOT NULL,
 	"file_mime_type" varchar COLLATE "default"
 )

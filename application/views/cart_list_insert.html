@@ -14,7 +14,6 @@
         <thead>
           <tr>
             <th>&nbsp;</th>
-            <th>Cart Description<br />[Proposal/Instrument/Upload Time]</th>
             <th>Created</th>
             <th>Completed</th>
             <th>Size</th>
@@ -34,21 +33,21 @@
               <?php endif; ?>
             </td>
             <td>
-              <span><?= $md['proposal_id'] ?></span> / 
+              <span><?= $md['proposal_id'] ?></span> /
               <span title="<?= $md['instrument_description'] ?>"><?= $md['instrument_id'] ?></span> /
               <span><?= $info['times']['formatted_upload_time'] ?></span>
             </td>
             <td>
               <?php if(!empty($info['times']['submit'])): ?>
               <?= $info['times']['formatted_submit'] ?>
-              <?php else: ?> 
+              <?php else: ?>
               N/A
               <?php endif; ?>
             </td>
             <td>
               <?php if(!empty($info['times']['email'])): ?>
               <time title='<?= $info["times"]["email_time_obj"]->format("d M Y g:ia") ?>' datetime='<?= $info["times"]["email_time_obj"]->format("c") ?>'><?= $info['times']['generation_time'] ?></time>
-              <?php else: ?> 
+              <?php else: ?>
               &mdash;&mdash;&mdash;
               <?php endif; ?>
             </td>
@@ -59,17 +58,17 @@
             <td><?= $info['transaction_id'] ?></td>
             <td>
               <div class="buttons">
-                <input 
+                <input
                   type="button"
-                  id="delete_button_<?= $cart_id ?>" 
-                  name="delete_button_<?= $cart_id ?>" 
-                  <?php if($classification == 'bowling'): ?>                    
+                  id="delete_button_<?= $cart_id ?>"
+                  name="delete_button_<?= $cart_id ?>"
+                  <?php if($classification == 'bowling'): ?>
                   class="cart_delete_button state_<?= $classification ?>"
                   disabled="disabled"
                   title="Delete functionality not enabled until download moves to 'available' state"
                   <?php else: ?>
                   class="cart_delete_button state_<?= $classification ?>"
-                  title="Delete this queued download" 
+                  title="Delete this queued download"
                   <?php endif; ?>
                   value="X" />
               </div>

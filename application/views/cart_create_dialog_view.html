@@ -1,0 +1,29 @@
+<div id='cart-create-dialog-form' title="Create a New Cart">
+	<br />
+	<form class="themed">
+		<fieldset>
+			<div>
+				<div class="left_block" style="width:15%;">
+					<label for="name">Name<sup style='color:red;'>*</sup></label>
+				</div>
+				<div class="right_block" style="width:75%;">
+					<input type="text" name="name" id="cart_name" placeholder="Name your cart" style="width:95%" class="required text ui-widget ui-corner-all"/>
+				</div>
+			</div>
+			<div>
+				<div class="left_block" style="width:15%;">
+					<label for="description">Description</label>
+				</div>
+				<div class="right_block" style="width:75%;">
+					<input type="text" name="description" id="cart_description" placeholder="Cart Description (optional)" style="width:95%" class="text ui-widget ui-corner-all"/>
+				</div>
+			</div>
+			<input type="hidden" name="files" id="cart_file_list" value="" />
+
+			<input type="submit" tabindex="-1" style="position:absolute; top:-1000px";
+		</fieldset>
+		<div style="text-align:center;font-weight:bold;">
+			<span style="color:red;font-size:1.2em;">*</span> indicates a required field
+		</div>
+	</form>
+</div>

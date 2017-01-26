@@ -85,6 +85,7 @@ class Status_api extends Baseline_api_controller
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/file_directory_styling.css',
             '/resources/stylesheets/bread_crumbs.css',
+            '/project_resources/stylesheets/cart.css'
         );
         $this->page_data['load_prototype'] = FALSE;
         $this->page_data['load_jquery'] = TRUE;
@@ -164,7 +165,9 @@ class Status_api extends Baseline_api_controller
                     var initial_time_period = '{$time_period}';
                     var email_address = '{$this->email}';
                     var lookup_type = 't';
-                    var initial_instrument_list = [];";
+                    var initial_instrument_list = [];
+                    var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                    ";
 
             $this->page_data['proposal_list'] = $proposal_list;
             $this->page_data['selected_proposal'] = $proposal_id;
@@ -305,6 +308,7 @@ class Status_api extends Baseline_api_controller
         $this->page_data['js'] = "var initial_inst_id = '{$inst_id}';
                             var lookup_type = 't';
                             var email_address = '{$this->email}';
+                            var cart_access_url_base = '{$this->config->item('external_cart_url')}';
                             ";
         $this->page_data['show_instrument_data'] = TRUE;
         $this->load->view('single_item_view.html', $this->page_data);

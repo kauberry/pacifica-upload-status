@@ -1,18 +1,58 @@
-var bearer_token = "";
-// var url_base = '/myemsl/status/index.php';
-var url_base = '';
-var token_url_base = '/cart/get_cart_token/';
-var cart_url_base = url_base + '/myemsl/api/2/cart/';
-var cart_info_url = '/cart/listing/';
+var cart_url_base = '/cart_api';
+var cart_info_url = cart_url_base + '/listing/';
+var cart_create_url = cart_url_base + '/create/';
+var cart_delete_url = cart_url_base + '/delete/'
 var max_size = 1024 * 1024 * 1024 * 50; //50 GB (base 2)
 var friendly_max_size = '';
 var exceed_max_size_allow = false;
+var cart_create_dialog, cart_create_form;
+
+$(function(){
+    cart_create_dialog = $("#cart-create-dialog-form").dialog({
+        autoOpen: false,
+        width:550,
+        modal:true,
+        buttons: {
+            "Create": function(){
+                f = $(this).find("form")
+                var req_fields = f.find('.required');
+                var empty_req_fields = req_fields.filter(function(){
+                    return ( $(this).val() == "" );
+                });
+                if(empty_req_fields.length > 0){
+                    return false;
+                }else{
+                    //all req'd fields filled out
+                    cart_create_dialog.dialog("close");
+                    create_cart(f.serializeFormJSON());
+                }
+            },
+            Cancel: function() {
+                cart_create_form[0].reset();
+                cart_create_dialog.dialog("close");
+            }
+        },
+        close: function() {
+        }
+
+    });
+    window.setInterval(cart_status, 30000);
+
+    cart_create_form = cart_create_dialog.find("form").on("submit", function(event){
+        event.preventDefault();
+        // cart_download
+    });
+});
+
+// var createCart = function(event){
+//
+// };
 
 var setup_file_download_links = function(parent_item) {
     parent_item = $(parent_item);
     var tx_id = parent_item.prop('id').replace('tree_','');
     var file_object_collection = parent_item.find('.item_link');
-    file_object_collection.unbind('click').click(
+    file_object_collection.off('click').click(
         function(e) {
             var file_object_data = JSON.parse($(e.target).siblings('.item_data_json').html());
             file_object_data.name = escape(file_object_data.name);
@@ -23,118 +63,52 @@ var setup_file_download_links = function(parent_item) {
     dl_button.unbind('click').click(
         function(e){
             var el = $(e.target);
-            cart_download(parent_item, tx_id, null);
+            cart_download(parent_item);
         }
     );
 
 };
 
 
-var cart_download = function(transaction_container, tx_id, cart_id){
+var cart_download = function(transaction_container){
     var selected_files = get_selected_files(transaction_container);
     //check for token
     var item_id_list = Object.keys(selected_files.sizes);
-    get_token(item_id_list, tx_id);
+    $('#cart_file_list').val(JSON.stringify(item_id_list));
+    cart_create_dialog.dialog("open");
 };
 
-
-var get_token = function(item_id_list, tx_id){
-    var token_url = token_url_base;
-    var cart_url = cart_url_base;
-    var token_getter = $.ajax(
-        {
-            url:token_url,
-            type: 'POST',
-            data: JSON.stringify({'items' : item_id_list})
-        }
+var create_cart = function(submission_object){
+    submission_object["files"] = JSON.parse(submission_object["files"]);
+    var cart_submitter = $.post(
+        cart_create_url, JSON.stringify(submission_object)
     )
     .done(
         function(data){
-            var cart_submitter = $.ajax(
-                {
-                    url: cart_url,
-                    type: 'POST',
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    data: JSON.stringify(
-                        {
-                            'items':item_id_list,
-                            'auth_token':data
-                        }
-                    ),
-                dataType: 'json'
-                }
-            )
-            .done(
-                function(data){
-                    var status_box = $('#status_block_' + tx_id);
-                    status_box.html(item_id_list.length + " items added to download cart");
-                    var cart_id = data.cart_id;
-                    submit_cart_for_download(tx_id,cart_id);
-                }
-            );
-        }
-    )
-    .fail(
-        function(jq,textStatus,errormsg){
-
+            cart_status();
         }
     );
 };
 
+var cart_status = function(){
+    var getter = $.get(cart_info_url)
+    getter.done(function(data){
+        $('#cart_listing').html(data);
+        if(data.trim().length == 0){
+            $('#cart_listing_container').hide();
+        }else{
+            $('#cart_listing_container').show();
+        }
+    });
+    getter.fail(function(jqxhr, status, error){});
+}
 
 
-var submit_cart_for_download = function(tx_id, cart_id){
-    if(cart_id == null) {
+var cart_delete = function(cart_uuid){
+    if (cart_uuid == null) {
         return;
     }
-    var submit_url = cart_url_base + cart_id + '?submit&email_addr=' + email_address;
-    $.ajax(
-        {
-            url:submit_url,
-            data: JSON.stringify({}),
-            dataType: 'json',
-            contentType: 'Content-type: application/json; charset=UTF-8',
-            type:'POST',
-            processData:false
-        }
-    )
-    .always(
-        function(data){
-            $('#cart_id_' + tx_id).val(cart_id);
-            var dialog_message = $('<div><p>A new download cart has been created for this data.</p><p>Status info will appear in the Download Queue shortly</p></div>');
-            $('#dl_button_' + tx_id).fadeOut();
-            $('#tree_' + tx_id).fancytree('getTree').visit(
-                function(node){
-                    node.setSelected(false);
-                }
-            );
-            dialog_message.dialog(
-                {
-                    modal:true,
-                    buttons: {
-                        Ok: function(){
-                            check_cart_status(cart_id);
-                            $(this).dialog("close");
-                        }
-                    }
-                }
-            );
-        }
-    )
-    .fail(
-        function(jq,textStatus,errormsg){
-        }
-    );
-};
-
-var cart_delete = function(cart_id){
-    if (cart_id == null) {
-        return;
-    }
-    var url = cart_url_base + cart_id;
+    var url = cart_delete_url + cart_uuid;
     $.ajax(
         {
             url : url,
@@ -146,8 +120,8 @@ var cart_delete = function(cart_id){
     .done(
         function(data){
             //check how many rows are left
-            $('#cart_line_' + cart_id).remove();
-            check_cart_status();
+            // $('#cart_line_' + cart_id).remove();
+            cart_status();
         }
     )
     .fail(
@@ -170,17 +144,18 @@ var dead_cart_delete = function(cart_id){
     );
 };
 
-var check_cart_status = function(tx_id){
-    if(tx_id == undefined) { tx_id = ''; }
-    var cart_url = cart_info_url + tx_id;
-    $.get(
-        cart_url, function(data){
-            $('#cart_listing').html(data);
-            get_cart_count();
-        }
-    );
+// var check_cart_status = function(tx_id){
+//     if(tx_id == undefined) { tx_id = ''; }
+//     var cart_url = cart_info_url + tx_id;
+//     $.get(
+//         cart_url, function(data){
+//             $('#cart_listing').html(data);
+//             get_cart_count();
+//         }
+//     );
+//
+// };
 
-};
 
 var get_cart_count = function(){
     var cart_count = $('.cart_line').length;
@@ -227,8 +202,6 @@ var get_selected_files = function(tree_container){
         update_download_status(tree_container,selCount);
     }
 };
-
-
 
 var get_file_sizes = function(tree_container){
     var tree = tree_container.fancytree('getTree');
@@ -298,60 +271,6 @@ var update_download_status = function(tree_container, selectCount){
         dl_button.slideUp('slow');
     }
 
-};
-
-var download_myemsl_item = function(file_object_data) {
-    //get a download token
-    var item_id = file_object_data.item_id;
-
-    var token_url = token_url_base + item_id;
-    var token_getter = $.ajax(
-        {
-            url: token_url,
-            method:'get'
-        }
-    );
-    token_getter.done(
-        function(data){
-            bearer_token = data;
-            var token = data;
-            myemsl_tape_status(token, file_object_data);
-        }
-    );
-};
-
-var myemsl_tape_status = function(token, file_object_data, cb) {
-    var item_id = file_object_data.item_id;
-    var file_name = file_object_data.name;
-
-    var ajx = $.ajax(
-        {
-            //FIXME foo, bar
-            url : "/myemsl/item/foo/bar/" + item_id + "/2.txt/?token=" + token + "&locked",
-            type : 'HEAD',
-            processData : false,
-            success : function(token, status_target) {
-                return function(ajaxdata, status, xhr) {
-                    var custom_header = xhr.getResponseHeader('X-MyEMSL-Locked');
-                    if (custom_header == "false") {
-                        //pop up a dialog box regarding the item being on tape
-                    } else {
-                        window.location.href = '/myemsl/item/foo/bar/' + item_id + '/' + file_name + "?token=" + token;
-                    }
-                };
-            }(token, status),
-            error : function(token, status_target) {
-                // return function(xhr, status, error) {
-                // if (xhr.status == 503) {
-                  // cb('slow');
-                // } else {
-                  // cb('error');
-                // }
-                // };
-            }//(token, status)
-        }
-    );
-    return ajx;
 };
 
 

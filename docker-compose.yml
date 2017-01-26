@@ -11,13 +11,22 @@ services:
             - metadataserver:metadata
             - policyserver:policy
             - cartserver:cart
+            - uploadstatusdb:cartdb
+            - archiveinterface:archivei
         ports:
             - 80:80
         environment:
             METADATA_PORT: tcp://metadata:8121
             POLICY_PORT: tcp://policy:8181
+            ARCHIVE_PORT: tcp://archivei:8080
             CART_PORT: tcp://cart:8081
-            CART_DOWNLOAD_PORT: tcp://download.my.emsl.pnl.gov
+            CARTDB_ADDR: cartdb
+            CARTDB_PORT: 5432
+            CARTDB_USER: pacifica
+            CARTDB_PASSWORD: pacifica
+            CARTDB_DB_NAME: pacifica_upload_status
+            CART_DOWNLOAD_PORT: tcp://cart.my.emsl.pnl.gov
+            FILE_DOWNLOAD_PORT: tcp://download.my.emsl.pnl.gov
 
     uploadstatusdb:
         container_name: uploadstatusdb

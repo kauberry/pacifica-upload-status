@@ -61,24 +61,19 @@
 $active_group = 'default';
 // $active_record = TRUE;
 $query_builder = TRUE;
-
 // $ini_file_name = stristr($_SERVER['SERVER_NAME'], 'dev1.my') === FALSE ? 'general.ini' : 'general_dpp.ini';
-$ini_file_name = 'general.ini';
-$myemsl_array = parse_ini_file("/etc/myemsl/".$ini_file_name, TRUE);
-
 $db['default'] = array(
-  'hostname' => $myemsl_array['metadata']['host'],
-  'username' => $myemsl_array['metadata']['user'],
-  'password' => $myemsl_array['metadata']['password'],
-  'database' => $myemsl_array['metadata']['database'],
+  'hostname' => getenv('CARTDB_ADDR'),
+  'username' => getenv('CARTDB_USER'),
+  'password' => getenv('CARTDB_PASSWORD'),
+  'database' => getenv('CARTDB_DB_NAME'),
   'dbdriver' => "postgre",
-  'dbprefix' => "myemsl.",
+  'dbprefix' => "",
   'pconnect' => TRUE,
   'db_debug' => TRUE,
   'cache_on' => FALSE,
   'cachedir' => ""
 );
-
 $db['eus_for_myemsl'] = $db['default'];
 $db['eus_for_myemsl']['dbprefix'] = 'eus.';
 

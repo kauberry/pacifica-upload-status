@@ -1,0 +1,22 @@
+.cart_tree h2 {
+    font-size:1.2em;
+    color:#656565;
+	margin: 0 0 2px 5px;
+}
+.cart_tree table {
+	border: 1px solid #656565;
+}
+
+.cart_tree table {
+    border-collapse: collapse;
+    box-shadow: 0 0 0 1px #656565; /* this draws the table border  */
+}
+
+.cart_tree td {
+    border: 1px solid #ccc;
+}
+
+
+.cart_tree thead th {
+	padding:5px;
+}

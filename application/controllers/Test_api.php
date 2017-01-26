@@ -38,6 +38,7 @@ class Test_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Status_api_model', 'status');
+        $this->load->model('Cart_api_model', 'cart');
     }
 
     /**
@@ -77,6 +78,20 @@ class Test_api extends Baseline_api_controller
         echo "<pre>";
         $proposals = $this->status->get_proposals_by_name($search_terms, $this->user_id, FALSE);
         send_json_array($proposals);
+        echo "</pre>";
+    }
+
+    /**
+     * Test retrieval of cart information
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_active_carts()
+    {
+        echo "<pre>";
+        $this->cart->get_active_carts();
         echo "</pre>";
     }
 
