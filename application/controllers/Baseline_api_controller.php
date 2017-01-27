@@ -35,9 +35,9 @@ class Baseline_api_controller extends CI_Controller
      */
     public function __construct()
     {
-        date_default_timezone_set($this->config->item('local_timezone'));
         parent::__construct();
         //get user info
+        date_default_timezone_set($this->config->item('local_timezone'));
         $this->load->helper(array('url', 'html', 'myemsl_api', 'file_info', 'user'));
         $this->output->enable_profiler(FALSE);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
