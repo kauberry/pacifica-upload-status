@@ -15,10 +15,11 @@ ENV APACHE_CI_ENV     development
 
 EXPOSE 80
 
-COPY websystem/system /var/www/html/system
+COPY . /var/www/html/
+#COPY websystem/system /var/www/html/system
 COPY websystem/index.php /var/www/html/
-COPY manifest.json /var/www/html/
-COPY tests /var/www/html/tests
+#COPY manifest.json /var/www/html/
+#COPY tests /var/www/html/tests
 COPY tests/apache_conf/modules /etc/apache2/conf-enabled/
 COPY tests/apache_conf/sites/myemsl-status.conf /etc/apache2/sites-available/
 RUN ln -s /etc/apache2/sites-available/myemsl-status.conf /etc/apache2/sites-enabled/
@@ -31,9 +32,12 @@ RUN ln -s /usr/lib/php5/20131226/p* /usr/local/lib/php/extensions/no-debug-non-z
 RUN rm -rf /etc/apache2/sites-enabled/000-default.conf
 RUN echo 'date.timezone = America/Los_Angeles' | tee "/usr/local/etc/php/conf.d/timezone.ini"
 RUN ["/bin/bash", "-c", "source /etc/apache2/envvars"]
-COPY resources /var/www/html/resources
-COPY application /var/www/html/application
+#COPY resources /var/www/html/resources
+#COPY application /var/www/html/application
 
 RUN chown -R "$APACHE_RUN_USER:$APACHE_RUN_GROUP" /var/www/html
+#RUN chmod +x /var/www/html/db_setup.sh
+#RUN chmod +x /var/www/html/cli.php
+#RUN /var/www/html/db_setup.sh
 
 CMD ["apache2-foreground"]

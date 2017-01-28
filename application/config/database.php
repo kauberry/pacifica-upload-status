@@ -74,6 +74,10 @@ $db['default'] = array(
   'cache_on' => FALSE,
   'cachedir' => ""
 );
+
+$db['init_postgres'] = $db['default'];
+$db['init_postgres']['database'] = 'postgres';
+
 $db['eus_for_myemsl'] = $db['default'];
 $db['eus_for_myemsl']['dbprefix'] = 'eus.';
 

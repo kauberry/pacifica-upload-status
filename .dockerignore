@@ -1,0 +1,8 @@
+Docker*
+.*
+*.yml
+*.txt
+LICENSE
+pacifica*
+test-everything.sh
+application/.*

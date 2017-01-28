@@ -5,8 +5,8 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.dev
-        volumes:
-            - ./:/var/www/html
+        # volumes:
+        #     - ./:/var/www/html
         links:
             - metadataserver:metadata
             - policyserver:policy
@@ -30,9 +30,7 @@ services:
 
     uploadstatusdb:
         container_name: uploadstatusdb
-        build:
-            context: .
-            dockerfile: docker-compose/Dockerfile.postgres
+        image: postgres
         environment:
             POSTGRES_PASSWORD: pacifica
             POSTGRES_DB: pacifica_upload_status
