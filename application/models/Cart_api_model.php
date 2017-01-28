@@ -84,7 +84,7 @@ class Cart_api_model extends CI_Model
 
         $cart_submit_response = $this->_submit_to_cartd($cart_uuid, $cart_submission_object);
 
-        if ($cart_submit_response->status_code / 100 == 2) {
+        if (intval($cart_submit_response->status_code / 100) == 2) {
             $local_cart_success = $this->_create_cart_entry(
                 $cart_uuid,
                 $cart_submission_object,
@@ -101,7 +101,7 @@ class Cart_api_model extends CI_Model
             $return_array['message'] = 'cart creation was unsuccessful';
             return $return_array;
         }
-
+        $return_array['success'] = TRUE;
         $return_array['cart_uuid'] = $cart_uuid;
         $return_array['message'] = "A cart named '{$cart_submission_object['name']}' was successfully created";
         $return_array['retrieval_url'] = "{$this->cart_dl_base}/{$cart_uuid}";

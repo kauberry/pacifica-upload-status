@@ -85,9 +85,18 @@ var create_cart = function(submission_object){
     )
     .done(
         function(data){
+            if(!data.success){
+                //looks like we had an error
+                alert(data.message);
+            }
             cart_status();
         }
-    );
+    )
+    .fail(
+        function(jqxhr, error, message){
+            alert("A problem occurred creating your cart.\n[" + message + "]");
+        }
+    )
 };
 
 var cart_status = function(){
