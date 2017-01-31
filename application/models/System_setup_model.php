@@ -46,6 +46,19 @@ class System_setup_model extends CI_Model
         parent::__construct();
 
         $this->statusdb_name = 'pacifica_upload_status';
+        //quickly assess the current system status
+        log_message("info", "Loading postgres db instance");
+        $this->load->database('init_postgres');
+        log_message("info", "Loading dbutil");
+        $this->load->dbutil();
+        log_message("info", "Loading forge");
+        $this->load->dbforge();
+        try {
+            $this->setup_db_structure();
+        } catch (Exception $e) {
+            log_message('error', "Could not create database instance. {$e->message}");
+            $this->output->set_status_header(500);
+        }
         $this->global_try_count = 0;
     }
 
@@ -60,19 +73,16 @@ class System_setup_model extends CI_Model
      */
     private function _check_and_create_database($db_name)
     {
-        $this->load->database('init_postgres');
-        $this->load->dbutil();
-        $this->load->dbforge();
-
         if(!$this->dbutil->database_exists($db_name)) {
+            log_message('info', 'Attempting to create database structure...');
             //db doesn't already exist, so make it
             if($this->dbforge->create_database($db_name)) {
-                echo "Created {$db_name} database instance" . PHP_EOL;
+                log_message('info', "Created {$db_name} database instance");
             }else{
-                die("Could not create the {$this->statusdb_name} database instance");
+                log_message('error', "Could not create database instance.");
+                $this->output->set_status_header(500);
             }
         }
-        $this->db->close();
     }
 
     /**
@@ -129,7 +139,7 @@ class System_setup_model extends CI_Model
             $this->dbforge->add_field($cart_fields);
             $this->dbforge->add_key('cart_uuid', TRUE);
             if($this->dbforge->create_table('cart')) {
-                echo "Created 'cart' table..." . PHP_EOL;
+                log_message("info", "Created 'cart' table...");
             };
         }
 
@@ -161,7 +171,7 @@ class System_setup_model extends CI_Model
             $this->dbforge->add_field($cart_items_fields);
             $this->dbforge->add_key(array('file_id', 'cart_uuid'), TRUE);
             if($this->dbforge->create_table('cart_items')) {
-                echo "Created 'cart_items' table..." . PHP_EOL;
+                log_message("info", "Created 'cart_items' table...");
             };
 
         }

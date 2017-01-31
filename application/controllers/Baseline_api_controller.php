@@ -38,6 +38,7 @@ class Baseline_api_controller extends CI_Controller
         parent::__construct();
         //get user info
         date_default_timezone_set($this->config->item('local_timezone'));
+        $this->load->model('System_setup_model', 'setup');
         $this->load->helper(array('url', 'html', 'myemsl_api', 'file_info', 'user'));
         $this->output->enable_profiler(FALSE);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
@@ -47,6 +48,7 @@ class Baseline_api_controller extends CI_Controller
         }else{
             $this->user_id = 43751;
         }
+
         // $this->metadata_url_base = 'http://dmlb2000.emsl.pnl.gov:8121';
         // $this->policy_url_base = 'http://dmlb2000.emsl.pnl.gov:8181';
 
