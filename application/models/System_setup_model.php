@@ -47,12 +47,6 @@ class System_setup_model extends CI_Model
 
         $this->statusdb_name = 'pacifica_upload_status';
         //quickly assess the current system status
-        log_message("info", "Loading postgres db instance");
-        $this->load->database('init_postgres');
-        log_message("info", "Loading dbutil");
-        $this->load->dbutil();
-        log_message("info", "Loading forge");
-        $this->load->dbforge();
         try {
             $this->setup_db_structure();
         } catch (Exception $e) {
@@ -82,6 +76,8 @@ class System_setup_model extends CI_Model
                 log_message('error', "Could not create database instance.");
                 $this->output->set_status_header(500);
             }
+        }else{
+
         }
     }
 
@@ -95,47 +91,47 @@ class System_setup_model extends CI_Model
     public function setup_db_structure()
     {
         //check for database existence
-
-        $this->_check_and_create_database($this->statusdb_name);
-
         $this->load->database('default');
         $this->load->dbforge();
         $this->load->dbutil();
 
+        $this->_check_and_create_database($this->statusdb_name);
+
+
         //ok, the database should be there now. Let's make some tables
-        $cart_fields = array(
-            'cart_uuid' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '64',
-                'unique' => TRUE
-            ),
-            'name' => array(
-                'type' => 'VARCHAR'
-            ),
-            'description' => array(
-                'type' => 'VARCHAR',
-                'null' => TRUE
-            ),
-            'owner' => array(
-                'type' => 'INT'
-            ),
-            'json_submission' => array(
-                'type' => 'json'
-            ),
-            'created' => array(
-                'type' => 'TIMESTAMP',
-                'default' => 'now()'
-            ),
-            'updated' => array(
-                'type' => 'TIMESTAMP'
-            ),
-            'deleted' => array(
-                'type' => 'TIMESTAMP',
-                'null' => TRUE
-            )
-        );
 
         if(!$this->db->table_exists('cart')) {
+            $cart_fields = array(
+                'cart_uuid' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => '64',
+                    'unique' => TRUE
+                ),
+                'name' => array(
+                    'type' => 'VARCHAR'
+                ),
+                'description' => array(
+                    'type' => 'VARCHAR',
+                    'null' => TRUE
+                ),
+                'owner' => array(
+                    'type' => 'INT'
+                ),
+                'json_submission' => array(
+                    'type' => 'json'
+                ),
+                'created' => array(
+                    'type' => 'TIMESTAMP',
+                    'default' => 'now()'
+                ),
+                'updated' => array(
+                    'type' => 'TIMESTAMP'
+                ),
+                'deleted' => array(
+                    'type' => 'TIMESTAMP',
+                    'null' => TRUE
+                )
+            );
             $this->dbforge->add_field($cart_fields);
             $this->dbforge->add_key('cart_uuid', TRUE);
             if($this->dbforge->create_table('cart')) {
@@ -143,31 +139,31 @@ class System_setup_model extends CI_Model
             };
         }
 
-        $cart_items_fields = array(
-            'id' => array(
-                'type' => 'NUMERIC',
-                'auto_increment' => TRUE
-            ),
-            'file_id' => array(
-                'type' => 'BIGINT'
-            ),
-            'cart_uuid' => array(
-                'type' => 'VARCHAR',
-                'constraint' => 64
-            ),
-            'relative_local_path' => array(
-                'type' => 'VARCHAR'
-            ),
-            'file_size_bytes' => array(
-                'type' => 'BIGINT'
-            ),
-            'file_mime_type' => array(
-                'type' => 'VARCHAR',
-                'null' => TRUE
-            )
-        );
 
         if(!$this->db->table_exists('cart_items')) {
+            $cart_items_fields = array(
+                'id' => array(
+                    'type' => 'NUMERIC',
+                    'auto_increment' => TRUE
+                ),
+                'file_id' => array(
+                    'type' => 'BIGINT'
+                ),
+                'cart_uuid' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => 64
+                ),
+                'relative_local_path' => array(
+                    'type' => 'VARCHAR'
+                ),
+                'file_size_bytes' => array(
+                    'type' => 'BIGINT'
+                ),
+                'file_mime_type' => array(
+                    'type' => 'VARCHAR',
+                    'null' => TRUE
+                )
+            );
             $this->dbforge->add_field($cart_items_fields);
             $this->dbforge->add_key(array('file_id', 'cart_uuid'), TRUE);
             if($this->dbforge->create_table('cart_items')) {

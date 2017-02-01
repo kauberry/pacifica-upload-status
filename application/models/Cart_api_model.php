@@ -50,7 +50,7 @@ class Cart_api_model extends CI_Model
         $this->cart_url_base = $this->config->item('internal_cart_url');
         $this->cart_dl_base = $this->config->item('external_cart_url');
         $this->load->database('default');
-        $this->load->library('PHPRequests');
+        // $this->load->library('PHPRequests');
         $this->load->helper('item');
     }
 

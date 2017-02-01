@@ -75,14 +75,14 @@ $db['default'] = array(
   'cachedir' => ""
 );
 
-$db['init_postgres'] = $db['default'];
-$db['init_postgres']['database'] = 'postgres';
-
-$db['eus_for_myemsl'] = $db['default'];
-$db['eus_for_myemsl']['dbprefix'] = 'eus.';
-
-$db['website_prefs'] = $db['default'];
-$db['website_prefs']['dbprefix'] = 'website_prefs.';
+// $db['init_postgres'] = $db['default'];
+// $db['init_postgres']['database'] = 'postgres';
+//
+// $db['eus_for_myemsl'] = $db['default'];
+// $db['eus_for_myemsl']['dbprefix'] = 'eus.';
+//
+// $db['website_prefs'] = $db['default'];
+// $db['website_prefs']['dbprefix'] = 'website_prefs.';
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */
