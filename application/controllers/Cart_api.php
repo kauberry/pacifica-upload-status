@@ -62,6 +62,7 @@ class Cart_api extends Baseline_api_controller
             transmit_array_with_json_header($cart_list);
         }else{
             if(empty($cart_list)) {
+                print('');
             }else{
                 //let's assume that they want html
                 $this->load->view('cart_status_insert_view.html', $cart_list);

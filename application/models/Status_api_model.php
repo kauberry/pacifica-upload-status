@@ -98,7 +98,7 @@ class Status_api_model extends CI_Model
     {
         $transactions_url = "{$this->policy_url_base}/status/transactions/search/details?";
         $url_args_array = array(
-            'user' => $this->user_id,
+            // 'user' => $this->user_id,
             'transaction_id' => $transaction_id
         );
         $transactions_url .= http_build_query($url_args_array, '', '&');
