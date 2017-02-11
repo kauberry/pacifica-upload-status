@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://github.com/EMSL-MSC/pacifica-reporting
  */
+if (! defined('BASEPATH')) exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -58,38 +59,19 @@
 
 $active_group = 'default';
 $query_builder = TRUE;
-$self = pathinfo(__FILE__, PATHINFO_DIRNAME);
-$db_dir = dirname(dirname(dirname($self))).DIRECTORY_SEPARATOR."tests/database/";
 //myemsl db
 $db['default'] = array(
-    'database' => $db_dir.'myemsl_metadata-myemsl.sqlite3',
-    'dbdriver' => "sqlite3",
-    'pconnect' => TRUE,
-    'db_debug' => TRUE,
-    'cache_on' => FALSE,
-    'cachedir' => ""
+  'dsn'   => '',
+  'hostname' => '',
+  'username' => '',
+  'password' => '',
+  'database' => APPPATH.'/pacifica_upload_status.sqlite3',
+  'dbdriver' => "sqlite3",
+  'pconnect' => FALSE,
+  'db_debug' => (ENVIRONMENT !== 'production'),
+  'cache_on' => FALSE,
+  'cachedir' => ""
 );
-
-
-$db['eus_for_myemsl'] = array(
-    'database' => $db_dir.'myemsl_metadata-eus.sqlite3',
-    'dbdriver' => "sqlite3",
-    'pconnect' => TRUE,
-    'db_debug' => TRUE,
-    'cache_on' => FALSE,
-'cachedir' => ""
-);
-
-
-$db['website_prefs'] = array(
-    'database' => $db_dir.'myemsl_metadata-website_prefs.sqlite3',
-    'dbdriver' => "sqlite3",
-    'pconnect' => TRUE,
-    'db_debug' => TRUE,
-    'cache_on' => FALSE,
-    'cachedir' => ""
-);
-
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

@@ -45,7 +45,6 @@ class System_setup_model extends CI_Model
     {
         parent::__construct();
 
-        $this->statusdb_name = 'pacifica_upload_status';
         //quickly assess the current system status
         try {
             $this->setup_db_structure();
@@ -54,31 +53,6 @@ class System_setup_model extends CI_Model
             $this->output->set_status_header(500);
         }
         $this->global_try_count = 0;
-    }
-
-    /**
-     *  Create the initial database entry
-     *
-     *  @param string $db_name The name of the db to create
-     *
-     *  @return [type]   [description]
-     *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    private function _check_and_create_database($db_name)
-    {
-        if(!$this->dbutil->database_exists($db_name)) {
-            log_message('info', 'Attempting to create database structure...');
-            //db doesn't already exist, so make it
-            if($this->dbforge->create_database($db_name)) {
-                log_message('info', "Created {$db_name} database instance");
-            }else{
-                log_message('error', "Could not create database instance.");
-                $this->output->set_status_header(500);
-            }
-        }else{
-
-        }
     }
 
     /**
@@ -95,11 +69,7 @@ class System_setup_model extends CI_Model
         $this->load->dbforge();
         $this->load->dbutil();
 
-        $this->_check_and_create_database($this->statusdb_name);
-
-
-        //ok, the database should be there now. Let's make some tables
-
+        //the database should already be in place. Let's make some tables
         if(!$this->db->table_exists('cart')) {
             $cart_fields = array(
                 'cart_uuid' => array(

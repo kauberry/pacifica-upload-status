@@ -67,10 +67,10 @@ $db['default'] = array(
   'username' => getenv('CARTDB_USER'),
   'password' => getenv('CARTDB_PASSWORD'),
   'database' => getenv('CARTDB_DB_NAME'),
-  'dbdriver' => "postgre",
+  'dbdriver' => getenv('CARTDB_DBDRIVER'),
   'dbprefix' => "",
   'pconnect' => FALSE,
-  'db_debug' => TRUE,
+  'db_debug' => (ENVIRONMENT !== 'production'),
   'cache_on' => FALSE,
   'cachedir' => ""
 );

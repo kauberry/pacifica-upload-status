@@ -36,3 +36,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['log_threshold'] = 0;
+$config['base_url']    = 'http://localhost:8192';
+$config['base_dir'] = '';
