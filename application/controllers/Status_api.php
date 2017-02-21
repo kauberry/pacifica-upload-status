@@ -100,7 +100,7 @@ class Status_api extends Baseline_api_controller
      */
     public function index()
     {
-        redirect('status_api/overview');
+        redirect('/overview');
     }
 
     /**

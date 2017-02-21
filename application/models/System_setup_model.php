@@ -90,6 +90,10 @@ class System_setup_model extends CI_Model
                 'json_submission' => array(
                     'type' => 'json'
                 ),
+                'last_known_state' => array(
+                    'type' => 'VARCHAR',
+                    'default' => 'waiting'
+                ),
                 'created' => array(
                     'type' => 'TIMESTAMP',
                     'default' => 'now()'

@@ -25,6 +25,7 @@ services:
             CARTDB_USER: pacifica
             CARTDB_PASSWORD: pacifica
             CARTDB_DB_NAME: pacifica_upload_status
+            CARTDB_DBDRIVER: postgre
             CART_DOWNLOAD_PORT: tcp://cart.my.emsl.pnl.gov
             FILE_DOWNLOAD_PORT: tcp://download.my.emsl.pnl.gov
 
@@ -37,7 +38,6 @@ services:
             POSTGRES_USER: pacifica
         ports:
             - 55432:5432
-
 
     metadataserver:
         build:
@@ -57,7 +57,6 @@ services:
             POSTGRES_PORT_5432_TCP_ADDR: postgres
             POSTGRES_PORT_5432_TCP_PORT: 5432
             POSTGRES_ENV_POSTGRES_PASSWORD: pacifica
-
 
     policyserver:
         build:
@@ -107,7 +106,6 @@ services:
         ports:
             - 5432:5432
 
-
     cartrabbit:
         image: rabbitmq
         container_name: cartrabbit
@@ -133,7 +131,6 @@ services:
         volumes:
             # - /srv:/srv
             - /Users/d3k857/Downloads/srv:/srv
-
 
     cartworkers:
         container_name: cartworkers

@@ -205,10 +205,12 @@ class Cart_api_model extends CI_Model
             $response = Requests::head($cart_url);
             $status = $response->headers['X-Pacifica-Status'];
             $message = $response->headers['X-Pacifica-Message'];
-            if ($response->status_code / 100 == 2 && $status != 'error') {
+            $response_overview = intval($response->status_code / 100);
+            if ($response_overview == 2 && $status != 'error') {
                 //looks like it went through ok
                 $success = TRUE;
-            }elseif($response->status_code / 100 == 4) {
+            }elseif($response->status_code == 404) {
+                $success = FALSE;
                 continue;
             } else {
                 $success = FALSE;
@@ -216,6 +218,7 @@ class Cart_api_model extends CI_Model
             if($status == 'deleted') {
                 continue;
             }
+            $this->update_cart_info($cart_uuid, array('last_known_state' => $status));
             $status_return['lookup'] = $status_lookup;
             $status_return['categories'][$status][] = $cart_uuid;
             $status_return['cart_list'][$cart_uuid] = array(
@@ -308,9 +311,17 @@ class Cart_api_model extends CI_Model
         $acceptable_names = array(
             'name' => 'name',
             'description' => 'description',
+            'last_known_state' => 'last_known_state'
         );
-        $update_calls = array();
+        $clean_update = array();
         foreach ($update_object as $name => $new_value) {
+            if(array_key_exists($name, $acceptable_names)) {
+                $clean_update[$name] = $new_value;
+            }
+        }
+        if(!empty($clean_update)) {
+            $this->db->where('cart_uuid', $cart_uuid);
+            $this->db->update('cart', $clean_update);
         }
     }
 

@@ -55,14 +55,8 @@
 			                  type="button"
 			                  id="delete_button_<?= $cart_uuid ?>"
 			                  name="delete_button_<?= $cart_uuid ?>"
-			                  <?php if($status != 'ready'): ?>
-			                  class="cart_delete_button state_<?= $status ?>"
-			                  disabled="disabled"
-			                  title="Delete functionality not enabled until download moves to 'available' state"
-			                  <?php else: ?>
 			                  class="cart_delete_button state_<?= $status ?>"
 			                  title="Delete this queued download"
-			                  <?php endif; ?>
 			                  value="X" />
 			              </div>
 			            </td>
@@ -86,11 +80,7 @@ $(function(){
 	          	modal:true,
 	          	buttons: {
 	            	Delete: function(){
-	              		if(el.hasClass('state_ready')){
-	                		cart_delete(cart_id);
-						}else if(el.hasClass('state_error') || el.hasClass('state_building')){
-	                		dead_cart_delete(cart_id);
-	              		}
+                		cart_delete(cart_id);
 	              		$(this).dialog("close");
 	            	},
 	            	Cancel: function(){
