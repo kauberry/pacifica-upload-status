@@ -222,7 +222,7 @@ class Status_api_model extends CI_Model
         $results = array();
         // try{
             $query = Requests::get($files_url, array('Accept' => 'application/json'));
-        if($query->status_code / 100 == 2) {
+        if(intval($query->status_code / 100) == 2) {
             $results = json_decode($query->body, TRUE);
         }
         // } catch (Exception $e){
@@ -241,6 +241,25 @@ class Status_api_model extends CI_Model
 
             return array('treelist' => $dirs, 'files' => $results);
         }
+    }
+
+    /**
+     * Get the last known transaction number from the md server
+     *
+     * @return int last known transaction number from the metadata db
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_last_known_transaction()
+    {
+        $txn_url = "{$this->metadata_url_base}/transactioninfo/last/";
+        $last_txn = -1;
+        $query = Requests::get($txn_url);
+        if(intval($query->status_code / 100) == 2) {
+            $results = json_decode($query->body, TRUE);
+            $last_txn = $results['latest_transaction_id'];
+        }
+        return $last_txn;
     }
 
 }

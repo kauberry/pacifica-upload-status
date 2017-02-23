@@ -109,4 +109,17 @@ class Ajax_api extends Baseline_api_controller
         print($query->body);
     }
 
+    /**
+     * Grabs the last known transaction ID
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_latest_transaction_id()
+    {
+        $last_id = $this->status->get_last_known_transaction();
+        send_json_array(array('last_transaction_id' => $last_id));
+    }
+
 }

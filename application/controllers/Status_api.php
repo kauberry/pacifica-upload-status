@@ -263,10 +263,35 @@ class Status_api extends Baseline_api_controller
 
         $transaction_info = $this->status->get_formatted_transaction($id);
         if(sizeof($transaction_info['transactions']) == 0) {
-            $this->page_data['page_header'] = 'Missing Transaction';
-            $this->page_data['title'] = 'Transaction not available';
-            $err_msg = "No transaction with an ID of {$id} could be found in the system";
-            $this->page_data['error_message'] = $err_msg;
+            $last_id = $this->status->get_last_known_transaction();
+            if($id >= $last_id) {
+                $this->page_data['page_header'] = 'New Transaction';
+                $this->page_data['title'] = 'Transaction Pending';
+                $err_msg = "This transaction is still being processed by the uploader";
+                $this->page_data['error_message'] = $err_msg;
+                $this->page_data['js'] = "
+var transaction_id = '{$id}';
+$(function(){
+    setInterval(function(){
+        refresh();
+    }, 5000);
+});
+var refresh = function(){
+    var getter = $.get('/ajax_api/get_latest_transaction_id', function(data){
+        var last_id = data.last_transaction_id;
+        if(transaction_id <= last_id){
+            location.reload(true);
+        }
+    });
+}
+";
+            }else{
+                $this->page_data['page_header'] = 'Missing Transaction';
+                $this->page_data['title'] = 'Transaction not available';
+                $err_msg = "No transaction with an ID of {$id} could be found in the system";
+                $this->page_data['error_message'] = $err_msg;
+                $this->page_data['force_refresh'] = FALSE;
+            }
             $this->page_data['lookup_type_desc'] = $lookup_type_description;
             $this->page_data['lookup_type'] = $lookup_type;
             $this->load->view('status_error_page.html', $this->page_data);

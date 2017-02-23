@@ -5,4 +5,5 @@ $(function(){
   // window.setInterval(check_cart_status, 30000);
   // window.setInterval(update_breadcrumbs, bc_interval);
   // setup_hover_info();
+  cart_status();
 });
