@@ -43,6 +43,8 @@ class Baseline_api_controller extends CI_Controller
         $this->output->enable_profiler(FALSE);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
+        $this->file_url_base = $this->config->item('external_file_url');
+        $this->cart_url_base = $this->config->item('external_cart_url');
         if(getenv('CI_ENV') !== 'unit_testing' && getenv('CI_ENV') !== 'development') {
             $this->user_id = get_user();
         }else{

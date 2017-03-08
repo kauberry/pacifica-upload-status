@@ -1,20 +1,64 @@
 version: '2'
 services:
+    proxyserver:
+        container_name: proxyserver
+        build:
+            context: ../proxy
+        links:
+            - metadataserver:metadata
+            - archiveinterface:archiveinterface
+        ports:
+            - 8180:8180
+        environment:
+            NGINX_ACCEL: 'True'
+            METADATA_PORT: tcp://metadata:8121
+            ARCHIVEI_PORT: tcp://archiveinterface:8080
+
+    uploadauth:
+        container_name: uploadauth
+        build:
+            context: .
+            dockerfile: Dockerfile.auth
+        links:
+            - uploadstatus:status
+            - archiveinterface:archiveinterface
+        ports:
+            - 80:80
+        environment:
+            BACKEND_PORT_80_TCP_ADDR: status
+            BACKEND_PORT_80_TCP_PORT: 80
+            FILE_REDIRECT_ADDR: archiveinterface
+            FILE_REDIRECT_PORT: 8080
+
+    archiveproxy:
+        container_name: archiveproxy
+        build:
+            context: .
+            dockerfile: Dockerfile.archiveproxy
+        links:
+            - proxyserver:proxyserver
+            - archiveinterface:archiveinterface
+        ports:
+            - 8123:8123
+        environment:
+            PROXY_ADDR: proxyserver
+            PROXY_PORT: 8180
+            FILE_REDIRECT_ADDR: archiveinterface
+            FILE_REDIRECT_PORT: 8080
+
     uploadstatus:
         container_name: uploadstatus
         build:
             context: .
             dockerfile: Dockerfile.dev
-        # volumes:
-        #     - ./:/var/www/html
+        volumes:
+            - ./:/var/www/html
         links:
             - metadataserver:metadata
             - policyserver:policy
             - cartserver:cart
             - uploadstatusdb:cartdb
             - archiveinterface:archivei
-        ports:
-            - 80:80
         environment:
             METADATA_PORT: tcp://metadata:8121
             POLICY_PORT: tcp://policy:8181
@@ -26,8 +70,8 @@ services:
             CARTDB_PASSWORD: pacifica
             CARTDB_DB_NAME: pacifica_upload_status
             CARTDB_DBDRIVER: postgre
-            CART_DOWNLOAD_PORT: tcp://cart.my.emsl.pnl.gov
-            FILE_DOWNLOAD_PORT: tcp://download.my.emsl.pnl.gov
+            CART_DOWNLOAD_PORT: tcp://cartng.emsl.pnl.gov:8443
+            FILE_DOWNLOAD_PORT: tcp://filesng.emsl.pnl.gov:8443
 
     uploadstatusdb:
         container_name: uploadstatusdb
@@ -130,7 +174,7 @@ services:
             - 8080:8080
         volumes:
             # - /srv:/srv
-            - /Users/d3k857/Downloads/srv:/srv
+            - /Users/d3k857/Downloads/srv/Data:/srv
 
     cartworkers:
         container_name: cartworkers

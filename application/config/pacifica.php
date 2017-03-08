@@ -18,13 +18,19 @@ $config['local_timezone'] = 'America/Los_Angeles';
 $cart_port = getenv('CART_PORT');
 $cart_dl_port = getenv('CART_DOWNLOAD_PORT');
 
+$files_dl_port = getenv('FILE_DOWNLOAD_PORT');
+
 $config['internal_cart_url'] = !empty($cart_port) ?
     str_replace('tcp://', 'http://', $cart_port) :
     'http://cart:8081';
 
 $config['external_cart_url'] = !empty($cart_dl_port) ?
-    str_replace('tcp://', 'http://', $cart_dl_port) :
-    'http://download.my.emsl.pnl.gov';
+    str_replace('tcp://', 'https://', $cart_dl_port) :
+    'http://cart.emsl.pnl.gov';
+
+$config['external_file_url'] = !empty($files_dl_port) ?
+    str_replace('tcp://', 'https://', $files_dl_port) :
+    'http://files.emsl.pnl.gov';
 
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';

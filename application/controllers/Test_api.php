@@ -95,4 +95,21 @@ class Test_api extends Baseline_api_controller
         echo "</pre>";
     }
 
+    /**
+     * Test retrieval of files for a given transaction
+     *
+     * @param int $transaction item to search for files
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_files_for_transaction($transaction)
+    {
+        echo "<pre>";
+        $proposals = $this->status->get_files_for_transaction($transaction);
+        send_json_array($proposals);
+        echo "</pre>";
+    }
+
 }

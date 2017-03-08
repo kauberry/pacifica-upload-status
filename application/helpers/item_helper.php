@@ -40,6 +40,7 @@
  */
 function build_folder_structure(&$dirs, $path_array, $item_info)
 {
+    $CI =& get_instance();
     if (count($path_array) > 1) {
         if (!isset($dirs['folders'][$path_array[0]])) {
             $dirs['folders'][$path_array[0]] = array();
@@ -51,10 +52,12 @@ function build_folder_structure(&$dirs, $path_array, $item_info)
         $m_time = new DateTime($item_info['mtime']);
         $date_string = $m_time->format('n/j/Y g:ia');
         $item_id = $item_info['_id'];
-        $url = base_url()."myemsl/itemauth/{$item_id}";
+        $hashsum = $item_info['hashsum'];
+        $url = "{$CI->file_url_base}/files/sha1/{$hashsum}";
+        // $url = base_url()."myemsl/itemauth/{$item_id}";
         $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
-        $dirs['files'][$item_id] = "<a class='item_link' id='item_{$item_id}' href='#'>{$path_array[0]}</a> <span class='fineprint'>[File Size: {$size_string}; Last Modified: {$date_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
+        $dirs['files'][$item_id] = "<a class='item_link' id='item_{$item_id}' href='{$url}'>{$path_array[0]}</a> <span class='fineprint'>[File Size: {$size_string}; Last Modified: {$date_string}]</span><span class='item_data_json' id='item_id_{$item_id}' style='display:none;'>{$item_info_json}</span>";
     }
 }
 
