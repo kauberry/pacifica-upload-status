@@ -40,8 +40,8 @@ $(function(){
 
     cart_create_form = cart_create_dialog.find("form").on("submit", function(event){
         event.preventDefault();
-        // cart_download
     });
+    cart_status();
 });
 
 // var createCart = function(event){
