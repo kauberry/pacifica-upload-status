@@ -79,7 +79,7 @@ class Ajax_api extends Baseline_api_controller
             $item['text'] = "<span title='{$item['title']}'>{$result}</span>";
             $results['items'][] = $item;
         }
-        send_json_array($results);
+        transmit_array_with_json_header($results);
     }
 
     /**
@@ -119,7 +119,7 @@ class Ajax_api extends Baseline_api_controller
     public function get_latest_transaction_id()
     {
         $last_id = $this->status->get_last_known_transaction();
-        send_json_array(array('last_transaction_id' => $last_id));
+        transmit_array_with_json_header(array('last_transaction_id' => $last_id));
     }
 
 }
