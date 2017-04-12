@@ -88,7 +88,7 @@ class System_setup_model extends CI_Model
                     'type' => 'INT'
                 ),
                 'json_submission' => array(
-                    'type' => 'json'
+                    'type' => 'VARCHAR'
                 ),
                 'last_known_state' => array(
                     'type' => 'VARCHAR',
@@ -117,8 +117,9 @@ class System_setup_model extends CI_Model
         if(!$this->db->table_exists('cart_items')) {
             $cart_items_fields = array(
                 'id' => array(
-                    'type' => 'NUMERIC',
-                    'auto_increment' => TRUE
+                    'type' => 'INTEGER',
+                    'auto_increment' => TRUE,
+                    'unsigned' => TRUE
                 ),
                 'file_id' => array(
                     'type' => 'BIGINT'
