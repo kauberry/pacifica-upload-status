@@ -32,11 +32,11 @@ $(function(){
     current_timeframe = $.cookie(cookie_base + 'timeframe_selector');
     current_timeframe = current_timeframe == undefined ? 2 : current_timeframe;
 
-	if ($('#proposal_selector').val().length > 0) {
+    setup_selectors(true);
+	if ($('#proposal_selector').val()) {
 		current_proposal_id = $('#proposal_selector').val();
 		get_instrument_list(current_proposal_id);
 	}
-    setup_selectors(true);
     cart_status();
 });
 
@@ -88,7 +88,8 @@ var setup_selectors = function(initial_load = false){
     				return markup;
     			},
     			templateResult: formatProposal,
-    			templateSelection: formatProposalSelection
+    			templateSelection: formatProposalSelection,
+                placeholder: "Please Select an EUS Proposal...",
     		}
     	)
         .off('change')

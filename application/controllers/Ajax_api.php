@@ -76,7 +76,8 @@ class Ajax_api extends Baseline_api_controller
                 $textLength-$max_text_len
             );
 
-            $item['text'] = "<span title='{$item['title']}'>{$result}</span>";
+            // $item['text'] = "<span title='{$item['title']}'>{$result}</span>";
+            $item['text'] = $item['display_name'];
             $results['items'][] = $item;
         }
         transmit_array_with_json_header($results);
