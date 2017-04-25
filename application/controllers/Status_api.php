@@ -80,11 +80,12 @@ class Status_api extends Baseline_api_controller
         );
         $this->page_data['css_uris'] = array(
             '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
-            '/resources/stylesheets/status.css',
-            '/resources/stylesheets/status_style.css',
+            '/project_resources/stylesheets/combined.css',
+            // '/resources/stylesheets/status.css',
+            // '/resources/stylesheets/status_style.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/file_directory_styling.css',
-            '/resources/stylesheets/bread_crumbs.css',
+            // '/resources/stylesheets/bread_crumbs.css',
             '/project_resources/stylesheets/cart.css'
         );
         $this->page_data['load_prototype'] = FALSE;
@@ -130,7 +131,7 @@ class Status_api extends Baseline_api_controller
         //add in the page display defaults, etc. if a non-AJAX load
         if (!$this->input->is_ajax_request()) {
             $view_name = 'emsl_mgmt_view.html';
-            $this->page_data['page_header'] = 'MyEMSL Status Reporting';
+            $this->page_data['page_header'] = 'Status Reporting';
             $this->page_data['title'] = 'Overview';
             $this->page_data['informational_message'] = '';
             $this->page_data['css_uris']
@@ -320,7 +321,7 @@ var refresh = function(){
         $inst_id = -1;
         if(array_key_exists($id, $transaction_info['transactions'])) {
             $file_size = $transaction_info['transactions'][$id]['file_size_bytes'];
-            $inst_id = $transaction_info['transactions'][$id]['groups']['instrument_id'];
+            $inst_id = $transaction_info['transactions'][$id]['metadata']['instrument_id'];
         }
         $this->page_data['transaction_sizes'][] = $file_size;
 

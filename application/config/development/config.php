@@ -35,4 +35,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | your log files will fill up very fast.
 |
 */
+$config['base_url']    = 'http://status.local';
+$config['base_dir'] = '';
+
 $config['log_threshold'] = 4;

@@ -42,10 +42,9 @@
     <div class="page_content">
       <header class="secondary">
           <div class="page_header">
-              <div class="logo_container">
-                  <div class="logo_image">&nbsp;</div>
+              <div class="text_logo">
+                  Pacifica<span class="site_slogan">Data Management for Science</span>
               </div>
-              <div class="site_slogan">Environmental Molecular Sciences Laboratory</div>
               <div id="menu_block_container" style="display:none;">
                   <nav>
                       <ul id="page_menu">

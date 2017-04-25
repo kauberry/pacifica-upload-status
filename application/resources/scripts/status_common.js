@@ -280,7 +280,7 @@ var setup_metadata_disclosure = function(){
     $('.disclosure_button').unbind('click').click(
         function(){
             var el = $(this);
-            var container = el.parentsUntil('div').siblings('ul.metadata_container');
+            var container = el.parentsUntil('div').siblings('.metadata_container');
             if(el.hasClass('dc_up')) {
                 //view is rolled up and hidden
                 el.removeClass('dc_up').addClass('dc_down');

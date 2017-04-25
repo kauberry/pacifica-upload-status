@@ -7,7 +7,7 @@
 ?>
 
       <div id="container">
-        <div id="main">
+        <div class="main">
           <div id="header_container">
             <h1 class="underline"><?= $page_header ?></h1>
             <div id="login_id_container">
@@ -15,12 +15,11 @@
             </div>
           </div>
           <div class="form_container">
-
             <form id="instrument_selection" class="themed">
               <fieldset id="inst_select_container">
                 <legend>Instrument Selection</legend>
                 <div class="full_width_block" id="proposal_selector_container">
-                  <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:96%;">
+                  <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:100%;">
                     <?php
                         if(!empty($proposal_list)){
                             $this->load->view(
@@ -37,7 +36,7 @@
 
                 <div class="full_width_block" style="margin-top:1em;">
                   <div class="left_block" id="instrument_selector_container">
-                    <select id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" style="width:95%;">
+                    <select id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" style="width:100%;">
                         <option></option>
                     </select>
                     <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
