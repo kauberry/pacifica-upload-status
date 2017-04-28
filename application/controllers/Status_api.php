@@ -52,7 +52,7 @@ class Status_api extends Baseline_api_controller
         // $this->load->model('Cart_model', 'cart');
         $this->load->helper(
             array(
-                'url', 'html', 'myemsl_api', 'file_info',
+                'url', 'html', 'myemsl_api', 'file_info', 'theme'
             )
         );
 
@@ -135,16 +135,17 @@ class Status_api extends Baseline_api_controller
             $this->page_data['title'] = 'Overview';
             $this->page_data['informational_message'] = '';
             $this->page_data['css_uris']
-                = array_merge(
-                    $this->page_data['css_uris'], array(
-                    '/project_resources/stylesheets/selector.css',
+                = load_stylesheets(
+                    $this->page_data['css_uris'],
+                    array(
+                        '/project_resources/stylesheets/selector.css',
                     )
                 );
             $this->page_data['script_uris']
-                = array_merge(
-                    $this->page_data['script_uris'], array(
-                    // '/project_resources/scripts/emsl_mgmt_view.js'
-                    '/project_resources/scripts/overview.js',
+                = load_scripts(
+                    $this->page_data['script_uris'],
+                    array(
+                        '/project_resources/scripts/overview.js',
                     )
                 );
 
@@ -251,11 +252,29 @@ class Status_api extends Baseline_api_controller
         $lookup_type_description = 'Transaction';
         $lookup_type = 'transaction';
         $instrument_id = -1;
+        $this->page_data['css_uris']
+            = load_stylesheets(
+                $this->page_data['css_uris'],
+                array(
+                    '/project_resources/stylesheets/view.css'
+                )
+            );
+        $this->page_data['script_uris']
+            = load_scripts(
+                $this->page_data['script_uris'],
+                array(
+                    '/project_resources/scripts/single_item_view.js',
+                    '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js'
+                )
+            );
+
         if (!is_numeric($id) || $id < 0) {
             //that doesn't look like a real id
             //send to error page saying so
-            $err_msg = 'No '.ucwords($lookup_type_description)." with the ".
-                    "{$id} could be found in the system";
+            $err_msg = 'No '.ucwords($lookup_type_description)." with the an id of ".
+                    "<strong>{$id}</strong> could be found in the system";
+            $this->page_data['page_header'] = "{$lookup_type_description} Not Found";
+            $this->page_data['title'] = $this->page_data['page_header'];
             $this->page_data['error_message'] = $err_msg;
             $this->page_data['lookup_type_desc'] = $lookup_type_description;
             $this->page_data['lookup_type'] = $lookup_type;
@@ -301,22 +320,6 @@ var refresh = function(){
 
         $this->page_data['page_header'] = 'Upload Report';
         $this->page_data['title'] = 'Upload Report';
-
-        $this->page_data['css_uris']
-            = array_merge(
-                $this->page_data['css_uris'], array(
-                '/project_resources/stylesheets/view.css'
-                )
-            );
-
-
-        $this->page_data['script_uris']
-            = array_merge(
-                $this->page_data['script_uris'], array(
-                '/project_resources/scripts/single_item_view.js',
-                '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js'
-                )
-            );
         $file_size = 0;
         $inst_id = -1;
         if(array_key_exists($id, $transaction_info['transactions'])) {

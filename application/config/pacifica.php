@@ -34,6 +34,6 @@ $config['external_file_url'] = !empty($files_dl_port) ?
 
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
-
+$config['theme_name'] = 'myemsl';
 $config['application_version'] = "1.99.0";
 ?>

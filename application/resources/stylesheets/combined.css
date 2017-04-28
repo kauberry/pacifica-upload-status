@@ -20,18 +20,10 @@ body {
 }
 
 .loading_status span {
-    color: #216a38;
+    color: #222;;
     font-size: 1.3em;
     font-weight: bold;
     font-style: italic;
-}
-
-.spinner {
-    width: 16px;
-    background-image: url("http://status.local/resources/images/spinner-16x16_green.gif");
-    background-repeat: no-repeat;
-    background-position: 0px 4px;
-    height: 16px;
 }
 
 .email {
@@ -155,7 +147,7 @@ div.form_container {
     padding-right: 16px;
     margin-left: 6px;
     vertical-align: middle;
-    background-image: url("http://status.local/resources/images/disclosure_sprite.png");
+    background-image: url("/resources/images/disclosure_sprite.png");
     background-repeat: no-repeat;
     background-size: 64px 16px;
     background-size: 64px 16px;
@@ -187,13 +179,13 @@ div.form_container {
 
 @media not all, only screen and (-webkit-min-device-pixel-ratio: 1.25), not all, only screen and (min-resolution: 1.25dppx) {
     .disclosure_button {
-        background-image: url("http://status.local/resources/images/disclosure_sprite@2x.png");
+        background-image: url("/resources/images/disclosure_sprite@2x.png");
     }
 }
 
 @media not all, only screen and (-webkit-min-device-pixel-ratio: 2.25), not all, only screen and (min-resolution: 2.25dppx) {
     .disclosure_button {
-        background-image: url("http://status.local/resources/images/disclosure_sprite@3x.png");
+        background-image: url("/resources/images/disclosure_sprite@3x.png");
     }
 }
 
@@ -213,6 +205,10 @@ div.form_container {
     background-color: rgb(61, 101, 149);
     padding-top: 0.25em;
     position: relative;
+}
+
+.graphic_logo {
+    display:none;
 }
 
 .text_logo {
@@ -243,6 +239,7 @@ div.form_container {
 .page_content {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 10em;
     width: 960px;
 }
 
@@ -404,29 +401,6 @@ dl.metadata_description_list {
     }
 }
 
-/*.logo_container {
-    height: 73px;
-    margin-left: 15px;
-    margin-right: 10px;
-}
-
-header.secondary .logo_container {
-    height: 75px;
-    width: 315px;
-    margin-left: 15px;
-    margin-right: 10px;
-    position: absolute;
-    top: 8px;
-    left: 0px;
-}*/
-
-/*.logo_image {
-    width: 100%;
-    height: 100%;
-    background: url("http://status.local/resources/images/emsl_logos/emsl_logo_white.png") 0% 0% / 174px 73px;
-    background-size: 174px 73px;
-}*/
-
 .site_slogan {
     text-transform: uppercase;
     font-size: 0.45em;
@@ -471,42 +445,6 @@ footer a:hover {
     text-decoration: underline;
 }
 
-
-/*.logo_container {
-    background: url("http://status.local/resources/images/emsl_logos/emsl-doe_combined.png") left top / 346px 107px no-repeat;
-    position: absolute;
-    top: 10px;
-    height: 107px;
-    width: 346px;
-    right: 20px;
-    background-size: 346px 107px;
-}*/
-
-/*@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .logo_container {
-        background: url("http://status.local/resources/images/emsl_logos/emsl-doe_combined@2x.png") left top / 346px 107px no-repeat;
-        background-size: 346px 107px;
-    }
-    .logo_image {
-        background: url("http://status.local/project_resources/images/pacifica_text_logo@2x.png") 0% 0% / 315px 75px;
-        background-size: 315px 75px;
-    }
-}*/
-
-/*@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
-    .logo_container {
-        background: url("http://status.local/resources/stylesheets/../images/emsl_logos/emsl-doe_combined@3x.png") left top / 346px 107px no-repeat;
-        background-size: 346px 107px;
-    }
-    .logo_image {
-        background: url("http://status.local/project_resources/images/pacifica_text_logo@3x.png") 0% 0% / 315px 75px;
-        background-size: 315px 75px;
-    }
-}*/
-
-
-/*stylesheet 6/12 | http://status.local/resources/stylesheets/status.css*/
-
 #main h1 {
     color: #fefefe;
     padding: 0.5em;
@@ -527,9 +465,6 @@ footer a:hover {
     position: relative;
 }
 
-
-/*stylesheet 7/12 | http://status.local/resources/stylesheets/status_style.css*/
-
 .tree_holder {
     margin-top: 10px;
 }
@@ -549,8 +484,6 @@ footer a:hover {
 .folder_size_summary {
     font-size: 0.75em;
     font-style: italic;
-    color: #666;
-}
 
 .transaction_container h3 {
     margin-top: 10px;
@@ -572,8 +505,6 @@ ul.metadata_container li {
 .transaction_container {
     margin-bottom: 1em;
 }
-
-/*stylesheet 9/12 | http://status.local/resources/stylesheets/file_directory_styling.css*/
 
 ul.fancytree-container {
     font-family: inherit;

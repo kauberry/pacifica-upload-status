@@ -16,24 +16,9 @@
     <meta name="keywords" content="" />
 <?php $this->load->view("{$this->template_version}_template/globals"); ?>
 
-<?php if(isset($script_uris) && sizeof($script_uris) > 0) : ?>
+<?= $script_uris ?>
+<?= $css_uris ?>
 
-    <!-- begin page-wise javascript loads -->
-    <?php foreach($script_uris as $uri): ?>
-  <script type="text/javascript" src="<?= $uri ?>"></script>
-    <?php endforeach; ?>
-  <!-- end page-wise javascript loads -->
-
-<?php endif; ?>
-<?php if(isset($css_uris) && sizeof($css_uris) > 0) : ?>
-
-    <!-- begin page-wise css loads -->
-    <?php foreach($css_uris as $css): ?>
-  <link rel="stylesheet" type="text/css" href="<?= $css ?>" />
-    <?php endforeach; ?>
-  <!-- end page-wise css loads -->
-
-<?php endif; ?>
     <script type="text/javascript">
       var base_url = "<?= base_url() ?>";
     </script>
@@ -42,6 +27,12 @@
     <div class="page_content">
       <header class="secondary">
           <div class="page_header">
+              <div class="graphic_logo">
+                  <div class="logo_container" >
+                      <div class="logo_image">&nbsp;</div>
+                  </div>
+                  <div class="site_slogan">Environmental Molecular Sciences Laboratory</div>
+              </div>
               <div class="text_logo">
                   Pacifica<span class="site_slogan">Data Management for Science</span>
               </div>
