@@ -218,23 +218,24 @@ class Status_api_model extends CI_Model
         $url_args_array = array(
             'user' => $this->user_id
         );
-        // $files_url .= http_build_query($url_args_array, '', '&');
         $results = array();
-        // try{
-            $query = Requests::get($files_url, array('Accept' => 'application/json'));
+        $query = Requests::get($files_url, array('Accept' => 'application/json'));
         if(intval($query->status_code / 100) == 2) {
             $results = json_decode($query->body, TRUE);
         }
-        // } catch (Exception $e){
-        //     $results = array();
-        // }
 
         if ($results && !empty($results) > 0) {
             $dirs = array();
-            foreach ($results as $item_id => $item_info) {
+            $file_list = array();
+            foreach($results as $item_id => $item_info){
                 $subdir = preg_replace('|^proposal\s[^/]+/[^/]+/\d{4}\.\d{1,2}\.\d{1,2}/?|i', '', trim($item_info['subdir'], '/'));
                 $filename = $item_info['name'];
                 $path = !empty($subdir) ? "{$subdir}/{$filename}" : $filename;
+                $file_list[$path] = $item_id;
+            }
+            ksort($file_list);
+            foreach ($file_list as $path => $item_id){
+                $item_info = $results[$item_id];
                 $path_array = explode('/', $path);
                 build_folder_structure($dirs, $path_array, $item_info);
             }
