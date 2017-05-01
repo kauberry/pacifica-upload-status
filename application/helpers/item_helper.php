@@ -49,12 +49,10 @@ function build_folder_structure(&$dirs, $path_array, $item_info)
         build_folder_structure($dirs['folders'][$path_array[0]], array_splice($path_array, 1), $item_info);
     } else {
         $size_string = format_bytes($item_info['size']);
-        $m_time = new DateTime($item_info['mtime']);
-        $date_string = $m_time->format('n/j/Y g:ia');
+        $date_string = utc_to_local_time($item_info['mtime'], 'n/j/Y g:ia T');
         $item_id = $item_info['_id'];
         $hashsum = $item_info['hashsum'];
         $url = "{$CI->file_url_base}/files/sha1/{$hashsum}";
-        // $url = base_url()."myemsl/itemauth/{$item_id}";
         $item_info['url'] = $url;
         $item_info_json = json_encode($item_info);
         $fineprint = "[File Size: {$size_string}; Last Modified: {$date_string}]";

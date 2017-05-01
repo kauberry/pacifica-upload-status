@@ -52,7 +52,7 @@ class Status_api extends Baseline_api_controller
         // $this->load->model('Cart_model', 'cart');
         $this->load->helper(
             array(
-                'url', 'html', 'myemsl_api', 'file_info', 'theme'
+                'url', 'html', 'myemsl_api', 'file_info', 'theme', 'time'
             )
         );
 

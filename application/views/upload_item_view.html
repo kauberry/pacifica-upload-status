@@ -9,7 +9,7 @@
 <?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
 <?php
       $transaction_info = $transaction_data['transactions'][$transaction_id];
-      $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia');
+      $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia T');
 ?>
     <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
         <legend>
