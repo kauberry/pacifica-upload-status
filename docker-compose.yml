@@ -1,0 +1,47 @@
+version: '2'
+services:
+# Nginx proxy pass frontends
+    myemslproxyfrontend:
+        container_name: myemslproxyfrontend
+        build:
+            context: .
+            dockerfile: Dockerfile.archiveproxy
+        links:
+            - myemsluploadstatus:statusbackend
+        ports:
+            - 80:80
+            - 443:443
+        environment:
+            UPLOAD_STATUS_ADDR: statusbackend
+            UPLOAD_STATUS_PORT: 80
+
+# Upload status
+    myemsluploadstatus:
+        container_name: myemsluploadstatus
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/var/www/html/
+            - ./tests/apache_conf/:/etc/myemsl/
+        links:
+            - myemslmetadatadb:myemslmetadatadb
+        environment:
+            MYEMSL_DB_ADDR: myemslmetadatadb
+            MYEMSL_DB_PORT: 5432
+            MYEMSL_DB_USER: pacifica
+            MYEMSL_DB_PASSWORD: pacifica
+            MYEMSL_DB_NAME: myemsl_metadata
+            MYEMSL_DB_DRIVER: postgre
+
+    myemslmetadatadb:
+        image: postgres
+        container_name: myemslmetadatadb
+        environment:
+            POSTGRES_PASSWORD: pacifica
+            POSTGRES_DB: myemsl_metadata
+            POSTGRES_USER: pacifica
+        ports:
+            - 5432:5432
+        volumes:
+            - ./data/var/lib/postgresql/data/:/var/lib/postgresql/data
