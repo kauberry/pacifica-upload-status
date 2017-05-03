@@ -574,7 +574,7 @@ class Status extends Baseline_controller
         if($results) {
             transmit_array_with_json_header($results);
         }else{
-            send_json_array(array());
+            transmit_array_with_json_header(array());
         }
     }
 

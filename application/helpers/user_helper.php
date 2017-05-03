@@ -38,6 +38,8 @@ function get_user()
     $user = '(unknown)';
     if(isset($_SERVER["REMOTE_USER"])) {
         $user = str_replace('@PNL.GOV', '', $_SERVER["REMOTE_USER"]);
+    }elseif(isset($_SERVER["HTTP_X_REMOTE_USER"])){
+        $user = $_SERVER["HTTP_X_REMOTE_USER"];
     }
     return strtolower($user);
 }

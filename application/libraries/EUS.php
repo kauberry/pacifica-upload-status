@@ -414,6 +414,7 @@ class EUS
                 $results_array =  array(
                     'id' => $row->proposal_id,
                     'title' => trim($row->title, '.'),
+                    'display_name' => "[Proposal {$row->proposal_id}]: {$row->title}",
                     'currently_active' => $currently_active ? 'yes' : 'no',
                     'state' => $state,
                     'start_date' => $start_date ? $start_date->format('Y-m-d') : '---',

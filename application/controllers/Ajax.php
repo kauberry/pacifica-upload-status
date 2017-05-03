@@ -75,18 +75,10 @@ class Ajax extends Baseline_controller
         );
         $max_text_len = 200;
         foreach($prop_list as $item){
-            $textLength = strlen($item['title']);
-            $result = substr_replace(
-                $item['title'],
-                '...',
-                $max_text_len/2,
-                $textLength-$max_text_len
-            );
-
-            $item['text'] = "<span title='{$item['title']}'>{$result}</span>";
+            $item['text'] = $item['display_name'];
             $results['items'][] = $item;
         }
-        send_json_array($results);
+        transmit_array_with_json_header($results);
     }
 
     /**
@@ -111,14 +103,29 @@ class Ajax extends Baseline_controller
             );
             return;
         }
-        $full_user_info = $this->myemsl->get_user_info();
-        $instruments = array();
-        $inst_list = $full_user_info['instruments'];
-        if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
-            $instruments_available
+        if(!$this->is_emsl_staff){
+            $full_user_info = $this->myemsl->get_user_info();
+            $instruments = array();
+            $inst_list = $full_user_info['instruments'];
+            // echo json_encode($full_user_info);
+            // echo $this->is_emsl_staff;
+            if(array_key_exists($proposal_id, $full_user_info['proposals'])) {
+                $instruments_available
                 = $full_user_info['proposals'][$proposal_id]['instruments'];
-        } else {
-            $instruments_available = array();
+            } else {
+                $instruments_available = array();
+            }
+        }else{
+            $instrument_list = $this->myemsl->get_instruments_by_proposal($proposal_id);
+            $clean_instrument_list = array();
+            foreach($instrument_list as $inst_id => $inst_info){
+                $clean_instrument_list[$inst_id] = array(
+                    'eus_display_name' => $inst_info['display_name'],
+                    'active_sw' => 1
+                );
+            }
+            $instruments_available = array_keys($instrument_list);
+            $full_user_info['instruments'] = $clean_instrument_list;
         }
         $total_count = sizeof($instruments_available) + 1;
         asort($instruments_available);
@@ -137,7 +144,7 @@ class Ajax extends Baseline_controller
                 'id' => $inst_id,
                 'text' => "Instrument {$inst_id}: {$full_user_info['instruments'][$inst_id]['eus_display_name']}",
                 'name' => $full_user_info['instruments'][$inst_id]['eus_display_name'],
-                'active' => $inst_list[$inst_id]['active_sw']
+                'active' => $full_user_info['instruments'][$inst_id]['active_sw']
             );
         }
         // $instruments[-1] = "All Available Instruments for Proposal {$proposal_id}";
@@ -147,7 +154,7 @@ class Ajax extends Baseline_controller
             'items' => $instruments
         );
 
-        send_json_array($results);
+        transmit_array_with_json_header($results);
     }
 
     /**
