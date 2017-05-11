@@ -223,18 +223,41 @@ class Status extends Baseline_controller
         $time_period = FALSE
     )
     {
-        if($this->input->cookie('myemsl_status_last_timeframe_selector')) {
-            $time_period
-                = $this->input->cookie('myemsl_status_last_timeframe_selector');
+        $cookie_identifiers = array(
+            'timeframe' => 'time_period',
+            'instrument' => 'instrument_id',
+            'proposal' => 'proposal_id'
+        );
+        foreach($cookie_identifiers as $identifier => $var_name){
+            $cookie_name = "myemsl_status_last_{$identifier}_selector";
+            if(${$var_name}){
+                $cookie_params = array(
+                    'name' => $cookie_name,
+                    'value' => ${$var_name},
+                    'expire' => 86500,
+                    // 'domain' => '.my.emsl.pnl.gov',
+                );
+                $this->input->set_cookie($cookie_params);
+            }else if($this->input->cookie($cookie_name)){
+                ${$var_name} = $this->input->cookie($cookie_name);
+            }
         }
-        if($this->input->cookie('myemsl_status_last_instrument_selector')) {
-            $instrument_id
-                = $this->input->cookie('myemsl_status_last_instrument_selector');
-        }
-        if($this->input->cookie('myemsl_status_last_proposal_selector')) {
-            $proposal_id
-                = $this->input->cookie('myemsl_status_last_proposal_selector');
-        }
+
+
+        // if($time_period){
+        //     $this->input->set_cookie()
+        // }else if($this->input->cookie('myemsl_status_last_timeframe_selector')) {
+        //     $time_period
+        //         = $this->input->cookie('myemsl_status_last_timeframe_selector');
+        // }
+        // if($this->input->cookie('myemsl_status_last_instrument_selector')) {
+        //     $instrument_id
+        //         = $this->input->cookie('myemsl_status_last_instrument_selector');
+        // }
+        // if($this->input->cookie('myemsl_status_last_proposal_selector')) {
+        //     $proposal_id
+        //         = $this->input->cookie('myemsl_status_last_proposal_selector');
+        // }
         if (!$this->input->is_ajax_request()) {
             $view_name = 'emsl_mgmt_view.html';
             $this->page_data['page_header'] = 'MyEMSL Status Reporting';
