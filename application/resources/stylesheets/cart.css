@@ -3,11 +3,9 @@
     color:#656565;
 	margin: 0 0 2px 5px;
 }
-.cart_tree table {
-	border: 1px solid #656565;
-}
 
 .cart_tree table {
+    border: 1px solid #656565;
     border-collapse: collapse;
     box-shadow: 0 0 0 1px #656565; /* this draws the table border  */
 }
@@ -19,4 +17,19 @@
 
 .cart_tree thead th {
 	padding:5px;
+}
+
+.cart_tree .cart_status_left {
+    padding-left: 5px;
+    text-align: left;
+}
+
+.cart_tree .cart_status_center {
+    text-align: center;
+}
+
+.cart_tree .cart_delete_button {
+    right: 1.5em;
+    top: 4px;
+    position: relative;
 }

@@ -1,12 +1,20 @@
 
-/*stylesheet 2/12 | http://status.local/resources/stylesheets/local.css*/
-
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     line-height: 150%;
     margin: 0px;
 }
+.info_message {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    font-style: italic;
+    line-height:125%;
+    color: #666;
+    margin-top: 1em;
+}
+
 
 .loading_status {
     position: relative;
@@ -20,7 +28,7 @@ body {
 }
 
 .loading_status span {
-    color: #222;;
+    color: #216a38;
     font-size: 1.3em;
     font-weight: bold;
     font-style: italic;
@@ -52,6 +60,7 @@ body {
     border-radius: 5px;
     padding: 1.25em;
     background-color: #efefef;
+    margin-bottom: 1em;
 }
 
 .themed fieldset legend {
@@ -92,7 +101,7 @@ button:hover, .buttons input[type="button"]:hover {
     width: auto !important;
 }
 
-div.form_container {
+.form_container {
     padding-top: 5px;
     width: 100%;
     position: relative;
@@ -197,9 +206,6 @@ div.form_container {
     bottom: auto;
 }
 
-
-/*stylesheet 3/12 | http://status.local/resources/stylesheets/emsl_chrome.css*/
-
 .page_header {
     width: 100%;
     background-color: rgb(61, 101, 149);
@@ -219,10 +225,6 @@ div.form_container {
     padding-top: 0.5em;
     text-transform: uppercase;
 }
-
-/*header.secondary .page_header {
-    height: 36px;
-}*/
 
 .underline {
     color: white;
@@ -399,6 +401,14 @@ dl.metadata_description_list {
     .metadata_description_list dt {
         float:none;
     }
+    .contact_info .email {
+        display:none;
+    }
+    .info_message {
+        font-size: 1.2em;
+    }
+
+
 }
 
 .site_slogan {

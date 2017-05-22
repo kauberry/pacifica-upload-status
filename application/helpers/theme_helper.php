@@ -36,9 +36,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function load_scripts($common_collection, $page_specific_collection)
+function load_scripts($common_collection, $page_specific_collection = FALSE)
 {
-    $defaults = array_merge($common_collection, $page_specific_collection);
+    $defaults = $common_collection;
+    if($page_specific_collection) {
+        $defaults = array_merge($defaults, $page_specific_collection);
+    }
     $output_array = array();
     foreach($defaults as $scriptfile){
         $output_array[] = "<script type=\"text/javascript\" src=\"{$scriptfile}\"></script>";
@@ -57,12 +60,14 @@ function load_scripts($common_collection, $page_specific_collection)
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function load_stylesheets($common_collection, $page_specific_collection)
+function load_stylesheets($common_collection, $page_specific_collection = FALSE)
 {
     $CI =& get_instance();
     $my_theme = $CI->config->item('theme_name');
-
-    $defaults = array_merge($common_collection, $page_specific_collection);
+    $defaults = $common_collection;
+    if($page_specific_collection) {
+        $defaults = array_merge($defaults, $page_specific_collection);
+    }
     $theme_dir_array = array("resources", "stylesheets", "themes", $my_theme);
     $theme_url_path_array = array("project_resources", "stylesheets", "themes", $my_theme);
     $theme_path = APPPATH . implode(DIRECTORY_SEPARATOR, $theme_dir_array) . DIRECTORY_SEPARATOR;
