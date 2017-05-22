@@ -56,6 +56,33 @@ class System_setup_model extends CI_Model
     }
 
     /**
+     *  Create the initial database entry
+     *
+     *  @param string $db_name The name of the db to create
+     *
+     *  @return [type]   [description]
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _check_and_create_database($db_name)
+    {
+        if($this->db->platform() != 'sqlite3') {
+            if(!$this->dbutil->database_exists($db_name)) {
+                log_message('info', 'Attempting to create database structure...');
+                //db doesn't already exist, so make it
+                if($this->dbforge->create_database($db_name)) {
+                    log_message('info', "Created {$db_name} database instance");
+                }else{
+                    log_message('error', "Could not create database instance.");
+                    $this->output->set_status_header(500);
+                }
+            }
+        }else{
+            log_message('info', 'DB Type is sqlite3, so we don\'t have to explicitly make the db file');
+        }
+    }
+
+    /**
      *  Configure the table structures in the database
      *
      *  @return void
@@ -68,6 +95,8 @@ class System_setup_model extends CI_Model
         $this->load->database('default');
         $this->load->dbforge();
         $this->load->dbutil();
+
+        $this->_check_and_create_database($this->db->database);
 
         //the database should already be in place. Let's make some tables
         if(!$this->db->table_exists('cart')) {
@@ -127,6 +156,14 @@ class System_setup_model extends CI_Model
                 'cart_uuid' => array(
                     'type' => 'VARCHAR',
                     'constraint' => 64
+                ),
+                'hashtype' => array(
+                    'type' => 'VARCHAR',
+                    'default' => 'sha1'
+                ),
+                'hashsum' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => 40
                 ),
                 'relative_local_path' => array(
                     'type' => 'VARCHAR'

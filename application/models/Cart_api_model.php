@@ -399,9 +399,13 @@ class Cart_api_model extends CI_Model
         foreach ($results as $file_entry) {
             $id = $file_entry['file_id'];
             $path = $file_entry['relative_local_path'];
+            $hashtype = $file_entry['hashtype'];
+            $hashsum = $file_entry['hashsum'];
 
             $postable_results['fileids'][] = array(
                 'id' => $id, 'path' => $path,
+                'hashtype' => $hashtype,
+                'hashsum' => $hashsum
             );
         }
 
