@@ -40,8 +40,7 @@ class Baseline_controller extends CI_Controller
         $this->load->helper(array('user', 'url', 'html', 'myemsl', 'file_info'));
         $this->output->enable_profiler(FALSE);
         $this->benchmark->mark('get_user_start');
-        // $this->user_id = get_user();
-        $this->user_id = 43751;
+        $this->user_id = get_user();
         $this->benchmark->mark('get_user_end');
         $this->application_version = $this->config->item('application_version');
 
