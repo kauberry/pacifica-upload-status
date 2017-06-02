@@ -45,6 +45,7 @@ function get_user()
     } else if (isset($_SERVER["PHP_AUTH_USER"])) {
         $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
     }
+    $user = strtolower($user);
     $url_args_array = array(
         'network_id' => $user
     );
@@ -53,7 +54,11 @@ function get_user()
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     $results_body = $query->body;
     $results_json = json_decode($results_body, TRUE);
-    return strtolower($results_json[0]['_id']);
+    if($query->status_code == 200) {
+        return strtolower($results_json[0]['_id']);
+    }else{
+        return FALSE;
+    }
 }
 
 /**
