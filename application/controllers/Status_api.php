@@ -68,7 +68,7 @@ class Status_api extends Baseline_api_controller
         );
 
         $this->last_update_time = get_last_update(APPPATH);
-
+        $this->page_data['site_identifier'] = $this->config->item('site_identifier');
         $this->page_data['script_uris'] = array(
             '/resources/scripts/spinner/spin.min.js',
             '/resources/scripts/fancytree/jquery.fancytree-all.js',

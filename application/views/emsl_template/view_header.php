@@ -9,7 +9,7 @@
 ?>
 <html>
   <head>
-    <title>MyEMSL Status - <?= $title ?></title>
+    <title><?= ucwords($site_identifier) ?> Status - <?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="description" content="" />
     <?php //$this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>
@@ -31,22 +31,10 @@
                   <div class="logo_container" >
                       <div class="logo_image">&nbsp;</div>
                   </div>
-                  <div class="site_slogan">Environmental Molecular Sciences Laboratory</div>
+                  <div class="site_slogan"><?= $site_identifier ?></div>
               </div>
               <div class="text_logo">
-                  Pacifica<span class="site_slogan">Data Management for Science</span>
-              </div>
-              <div id="menu_block_container" style="display:none;">
-                  <nav>
-                      <ul id="page_menu">
-                          <li><a href="https://www.emsl.pnl.gov/emslweb/">Home</a><span class='menu_separator'>|</span></li>
-                          <li>About<span class='menu_separator'>|</span></li>
-                          <li>Science<span class='menu_separator'>|</span></li>
-                          <li>Capabilities<span class='menu_separator'>|</span></li>
-                          <li>Working With Us<span class='menu_separator'>|</span></li>
-                          <li>News</li>
-                      </ul>
-                  </nav>
+                  <?= $site_identifier ?><span class="site_slogan">Data Management for Science</span>
               </div>
           </div>
       </header>

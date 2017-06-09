@@ -35,5 +35,9 @@ $config['external_file_url'] = !empty($files_dl_port) ?
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
 $config['theme_name'] = 'myemsl';
+$config['site_identifier'] = 'pacifica';
+
+// $config['theme_name'] = 'pacifica';
+// $config['site_identifier'] = 'dēmos';
 $config['application_version'] = "1.99.0";
 ?>
