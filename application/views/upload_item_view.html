@@ -38,6 +38,12 @@
                             <?php ksort($transaction_info['kv_pairs']); ?>
                             <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
                                 <dt><?= $md_name ?></dt>
+                                <?php if(strtolower($md_name) == 'user of record'): ?>
+                                    <?php
+                                        $md_value_string = get_user_details($md_value)["display_name"] ?: $md_value;
+                                        $md_value = $md_value_string;
+                                    ?>
+                                <?php endif; ?>
                                 <dd><?= $md_value ?></dd>
                             <?php endforeach; ?>
                             </dl>

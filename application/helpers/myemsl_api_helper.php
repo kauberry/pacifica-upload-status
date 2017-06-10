@@ -38,16 +38,53 @@ if(!defined('BASEPATH')) { exit('No direct script access allowed');
  */
 function get_user_details($eus_id)
 {
+    return get_user_details_base($eus_id, '');
+}
+
+/**
+ *  Directly retrieves simplified user info from the MyEMSL EUS
+ *  database clone
+ *
+ *  @param integer $eus_id user id of the person in question
+ *
+ *  @return array
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_user_details_simple($eus_id)
+{
+    return get_user_details_base($eus_id, 'simple');
+}
+
+/**
+ *  Directly retrieves simplified user info from the MyEMSL EUS
+ *  database clone
+ *
+ *  @param integer $eus_id user id of the person in question
+ *  @param string  $option 'simple' if short version, anything else if not
+ *  
+ *  @return array
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_user_details_base($eus_id, $option)
+{
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     // $md_url = $CI->config->item('metadata_url');
     $md_url = $CI->metadata_url_base;
-    $query_url = "{$md_url}/userinfo/by_id/{$eus_id}";
+    $query_url = "{$md_url}/userinfo/by_id/{$eus_id}/{$option}";
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
-    $results_body = $query->body;
+    if($query->status_code == 200) {
+        $results_body = $query->body;
+    }else{
+        $results_body = array();
+    }
+
 
     return json_decode($results_body, TRUE);
 }
+
 
 /**
  *  Read and parse the '*general.ini*' file to retrieve things
