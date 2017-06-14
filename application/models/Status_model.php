@@ -41,7 +41,7 @@ class Status_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->local_timezone = 'US/Pacific';
+        $this->local_timezone = $this->config->item('local_timezone');
         $this->load->library('EUS', '', 'eus');
         $this->load->model('Myemsl_model', 'myemsl');
         $this->load->helper(array('item','cookie'));

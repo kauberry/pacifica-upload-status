@@ -43,7 +43,7 @@ class Cart_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->local_timezone = 'US/Pacific';
+        $this->local_timezone = $this->config->item('local_timezone');
         $this->load->helper(array('user', 'item', 'time'));
         $this->user_id = get_user();
 
