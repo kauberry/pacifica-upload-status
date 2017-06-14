@@ -133,6 +133,13 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
     background-size: 346px 107px;
 }
 
+.cart_tree thead th {
+    color: #efefef;
+    background-color: #666;
+    text-align: left;
+
+}
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .logo_container {
         background: url("/resources/images/emsl_logos/emsl-doe_combined@2x.png") left top / 346px 107px no-repeat;

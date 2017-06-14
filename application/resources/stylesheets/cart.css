@@ -17,6 +17,24 @@
 
 .cart_tree thead th {
 	padding:5px;
+    background-color: #656565;
+    color: #efefef;
+    text-align: left;    
+}
+
+.cart_tree .cart_status_left {
+    padding-left: 5px;
+    text-align: left;
+}
+
+.cart_tree .cart_status_center {
+    text-align: center;
+}
+
+.cart_tree .cart_delete_button {
+    right: 1.5em;
+    top: 4px;
+    position: relative;
 }
 
 .cart_tree .cart_status_left {
