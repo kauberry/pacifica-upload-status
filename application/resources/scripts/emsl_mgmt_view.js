@@ -1,12 +1,10 @@
 $(
     function() {
-        var initials = [];
-
-        $('#proposal_selector').select2(
+        $("#proposal_selector").select2(
             {
                 // data: initials,
                 ajax: {
-                    dataType: 'json',
+                    dataType: "json",
                     delay: 250,
                     cache: true,
                     url: function(params) {
@@ -27,7 +25,7 @@ $(
                             pagination: {
                                 more: (params.page * 300) < data.total_count
                             }
-                        }
+                        };
                     }
                 },
                 escapeMarkup: function(markup) {
@@ -37,7 +35,7 @@ $(
                 templateSelection: formatProposalSelection
             }
         );
-        // $('#proposal_selector').select2("search","nmr");
+        // $("#proposal_selector").select2("search","nmr");
 
         $("#instrument_selector").select2(
             {
@@ -45,12 +43,12 @@ $(
             }
         );
         if (initial_proposal_id.length > 0) {
-            var current_prop_val = $('#proposal_selector').val();
-            $('#proposal_selector').val(initial_proposal_id);
-            if($('#proposal_selector').val() != null){
+            var current_prop_val = $("#proposal_selector").val();
+            $("#proposal_selector").val(initial_proposal_id);
+            if($("#proposal_selector").val() != null){
                 get_instrument_list(initial_proposal_id);
             }else{
-                $('#proposal_selector').val(current_prop_val);
+                $("#proposal_selector").val(current_prop_val);
             }
         }
 
@@ -59,7 +57,7 @@ $(
                 placeholder: "Select a Time Frame..."
             }
         );
-        $('.criterion_selector').change(update_content);
+        $(".criterion_selector").change(update_content);
         setup_tree_data();
         setup_metadata_disclosure();
 
@@ -71,22 +69,22 @@ $(
             var markup = false;
             var start_date = moment(item.start_date);
             var end_date = moment(item.end_date);
-            var start_date_string = start_date.isValid() ? start_date.format('MM/DD/YYYY') : '&mdash;&mdash;';
-            var end_date_string = end_date.isValid() ? end_date.format('MM/DD/YYYY') : '&mdash;&mdash;';
+            var start_date_string = start_date.isValid() ? start_date.format("MM/DD/YYYY") : "&mdash;&mdash;";
+            var end_date_string = end_date.isValid() ? end_date.format("MM/DD/YYYY") : "&mdash;&mdash;";
 
             if (item.loading) return item.text;
             if (item.id.length > 0) {
-                markup = "<div id='prop_info_" + item.id + "' class='prop_info'>";
-                markup += "   <div class='";
-                markup += item.currently_active == 'yes' ? 'active' : 'inactive';
-                markup += "_proposal'><strong>Proposal " + item.id + "</strong>";
+                markup = "<div id=\"prop_info_" + item.id + "\" class=\"prop_info\">";
+                markup += "   <div class=\"";
+                markup += item.currently_active == "yes" ? "active" : "inactive";
+                markup += "_proposal\"><strong>Proposal " + item.id + "</strong>";
                 markup += "   </div>";
-                markup += "   <div style='float:right;'>"
-                markup += "     <span class='active_dates'>"
-                if (item.currently_active == 'yes' && item.state == 'active') {
+                markup += "   <div style=\"float:right;\">";
+                markup += "     <span class=\"active_dates\">";
+                if (item.currently_active == "yes" && item.state == "active") {
                     markup += "Active Through " + end_date_string;
-                }else if(item.currently_active == 'no') {
-                    if(item.state == 'preactive') {
+                }else if(item.currently_active == "no") {
+                    if(item.state == "preactive") {
                         markup += "Inactive Until " + start_date_string;
                     }else{
                         if(!start_date.isValid() || !end_date.isValid()) {
@@ -96,18 +94,18 @@ $(
                         }
                     }
                 }
-                markup += "     </span>"
-                markup += "   </div>"
+                markup += "     </span>";
+                markup += "   </div>";
                 markup += "</div>";
-                markup += "<div class='prop_description'>" + item.title + "</div>";
+                markup += "<div class=\"prop_description\">" + item.title + "</div>";
             }
             return markup;
         }
 
         function formatProposalSelection(item) {
-            var markup = 'Please Select a Proposal/Project...';
+            var markup = "Please Select a Proposal/Project...";
             if (item.id.length > 0) {
-                markup = "<span title='" + item.title + "'>Proposal " + item.id + ": " + item.text + "</span>";
+                markup = "<span title=\"" + item.title + "\">Proposal " + item.id + ": " + item.text + "</span>";
             }
             return markup;
         }
