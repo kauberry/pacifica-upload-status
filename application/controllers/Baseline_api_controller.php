@@ -45,14 +45,7 @@ class Baseline_api_controller extends CI_Controller
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
         $this->file_url_base = $this->config->item('external_file_url');
         $this->cart_url_base = $this->config->item('external_cart_url');
-        // if(getenv('CI_ENV') !== 'unit_testing' && getenv('CI_ENV') !== 'development') {
-        //     $this->user_id = get_user();
-        // }else{
-        //     $this->user_id = 43751;
-        // }
         $this->user_id = get_user();
-        // $this->metadata_url_base = 'http://dmlb2000.emsl.pnl.gov:8121';
-        // $this->policy_url_base = 'http://dmlb2000.emsl.pnl.gov:8181';
 
         $this->application_version = $this->config->item('application_version');
         $this->page_address = implode('/', $this->uri->rsegments);
