@@ -1,4 +1,4 @@
-var cart_url_base = "/cart_api";
+var cart_url_base = base_url + "cart_api";
 var cart_info_url = cart_url_base + "/listing/";
 var cart_create_url = cart_url_base + "/create/";
 var cart_delete_url = cart_url_base + "/delete/";
