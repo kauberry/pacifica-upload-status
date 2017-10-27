@@ -22,7 +22,7 @@
 require_once 'Baseline_api_controller.php';
 
 /**
- * Cart is a CI Controller class that extends Baseline_controller
+ * Cart is a CI Controller class that extends Baseline_controller_api
  *
  * The *Cart* class interacts with the MyEMSL Cart web API to
  * allow download of archived data, as well as generating proper

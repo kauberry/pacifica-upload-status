@@ -2,7 +2,7 @@ version: '2'
 services:
 # Nginx proxy pass frontends
     proxyfrontend:
-        container_name: proxyfrontend
+        container_name: status_proxyfrontend
         build:
             context: .
             dockerfile: Dockerfile.archiveproxy
@@ -25,7 +25,7 @@ services:
             # PROXY_PORT: 8180
 
     # archiveproxy:
-    #     container_name: archiveproxy
+    #     container_name: status_archiveproxy
     #     build:
     #         context: .
     #         dockerfile: Dockerfile.archiveproxy
@@ -42,7 +42,7 @@ services:
 
 # Upload status
     uploadstatus:
-        container_name: uploadstatus
+        container_name: status_uploadstatus
         build:
             context: .
             dockerfile: Dockerfile.dev
@@ -69,7 +69,7 @@ services:
             FILE_DOWNLOAD_PORT: tcp://filesng.emsl.pnl.gov:8443
 
     uploadstatusdb:
-        container_name: uploadstatusdb
+        container_name: status_uploadstatusdb
         image: postgres
         environment:
             POSTGRES_PASSWORD: pacifica
@@ -83,7 +83,7 @@ services:
         build:
             context: ../metadata
             dockerfile: Dockerfile
-        container_name: metadataserver
+        container_name: status_metadataserver
         links:
             - metadatadb:postgres
             - elasticdb
@@ -101,7 +101,7 @@ services:
         build:
             context: ../policy
             dockerfile: Dockerfile
-        container_name: policyserver
+        container_name: status_policyserver
         restart: unless-stopped
         links:
             - metadataserver:metadata
@@ -112,7 +112,7 @@ services:
 
     metadatadb:
         image: postgres
-        container_name: metadatadb
+        container_name: status_metadatadb
         environment:
             POSTGRES_PASSWORD: pacifica
             POSTGRES_DB: pacifica_metadata
@@ -122,7 +122,7 @@ services:
 
     elasticdb:
         image: elasticsearch:2.4
-        container_name: elasticdb
+        container_name: status_elasticdb
         ports:
             - 9200:9200
 
