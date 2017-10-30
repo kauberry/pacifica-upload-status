@@ -297,7 +297,7 @@ $(function(){
     }, 5000);
 });
 var refresh = function(){
-    var getter = $.get('/ajax_api/get_latest_transaction_id', function(data){
+    var getter = $.get(base_url + 'ajax_api/get_latest_transaction_id', function(data){
         var last_id = data.last_transaction_id;
         if(transaction_id <= last_id){
             location.reload(true);

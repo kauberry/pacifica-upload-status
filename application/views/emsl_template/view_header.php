@@ -15,13 +15,13 @@
     <?php //$this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>
     <meta name="keywords" content="" />
 <?php $this->load->view("{$this->template_version}_template/globals"); ?>
+    <script type="text/javascript">
+    var base_url = "<?= base_url() ?>";
+    </script>
 
 <?= $script_uris ?>
 <?= $css_uris ?>
 
-    <script type="text/javascript">
-      var base_url = "<?= base_url() ?>";
-    </script>
   </head>
   <body>
     <div class="page_content">
