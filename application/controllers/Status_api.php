@@ -74,18 +74,14 @@ class Status_api extends Baseline_api_controller
             '/resources/scripts/fancytree/jquery.fancytree-all.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            // '/project_resources/scripts/status_common.js',
             '/resources/scripts/select2-4/dist/js/select2.js',
             '/resources/scripts/moment.min.js',
         );
         $this->page_data['css_uris'] = array(
             '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
             '/project_resources/stylesheets/combined.css',
-            // '/resources/stylesheets/status.css',
-            // '/resources/stylesheets/status_style.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/file_directory_styling.css',
-            // '/resources/stylesheets/bread_crumbs.css',
             '/project_resources/stylesheets/cart.css'
         );
         $this->page_data['load_prototype'] = FALSE;
@@ -105,8 +101,7 @@ class Status_api extends Baseline_api_controller
     }
 
     /**
-     * Primary index page shows overview of status for that user.
-     *
+     * Full page generating version of overview
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
      * @param string $time_period   time period the status should be displayed
@@ -119,7 +114,6 @@ class Status_api extends Baseline_api_controller
         $time_period = ''
     )
     {
-
         $proposal_id = $proposal_id ?: get_cookie('last_proposal_selector');
         $instrument_id = $instrument_id ?: get_cookie('last_instrument_selector');
         $time_period = $time_period ?: get_cookie('last_timeframe_selector');
@@ -128,57 +122,108 @@ class Status_api extends Baseline_api_controller
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
         $time_period = $time_period != 'null' ? $time_period : 0;
 
-        //add in the page display defaults, etc. if a non-AJAX load
-        if (!$this->input->is_ajax_request()) {
-            $view_name = 'emsl_mgmt_view.html';
-            $this->page_data['page_header'] = 'Status Reporting';
-            $this->page_data['title'] = 'Overview';
-            $this->page_data['informational_message'] = '';
-            $this->page_data['css_uris']
-                = load_stylesheets(
-                    $this->page_data['css_uris'],
-                    array(
-                        '/project_resources/stylesheets/selector.css',
-                    )
-                );
-            $this->page_data['script_uris']
-                = load_scripts(
-                    $this->page_data['script_uris'],
-                    array(
-                        '/project_resources/scripts/overview.js',
-                    )
-                );
+        $view_name = 'emsl_mgmt_view.html';
+        $this->page_data['page_header'] = 'Status Reporting';
+        $this->page_data['title'] = 'Overview';
+        $this->page_data['informational_message'] = '';
+        $this->page_data['css_uris']
+            = load_stylesheets(
+                $this->page_data['css_uris'],
+                array(
+                    '/project_resources/stylesheets/selector.css',
+                )
+            );
+        $this->page_data['script_uris']
+            = load_scripts(
+                $this->page_data['script_uris'],
+                array(
+                    '/project_resources/scripts/overview.js',
+                )
+            );
 
-            $this->benchmark->mark('get_user_info_from_ws_start');
-            $full_user_info = $this->myemsl->get_user_info();
-            $this->benchmark->mark('get_user_info_from_ws_end');
+        $this->benchmark->mark('get_user_info_from_ws_start');
+        $full_user_info = $this->myemsl->get_user_info();
+        $this->benchmark->mark('get_user_info_from_ws_end');
 
-            $proposal_list = array();
-            if (array_key_exists('proposals', $full_user_info)) {
-                foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
-                    if (array_key_exists('title', $prop_info)) {
-                        $proposal_list[$prop_id] = $prop_info['title'];
-                    }
+        $proposal_list = array();
+        if (array_key_exists('proposals', $full_user_info)) {
+            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $proposal_list[$prop_id] = $prop_info['title'];
                 }
             }
-            krsort($proposal_list);
-            $js = "var initial_proposal_id = '{$proposal_id}';
-                    var initial_instrument_id = '{$instrument_id}';
-                    var initial_time_period = '{$time_period}';
-                    var email_address = '{$this->email}';
-                    var lookup_type = 't';
-                    var initial_instrument_list = [];
-                    var cart_access_url_base = '{$this->config->item('external_cart_url')}';
-                    ";
-
-            $this->page_data['proposal_list'] = $proposal_list;
-            $this->page_data['selected_proposal'] = $proposal_id;
-            $this->page_data['time_period'] = $time_period;
-            $this->page_data['instrument_id'] = $instrument_id;
-            $this->page_data['js'] = $js;
-        } else {
-            $view_name = 'upload_item_view.html';
         }
+        krsort($proposal_list);
+        $js = "var initial_proposal_id = '{$proposal_id}';
+                var initial_instrument_id = '{$instrument_id}';
+                var initial_time_period = '{$time_period}';
+                var email_address = '{$this->email}';
+                var lookup_type = 't';
+                var initial_instrument_list = [];
+                var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                ";
+
+        $this->page_data['proposal_list'] = $proposal_list;
+        $this->page_data['selected_proposal'] = $proposal_id;
+        $this->page_data['time_period'] = $time_period;
+        $this->page_data['instrument_id'] = $instrument_id;
+        $this->page_data['js'] = $js;
+
+        $this->overview_worker(
+            $proposal_id, $instrument_id,
+            $time_period, $view_name
+        );
+    }
+
+    public function overview_insert(
+        $proposal_id = FALSE,
+        $instrument_id = FALSE,
+        $time_period = FALSE
+    )
+    {
+        if(!$proposal_id || !$instrument_id || !$time_period){
+            $message = "Some parameters missing. Please supply values for: ";
+            $criteria_array = array();
+            if(!$proposal_id) $criteria_array[] = "proposal";
+            if(!$instrument_id) $criteria_array[] = "instrument";
+            if(!$time_period) $criteria_array[] = "time period";
+            $message .= implode(", ", $criteria_array);
+            http_response_code(412);
+            print "<p class=\"error_msg\">{$message}</p>";
+        }
+        $this->page_data['css_uris']
+            = load_stylesheets(
+                $this->page_data['css_uris'],
+                array(
+                    '/project_resources/stylesheets/external.css',
+                )
+            );
+        $this->page_data['script_uris']
+            = load_scripts(
+                $this->page_data['script_uris']
+            );
+
+        $view_name = "external_insert_view.html";
+        $this->overview_worker($proposal_id, $instrument_id, $time_period, $view_name);
+    }
+
+
+    /**
+     * Primary index page shows overview of status for that user.
+     *
+     * @param string $proposal_id   id of the proposal to display
+     * @param string $instrument_id id of the instrument to display
+     * @param string $time_period   time period the status should be displayed
+     *
+     * @return void
+     */
+    public function overview_worker(
+        $proposal_id = '',
+        $instrument_id = '',
+        $time_period = '',
+        $view_name = 'upload_item_view.html'
+    )
+    {
         $time_period_empty = TRUE;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
