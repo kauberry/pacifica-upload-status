@@ -87,6 +87,7 @@ class Status_api extends Baseline_api_controller
         $this->page_data['load_prototype'] = FALSE;
         $this->page_data['load_jquery'] = TRUE;
         $this->page_data['status_list'] = $this->status_list;
+        $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
 
     }
 
@@ -122,7 +123,7 @@ class Status_api extends Baseline_api_controller
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
         $time_period = $time_period != 'null' ? $time_period : 0;
 
-        $view_name = 'emsl_mgmt_view.html';
+        $view_name = $this->overview_template;
         $this->page_data['page_header'] = 'Status Reporting';
         $this->page_data['title'] = 'Overview';
         $this->page_data['informational_message'] = '';
@@ -191,20 +192,35 @@ class Status_api extends Baseline_api_controller
             http_response_code(412);
             print "<p class=\"error_msg\">{$message}</p>";
         }
-        $this->page_data['css_uris']
-            = load_stylesheets(
-                $this->page_data['css_uris'],
-                array(
-                    '/project_resources/stylesheets/external.css',
-                )
-            );
-        $this->page_data['script_uris']
-            = load_scripts(
-                $this->page_data['script_uris']
-            );
 
-        $view_name = "external_insert_view.html";
-        $this->overview_worker($proposal_id, $instrument_id, $time_period, $view_name);
+        $cookie_base_name = "myemsl_status_last_";
+        $default_cookie_params = array(
+            "name" => "",
+            "value" => "",
+            "expire" => 86500,
+            "domain" => ".local",
+            "path" => "/",
+            "prefix" => $cookie_base_name
+        );
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "proposal_selector";
+        $new_cookie['value'] = $proposal_id;
+        $this->input->set_cookie($new_cookie);
+
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "instrument_selector";
+        $new_cookie['value'] = $instrument_id;
+        $this->input->set_cookie($new_cookie);
+
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "timeframe_selector";
+        $new_cookie['value'] = $time_period;
+        $this->input->set_cookie($new_cookie);
+
+        // $this->page_data['css_uris'][] = '/project_resources/stylesheets/external.css';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
+
+        $this->overview($proposal_id, $instrument_id, $time_period);
     }
 
 
@@ -268,6 +284,8 @@ class Status_api extends Baseline_api_controller
                 krsort($results['transaction_list']['times']);
             }
         }
+        $this->page_data['selected_proposal_id'] = $proposal_id;
+        $this->page_data['selected_instrument_id'] = $instrument_id;
         $this->page_data['enable_breadcrumbs'] = FALSE;
         $this->page_data['status_list'] = $this->status_list;
         $this->page_data['transaction_data'] = $results['transaction_list'];
