@@ -74,22 +74,19 @@ class Status_api extends Baseline_api_controller
             '/resources/scripts/fancytree/dist/jquery.fancytree-all.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            // '/project_resources/scripts/status_common.js',
             '/resources/scripts/select2-4/dist/js/select2.js'
         );
         $this->page_data['css_uris'] = array(
             '/resources/scripts/fancytree/dist/skin-lion/ui.fancytree.min.css',
             '/project_resources/stylesheets/combined.css',
-            // '/resources/stylesheets/status.css',
-            // '/resources/stylesheets/status_style.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/file_directory_styling.css',
-            // '/resources/stylesheets/bread_crumbs.css',
             '/project_resources/stylesheets/cart.css'
         );
         $this->page_data['load_prototype'] = FALSE;
         $this->page_data['load_jquery'] = TRUE;
         $this->page_data['status_list'] = $this->status_list;
+        $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
 
     }
 
@@ -104,7 +101,7 @@ class Status_api extends Baseline_api_controller
     }
 
     /**
-     * Primary index page shows overview of status for that user.
+     * Full page generating version of overview
      *
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
@@ -118,7 +115,6 @@ class Status_api extends Baseline_api_controller
         $time_period = ''
     )
     {
-
         $proposal_id = $proposal_id ?: get_cookie('last_proposal_selector');
         $instrument_id = $instrument_id ?: get_cookie('last_instrument_selector');
         $time_period = $time_period ?: get_cookie('last_timeframe_selector');
@@ -127,9 +123,7 @@ class Status_api extends Baseline_api_controller
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
         $time_period = $time_period != 'null' ? $time_period : 0;
 
-        //add in the page display defaults, etc. if a non-AJAX load
-        if (!$this->input->is_ajax_request()) {
-            $view_name = 'emsl_mgmt_view.html';
+        $view_name = $this->overview_template;
             $this->page_data['page_header'] = 'Status Reporting';
             $this->page_data['title'] = 'Overview';
             $this->page_data['informational_message'] = '';
@@ -153,13 +147,13 @@ class Status_api extends Baseline_api_controller
             $this->benchmark->mark('get_user_info_from_ws_end');
 
             $proposal_list = array();
-            if (array_key_exists('proposals', $full_user_info)) {
-                foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
-                    if (array_key_exists('title', $prop_info)) {
-                        $proposal_list[$prop_id] = $prop_info['title'];
-                    }
+        if (array_key_exists('proposals', $full_user_info)) {
+            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $proposal_list[$prop_id] = $prop_info['title'];
                 }
             }
+        }
             krsort($proposal_list);
             $js = "var initial_proposal_id = '{$proposal_id}';
                     var initial_instrument_id = '{$instrument_id}';
@@ -175,9 +169,87 @@ class Status_api extends Baseline_api_controller
             $this->page_data['time_period'] = $time_period;
             $this->page_data['instrument_id'] = $instrument_id;
             $this->page_data['js'] = $js;
-        } else {
-            $view_name = 'upload_item_view.html';
+
+        $this->overview_worker(
+            $proposal_id, $instrument_id,
+            $time_period, $view_name
+        );
+    }
+
+    /**
+     * Full page generating version of overview for external consumption
+     *
+     * @param string $proposal_id   id of the proposal to display
+     * @param string $instrument_id id of the instrument to display
+     * @param string $time_period   time period the status should be displayed
+     *
+     * @return void
+     */
+    public function overview_insert(
+        $proposal_id = FALSE,
+        $instrument_id = FALSE,
+        $time_period = FALSE
+    )
+    {
+        if(!$proposal_id || !$instrument_id || !$time_period) {
+            $message = "Some parameters missing. Please supply values for: ";
+            $criteria_array = array();
+            if(!$proposal_id) $criteria_array[] = "proposal";
+            if(!$instrument_id) $criteria_array[] = "instrument";
+            if(!$time_period) $criteria_array[] = "time period";
+            $message .= implode(", ", $criteria_array);
+            http_response_code(412);
+            print "<p class=\"error_msg\">{$message}</p>";
         }
+
+        $cookie_base_name = "myemsl_status_last_";
+        $default_cookie_params = array(
+            "name" => "",
+            "value" => "",
+            "expire" => 86500,
+            "domain" => ".local",
+            "path" => "/",
+            "prefix" => $cookie_base_name
+        );
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "proposal_selector";
+        $new_cookie['value'] = $proposal_id;
+        $this->input->set_cookie($new_cookie);
+
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "instrument_selector";
+        $new_cookie['value'] = $instrument_id;
+        $this->input->set_cookie($new_cookie);
+
+        $new_cookie = $default_cookie_params;
+        $new_cookie['name'] = "timeframe_selector";
+        $new_cookie['value'] = $time_period;
+        $this->input->set_cookie($new_cookie);
+
+        // $this->page_data['css_uris'][] = '/project_resources/stylesheets/external.css';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
+
+        $this->overview($proposal_id, $instrument_id, $time_period);
+    }
+
+
+    /**
+     * Primary index page shows overview of status for that user.
+     *
+     * @param string $proposal_id   id of the proposal to display
+     * @param string $instrument_id id of the instrument to display
+     * @param string $time_period   time period the status should be displayed
+     * @param string $view_name     CodeIgniter view to use for formatting this information
+     *
+     * @return void
+     */
+    public function overview_worker(
+        $proposal_id = '',
+        $instrument_id = '',
+        $time_period = '',
+        $view_name = 'upload_item_view.html'
+    )
+    {
         $time_period_empty = TRUE;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
@@ -222,6 +294,8 @@ class Status_api extends Baseline_api_controller
                 krsort($results['transaction_list']['times']);
             }
         }
+        $this->page_data['selected_proposal_id'] = $proposal_id;
+        $this->page_data['selected_instrument_id'] = $instrument_id;
         $this->page_data['enable_breadcrumbs'] = FALSE;
         $this->page_data['status_list'] = $this->status_list;
         $this->page_data['transaction_data'] = $results['transaction_list'];

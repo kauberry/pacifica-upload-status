@@ -32,10 +32,12 @@ $config['external_file_url'] = !empty($files_dl_port) ?
     str_replace('tcp://', 'https://', $files_dl_port) :
     'http://files.emsl.pnl.gov';
 
+$config['main_overview_template'] = "external_view.html";
+
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
-$config['theme_name'] = 'myemsl';
-$config['site_identifier'] = 'Data Management for Science';
+// $config['theme_name'] = 'external';
+// $config['site_identifier'] = 'EMSL User Portal Data Retrieval';
 
 // $config['theme_name'] = 'pacifica';
 // $config['site_identifier'] = 'dēmos';
