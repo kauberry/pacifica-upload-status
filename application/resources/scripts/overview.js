@@ -46,7 +46,7 @@ var setup_selectors = function(initial_load) {
             placeholder: "Select a Time Frame..."
         })
         .off("change")
-        .change(update_content);
+        .on("change", update_content);
 
     if (current_proposal_id == undefined || initial_load) {
         $("#instrument_selector")
@@ -90,7 +90,7 @@ var setup_selectors = function(initial_load) {
             placeholder: "Please Select an EUS Proposal...",
         })
         .off("change")
-        .change(update_content);
+        .on("change", update_content);
 };
 
 var formatProposal = function(item) {
@@ -175,7 +175,7 @@ var get_instrument_list = function(proposal_id) {
             }
         }
     );
-    $("#instrument_selector").change(update_content);
+    $("#instrument_selector").on("change", update_content);
 };
 
 var formatInstrument = function(item) {

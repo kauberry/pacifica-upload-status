@@ -36,8 +36,8 @@ $config['main_overview_template'] = "external_view.html";
 
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
-$config['theme_name'] = 'external';
-$config['site_identifier'] = 'EMSL User Portal Data Retrieval';
+// $config['theme_name'] = 'external';
+// $config['site_identifier'] = 'EMSL User Portal Data Retrieval';
 
 // $config['theme_name'] = 'pacifica';
 // $config['site_identifier'] = 'dēmos';

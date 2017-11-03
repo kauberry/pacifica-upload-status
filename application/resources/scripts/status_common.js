@@ -138,7 +138,7 @@ var update_content = function(event){
     initial_load = false;
     var ts = moment().format("YYYYMMDDHHmmss");
     if(proposal_id && instrument_id && time_frame) {
-        var url = "/status_api/overview/" + proposal_id + "/" + instrument_id + "/" + time_frame + "/ovr_" + ts;
+        var url = base_url + "status_api/overview/" + proposal_id + "/" + instrument_id + "/" + time_frame + "/ovr_" + ts;
         initial_load = false;
         $("#item_info_container").hide();
         $("#loading_status").fadeIn(
@@ -277,7 +277,7 @@ var formatInstrumentSelection = function(item){
 
 var setup_metadata_disclosure = function(){
     $("ul.metadata_container").hide();
-    $(".disclosure_button").unbind("click").click(
+    $(".disclosure_button").off("click").on("click",
         function(){
             var el = $(this);
             var container = el.parentsUntil("div").siblings(".metadata_container");

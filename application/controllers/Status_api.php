@@ -71,14 +71,14 @@ class Status_api extends Baseline_api_controller
         $this->page_data['site_identifier'] = $this->config->item('site_identifier');
         $this->page_data['script_uris'] = array(
             '/resources/scripts/spinner/spin.min.js',
-            '/resources/scripts/fancytree/jquery.fancytree-all.js',
+            '/resources/scripts/fancytree/dist/jquery.fancytree-all.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            '/resources/scripts/select2-4/dist/js/select2.js',
-            '/resources/scripts/moment.min.js',
+            // '/project_resources/scripts/status_common.js',
+            '/resources/scripts/select2-4/dist/js/select2.js'
         );
         $this->page_data['css_uris'] = array(
-            '/resources/scripts/fancytree/skin-lion/ui.fancytree.min.css',
+            '/resources/scripts/fancytree/dist/skin-lion/ui.fancytree.min.css',
             '/project_resources/stylesheets/combined.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
             '/resources/stylesheets/file_directory_styling.css',
@@ -124,57 +124,57 @@ class Status_api extends Baseline_api_controller
         $time_period = $time_period != 'null' ? $time_period : 0;
 
         $view_name = $this->overview_template;
-        $this->page_data['page_header'] = 'Status Reporting';
-        $this->page_data['title'] = 'Overview';
-        $this->page_data['informational_message'] = '';
-        $this->page_data['css_uris']
-            = load_stylesheets(
-                $this->page_data['css_uris'],
-                array(
-                    '/project_resources/stylesheets/selector.css',
-                )
-            );
-        $this->page_data['script_uris']
-            = load_scripts(
-                $this->page_data['script_uris'],
-                array(
-                    '/project_resources/scripts/overview.js',
-                )
-            );
+            $this->page_data['page_header'] = 'Status Reporting';
+            $this->page_data['title'] = 'Overview';
+            $this->page_data['informational_message'] = '';
+            $this->page_data['css_uris']
+                = load_stylesheets(
+                    $this->page_data['css_uris'],
+                    array(
+                        '/project_resources/stylesheets/selector.css',
+                    )
+                );
+            $this->page_data['script_uris']
+                = load_scripts(
+                    $this->page_data['script_uris'],
+                    array(
+                        '/project_resources/scripts/overview.js',
+                    )
+                );
 
-        $this->benchmark->mark('get_user_info_from_ws_start');
-        $full_user_info = $this->myemsl->get_user_info();
-        $this->benchmark->mark('get_user_info_from_ws_end');
+            $this->benchmark->mark('get_user_info_from_ws_start');
+            $full_user_info = $this->myemsl->get_user_info();
+            $this->benchmark->mark('get_user_info_from_ws_end');
 
-        $proposal_list = array();
-        if (array_key_exists('proposals', $full_user_info)) {
-            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
-                if (array_key_exists('title', $prop_info)) {
-                    $proposal_list[$prop_id] = $prop_info['title'];
+            $proposal_list = array();
+            if (array_key_exists('proposals', $full_user_info)) {
+                foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+                    if (array_key_exists('title', $prop_info)) {
+                        $proposal_list[$prop_id] = $prop_info['title'];
+                    }
                 }
             }
-        }
-        krsort($proposal_list);
-        $js = "var initial_proposal_id = '{$proposal_id}';
-                var initial_instrument_id = '{$instrument_id}';
-                var initial_time_period = '{$time_period}';
-                var email_address = '{$this->email}';
-                var lookup_type = 't';
-                var initial_instrument_list = [];
-                var cart_access_url_base = '{$this->config->item('external_cart_url')}';
-                ";
+            krsort($proposal_list);
+            $js = "var initial_proposal_id = '{$proposal_id}';
+                    var initial_instrument_id = '{$instrument_id}';
+                    var initial_time_period = '{$time_period}';
+                    var email_address = '{$this->email}';
+                    var lookup_type = 't';
+                    var initial_instrument_list = [];
+                    var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                    ";
 
-        $this->page_data['proposal_list'] = $proposal_list;
-        $this->page_data['selected_proposal'] = $proposal_id;
-        $this->page_data['time_period'] = $time_period;
-        $this->page_data['instrument_id'] = $instrument_id;
-        $this->page_data['js'] = $js;
+            $this->page_data['proposal_list'] = $proposal_list;
+            $this->page_data['selected_proposal'] = $proposal_id;
+            $this->page_data['time_period'] = $time_period;
+            $this->page_data['instrument_id'] = $instrument_id;
+            $this->page_data['js'] = $js;
 
         $this->overview_worker(
             $proposal_id, $instrument_id,
             $time_period, $view_name
         );
-    }
+        }
 
     public function overview_insert(
         $proposal_id = FALSE,
