@@ -17,6 +17,8 @@ $config['local_timezone'] = 'America/Los_Angeles';
 
 $cart_port = getenv('CART_PORT');
 $cart_dl_port = getenv('CART_DOWNLOAD_PORT');
+// $site_theme_name = getenv('SITE_THEME');
+$site_theme_name = 'external';
 
 $files_dl_port = getenv('FILE_DOWNLOAD_PORT');
 
@@ -35,15 +37,18 @@ $config['external_file_url'] = !empty($files_dl_port) ?
 
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
-// $config['theme_name'] = 'external';
-// $config['site_identifier'] = 'EMSL User Portal Data Retrieval';
-// $config['main_overview_template'] = "external_view.html";
 
-$config['theme_name'] = 'pacifica';
-$config['site_identifier'] = 'dēmos';
-
-// $config['theme_name'] = 'myemsl';
-// $config['site_identifier'] = 'Data Management for Science';
+if($site_theme_name == 'external') {
+    $config['theme_name'] = 'external';
+    $config['site_identifier'] = 'EMSL User Portal Data Retrieval';
+    $config['main_overview_template'] = "external_view.html";
+}elseif($site_theme_name == 'myemsl') {
+    $config['theme_name'] = 'myemsl';
+    $config['site_identifier'] = 'Data Management for Science';
+}else{
+    $config['theme_name'] = 'pacifica';
+    $config['site_identifier'] = 'dēmos';
+}
 
 $config['application_version'] = "1.99.0";
 ?>

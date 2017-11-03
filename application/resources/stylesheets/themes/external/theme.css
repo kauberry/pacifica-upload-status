@@ -16,6 +16,12 @@
   background-image: linear-gradient(top, #d2e4e2 0%, #79a69f 100%);
 }
 
+.themed fieldset {
+    width:90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 header.secondary .page_header{
   height:75px;
   border-bottom: 1px solid #222;
@@ -174,5 +180,46 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
     .logo_image {
         background: url("/resources/images/emsl_logos/emsl_logo_white_new@3x.png") 0% 0% / 174px 73px no-repeat;
         /*background-size: 174px 73px;*/
+    }
+}
+
+@media (min-width: 960px) {
+    .themed fieldset {
+        width: 864px;
+    }
+}
+
+@media (max-width: 960px) {
+    .logo_image {
+        width: 50%;
+        height: 50%;
+        background-size: 87px 36px;
+        position:absolute;
+        right: 5px;
+        top: 10px;
+    }
+    .text_logo {
+        font-size: 2em;
+    }
+    header.secondary .page_header {
+        height:40px;
+        padding-bottom: 5px;
+    }
+}
+
+@media (max-width: 640px) {
+    .logo_image {
+        width: 30%;
+        height: 30%;
+        background-size: 52px 22px;
+        top: 0;
+    }
+    .text_logo {
+        font-size: 1.5em;
+        position: absolute;
+        top: 0;
+    }
+    header.secondary .page_header {
+        height:12px;
     }
 }
