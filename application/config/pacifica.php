@@ -17,8 +17,8 @@ $config['local_timezone'] = 'America/Los_Angeles';
 
 $cart_port = getenv('CART_PORT');
 $cart_dl_port = getenv('CART_DOWNLOAD_PORT');
-// $site_theme_name = getenv('SITE_THEME');
-$site_theme_name = 'external';
+$site_theme_name = getenv('SITE_THEME');
+// $site_theme_name = 'external';
 
 $files_dl_port = getenv('FILE_DOWNLOAD_PORT');
 
