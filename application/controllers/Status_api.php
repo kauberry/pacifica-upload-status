@@ -74,7 +74,6 @@ class Status_api extends Baseline_api_controller
             '/resources/scripts/fancytree/dist/jquery.fancytree-all.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            // '/project_resources/scripts/status_common.js',
             '/resources/scripts/select2-4/dist/js/select2.js'
         );
         $this->page_data['css_uris'] = array(
@@ -103,6 +102,7 @@ class Status_api extends Baseline_api_controller
 
     /**
      * Full page generating version of overview
+     *
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
      * @param string $time_period   time period the status should be displayed
@@ -147,13 +147,13 @@ class Status_api extends Baseline_api_controller
             $this->benchmark->mark('get_user_info_from_ws_end');
 
             $proposal_list = array();
-            if (array_key_exists('proposals', $full_user_info)) {
-                foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
-                    if (array_key_exists('title', $prop_info)) {
-                        $proposal_list[$prop_id] = $prop_info['title'];
-                    }
+        if (array_key_exists('proposals', $full_user_info)) {
+            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $proposal_list[$prop_id] = $prop_info['title'];
                 }
             }
+        }
             krsort($proposal_list);
             $js = "var initial_proposal_id = '{$proposal_id}';
                     var initial_instrument_id = '{$instrument_id}';
@@ -174,15 +174,24 @@ class Status_api extends Baseline_api_controller
             $proposal_id, $instrument_id,
             $time_period, $view_name
         );
-        }
+    }
 
+    /**
+     * Full page generating version of overview for external consumption
+     *
+     * @param string $proposal_id   id of the proposal to display
+     * @param string $instrument_id id of the instrument to display
+     * @param string $time_period   time period the status should be displayed
+     *
+     * @return void
+     */
     public function overview_insert(
         $proposal_id = FALSE,
         $instrument_id = FALSE,
         $time_period = FALSE
     )
     {
-        if(!$proposal_id || !$instrument_id || !$time_period){
+        if(!$proposal_id || !$instrument_id || !$time_period) {
             $message = "Some parameters missing. Please supply values for: ";
             $criteria_array = array();
             if(!$proposal_id) $criteria_array[] = "proposal";
@@ -230,6 +239,7 @@ class Status_api extends Baseline_api_controller
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
      * @param string $time_period   time period the status should be displayed
+     * @param string $view_name     CodeIgniter view to use for formatting this information
      *
      * @return void
      */
