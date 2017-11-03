@@ -50,7 +50,6 @@ class Baseline_api_controller extends CI_Controller
         $this->application_version = $this->config->item('application_version');
         $this->page_address = implode('/', $this->uri->rsegments);
 
-
         $this->benchmark->mark('get_user_details_start');
         $user_info = get_user_details($this->user_id);
         if($user_info['first_name'] != NULL) {
