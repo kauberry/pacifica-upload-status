@@ -277,7 +277,7 @@ var formatInstrumentSelection = function(item){
 
 var setup_metadata_disclosure = function(){
     $("ul.metadata_container").hide();
-    $(".disclosure_button").unbind("click").click(
+    $(".disclosure_button").off("click").on("click",
         function(){
             var el = $(this);
             var container = el.parentsUntil("div").siblings(".metadata_container");
