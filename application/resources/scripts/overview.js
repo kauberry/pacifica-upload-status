@@ -266,7 +266,7 @@ var update_content = function(event) {
     }
 
     if (current_proposal_id != 0 && current_instrument_id != 0 && current_timeframe > 0) {
-        var url = "/status_api/overview_worker/" + current_proposal_id + "/" + current_instrument_id + "/" + current_timeframe + "?ovr_" + ts;
+        var url = base_url + "status_api/overview_worker/" + current_proposal_id + "/" + current_instrument_id + "/" + current_timeframe + "?ovr_" + ts;
         $("#item_info_container").hide();
         $("#loading_status").fadeIn(
             "slow",
