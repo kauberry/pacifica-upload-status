@@ -24,11 +24,11 @@ var cookie_base = "myemsl_status_last_";
 
 
 $(function() {
-    current_proposal_id = $.cookie(cookie_base + "proposal_selector");
+    current_proposal_id = $.cookie(cookie_base + "proposal_selector") || initial_proposal_id;
     current_proposal_id = current_proposal_id != "null" ? current_proposal_id : -1;
-    current_instrument_id = $.cookie(cookie_base + "instrument_selector");
+    current_instrument_id = $.cookie(cookie_base + "instrument_selector") || initial_instrument_id;
     current_instrument_id = current_instrument_id != "null" ? current_instrument_id : -1;
-    current_timeframe = $.cookie(cookie_base + "timeframe_selector");
+    current_timeframe = $.cookie(cookie_base + "timeframe_selector") || initial_time_period;
     current_timeframe = current_timeframe == undefined ? 2 : current_timeframe;
 
     setup_selectors(true);

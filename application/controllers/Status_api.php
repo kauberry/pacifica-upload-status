@@ -202,29 +202,29 @@ class Status_api extends Baseline_api_controller
             print "<p class=\"error_msg\">{$message}</p>";
         }
 
-        $cookie_base_name = "myemsl_status_last_";
-        $default_cookie_params = array(
-            "name" => "",
-            "value" => "",
-            "expire" => 86500,
-            "domain" => ".local",
-            "path" => "/",
-            "prefix" => $cookie_base_name
-        );
-        $new_cookie = $default_cookie_params;
-        $new_cookie['name'] = "proposal_selector";
-        $new_cookie['value'] = $proposal_id;
-        $this->input->set_cookie($new_cookie);
-
-        $new_cookie = $default_cookie_params;
-        $new_cookie['name'] = "instrument_selector";
-        $new_cookie['value'] = $instrument_id;
-        $this->input->set_cookie($new_cookie);
-
-        $new_cookie = $default_cookie_params;
-        $new_cookie['name'] = "timeframe_selector";
-        $new_cookie['value'] = $time_period;
-        $this->input->set_cookie($new_cookie);
+        // $cookie_base_name = "myemsl_status_last_";
+        // $default_cookie_params = array(
+        //     "name" => "",
+        //     "value" => "",
+        //     "expire" => 86500,
+        //     "domain" => ".local",
+        //     "path" => "/",
+        //     "prefix" => $cookie_base_name
+        // );
+        // $new_cookie = $default_cookie_params;
+        // $new_cookie['name'] = "proposal_selector";
+        // $new_cookie['value'] = $proposal_id;
+        // $this->input->set_cookie($new_cookie);
+        //
+        // $new_cookie = $default_cookie_params;
+        // $new_cookie['name'] = "instrument_selector";
+        // $new_cookie['value'] = $instrument_id;
+        // $this->input->set_cookie($new_cookie);
+        //
+        // $new_cookie = $default_cookie_params;
+        // $new_cookie['name'] = "timeframe_selector";
+        // $new_cookie['value'] = $time_period;
+        // $this->input->set_cookie($new_cookie);
 
         // $this->page_data['css_uris'][] = '/project_resources/stylesheets/external.css';
         $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
