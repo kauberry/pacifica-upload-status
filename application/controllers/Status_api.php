@@ -128,54 +128,70 @@ class Status_api extends Baseline_api_controller
         $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
 
+        if(!$starting_date || !$ending_date) {
+            $today = new DateTime();
+            if(!$ending_date) {
+                $ending_date = $today->format('Y-m-d');
+            }
+            if(!$starting_date) {
+                $today->modify('-30 days');
+                $starting_date = $today->format('Y-m-d');
+            }
+        }
+
         $view_name = $this->overview_template;
-            $this->page_data['page_header'] = 'Status Reporting';
-            $this->page_data['title'] = 'Overview';
-            $this->page_data['informational_message'] = '';
-            $this->page_data['css_uris']
-                = load_stylesheets(
-                    $this->page_data['css_uris'],
-                    array(
-                        '/project_resources/stylesheets/selector.css',
-                    )
-                );
-            $this->page_data['script_uris']
-                = load_scripts(
-                    $this->page_data['script_uris'],
-                    array(
-                        '/project_resources/scripts/overview.js',
-                    )
-                );
+        $this->page_data['page_header'] = 'Status Reporting';
+        $this->page_data['title'] = 'Overview';
+        $this->page_data['informational_message'] = '';
+        $this->page_data['css_uris']
+            = load_stylesheets(
+                $this->page_data['css_uris'],
+                array(
+                    '/project_resources/stylesheets/selector.css',
+                )
+            );
+        $this->page_data['script_uris']
+            = load_scripts(
+                $this->page_data['script_uris'],
+                array(
+                    '/project_resources/scripts/overview.js',
+                )
+            );
 
-            $this->benchmark->mark('get_user_info_from_ws_start');
-            $full_user_info = $this->myemsl->get_user_info();
-            $this->benchmark->mark('get_user_info_from_ws_end');
+        $this->benchmark->mark('get_user_info_from_ws_start');
+        $full_user_info = $this->myemsl->get_user_info();
+        $this->benchmark->mark('get_user_info_from_ws_end');
 
-            $proposal_list = array();
+        $proposal_list = array();
         if (array_key_exists('proposals', $full_user_info)) {
             foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
                 if (array_key_exists('title', $prop_info)) {
                     $proposal_list[$prop_id] = $prop_info['title'];
                 }
             }
+            if(array_key_exists('proposal_list', $this->page_data)) {
+                $this->page_data['proposal_list'] = $this->page_data['proposal_list'] + $proposal_list;
+            }else{
+                $this->page_data['proposal_list'] = $proposal_list;
+            }
+            ksort($this->page_data['proposal_list']);
         }
-            krsort($proposal_list);
-            $js = "var initial_proposal_id = '{$proposal_id}';
-                    var initial_instrument_id = '{$instrument_id}';
-                    var initial_starting_date = '{$starting_date}';
-                    var initial_ending_date = '{$ending_date}';
-                    var email_address = '{$this->email}';
-                    var lookup_type = 't';
-                    var initial_instrument_list = [];
-                    var cart_access_url_base = '{$this->config->item('external_cart_url')}';
-                    ";
 
-            $this->page_data['proposal_list'] = $proposal_list;
-            $this->page_data['selected_proposal'] = $proposal_id;
-            $this->page_data['starting_date'] = $starting_date;
-            $this->page_date['ending_date'] = $ending_date;
-            $this->page_data['instrument_id'] = $instrument_id;
-            $this->page_data['js'] = $js;
+        $js = "var initial_proposal_id = '{$proposal_id}';
+                var initial_instrument_id = '{$instrument_id}';
+                var initial_starting_date = '{$starting_date}';
+                var initial_ending_date = '{$ending_date}';
+                var email_address = '{$this->email}';
+                var lookup_type = 't';
+                var initial_instrument_list = [];
+                var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                ";
+
+        $this->page_data['selected_proposal'] = $proposal_id;
+        $this->page_data['starting_date'] = $starting_date;
+        $this->page_date['ending_date'] = $ending_date;
+        $this->page_data['instrument_id'] = $instrument_id;
+        $this->page_data['js'] = $js;
 
         $this->overview_worker(
             $proposal_id, $instrument_id,
@@ -211,19 +227,10 @@ class Status_api extends Baseline_api_controller
             return;
         }
 
-        if(!$starting_date || !$ending_date) {
-            $today = new DateTime();
-            if(!$ending_date) {
-                $ending_date = $today->format('Y-m-d');
-            }
-            if(!$starting_date) {
-                $today->modify('-30 days');
-                $starting_date = $today->format('Y-m-d');
-            }
-        }
-
         $this->page_data['proposal_info'] = get_proposal_abstract($proposal_id);
         $this->page_data['instrument_info'] = get_instrument_details($instrument_id);
+        $this->page_data['proposal_list'][$proposal_id] = $this->page_data['proposal_info']['title'];
+
 
         $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
 

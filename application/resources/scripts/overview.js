@@ -46,7 +46,13 @@ $(function() {
         get_instrument_list(current_proposal_id);
     }
     function cb(start, end) {
-        $("#time_range_container span.time_range_display").html(start.format("MMMM D, YYYY") + " &ndash; " + end.format("MMMM D, YYYY"));
+        var datepicker_message = "";
+        if(!start._isValid || !end._isValid){
+            datepicker_message = "<span class=\"placeholder_text\">Please select a date range&hellip;</span>";
+        }else{
+            datepicker_message = start.format("MMMM D, YYYY") + " &ndash; " + end.format("MMMM D, YYYY");
+        }
+        $("#time_range_container span.time_range_display").html(datepicker_message);
     }
     cb(moment(correctTZ(new Date(current_starting_date))), moment(correctTZ(new Date(current_ending_date))));
 

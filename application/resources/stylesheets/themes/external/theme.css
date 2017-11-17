@@ -143,17 +143,6 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
   padding: 4px 10px 3px 7px;
 }
 
-
-/*.logo_container {
-    background: url("/resources/images/emsl_logos/emsl-doe_combined.png") left top / 346px 107px no-repeat;
-    position: absolute;
-    top: 10px;
-    height: 107px;
-    width: 346px;
-    right: 20px;
-    background-size: 346px 107px;
-}*/
-
 .cart_tree thead th {
     color: #efefef;
     background-color: #666;
