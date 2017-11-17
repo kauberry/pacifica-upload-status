@@ -34,7 +34,7 @@
                   </select>
                 </div>
 
-                <div class="full_width_block" style="margin-top:1em;">
+                <div class="full_width_block" id="bottom_selector_container" style="margin-top:1em;">
                   <div class="left_block" id="instrument_selector_container">
                     <select id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" style="width:100%;">
                         <option></option>
@@ -42,22 +42,10 @@
                     <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
                   </div>
                   <div class="right_block" id="timeframe_selector_container">
-                    <select id="timeframe_selector" class="criterion_selector" name="timeframe_selector" style="width:100%;">
-                        <?php $period_list = array(
-                        '1' => "Last 24 Hours",
-                        '2' => "Last 48 Hours",
-                        '7' => "Last 7 Days",
-                        '14' => "Last 2 Weeks",
-                        '30' => "Last Month",
-                        '60' => "Last 2 Months",
-                        '180' => "Last 6 Months",
-                        '365' => "Last Year"); ?>
-                      <option></option>
-                        <?php foreach($period_list as $period => $desc): ?>
-                        <?php $selected_state = $period == $time_period ? ' selected="selected"' : ''; ?>
-                      <option value="<?= $period ?>"<?= $selected_state ?>><?= $desc ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div id="time_range_container" class="time_range_container pull-right">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                        <span class="time_range_display"></span><span class="fake_selection_arrow" role="presentation"><b role="presentation">&nbsp;</b></span>
+                    </div>
                   </div>
                 </div>
               </fieldset>

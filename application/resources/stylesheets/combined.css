@@ -15,6 +15,21 @@ body {
     margin-top: 1em;
 }
 
+.time_range_container {
+    cursor: pointer;
+    padding: 4px 10px;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+/*.glyphicon-calendar {
+    background-image: url("/project_resources/images/glyphicons-46-calendar.png");
+}*/
+.daterangepicker th, .daterangepicker td {
+    border-radius: 0;
+}
 
 .loading_status {
     position: relative;
@@ -68,6 +83,28 @@ body {
     color: #656565;
     font-size: large;
     font-weight: 600;
+    width:auto;
+}
+
+.fake_selection_arrow b {
+    border-color: #888 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+
+.fake_selection_arrow {
+    height: 26px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
 }
 
 .themed input {
@@ -498,6 +535,8 @@ footer a:hover {
 }
 .transaction_container h3 {
     /*margin-top: 10px;*/
+    font-weight: 600;
+    font-size: 1.0em;
     margin-top: 0;
     color: #3c4c1f;
     margin-bottom: 0 !important;
@@ -517,13 +556,16 @@ ul.metadata_container li {
 .transaction_container {
     margin-bottom: 1em;
     padding: 0.5em 1.25em !important;
-    position: relative;
+}
+
+.fieldset_container {
+    position:relative;
 }
 
 .short_instrument_name {
     position: absolute;
-    right: 0.25em;
-    top: -1em;
+    right: 1em;
+    top: 1em;
     font-size:0.85em;
     font-weight: bold;
     color:#666

@@ -27,21 +27,6 @@ if(!defined('BASEPATH')) { exit('No direct script access allowed');
 }
 
 /**
- *  Directly retrieves user info from the MyEMSL EUS
- *  database clone
- *
- *  @param integer $eus_id user id of the person in question
- *
- *  @return array
- *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
- */
-function get_user_details($eus_id)
-{
-    return get_user_details_base($eus_id, '');
-}
-
-/**
  *  Directly retrieves simplified user info from the MyEMSL EUS
  *  database clone
  *
@@ -53,38 +38,116 @@ function get_user_details($eus_id)
  */
 function get_user_details_simple($eus_id)
 {
-    return get_user_details_base($eus_id, 'simple');
+    return get_details('user', $eus_id, 'simple');
 }
 
 /**
- *  Directly retrieves simplified user info from the MyEMSL EUS
+ *  Directly retrieves user info from the MyEMSL EUS
  *  database clone
  *
- *  @param integer $eus_id user id of the person in question
- *  @param string  $option 'simple' if short version, anything else if not
- *  
- *  @return array
+ * @param integer $eus_id user id of the person in question
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @return array
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function get_user_details_base($eus_id, $option)
+function get_user_details($eus_id)
 {
+    return get_details('user', $eus_id);
+}
+
+/**
+ *  Directly retrieves instrument info from md server
+ *
+ * @param integer $instrument_id id of the instrument in question
+ *
+ * @return array
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_instrument_details($instrument_id)
+{
+    return get_details('instrument', $instrument_id);
+}
+
+/**
+ *  Directly retrieves proposal info from md server
+ *
+ * @param integer $proposal_id proposal id of the item in question
+ *
+ * @return array
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_proposal_details($proposal_id)
+{
+    return get_details('proposal', $proposal_id);
+}
+
+/**
+ *  Worker function for talking to md server
+ *
+ * @param string $object_type type of object to query
+ * @param string $object_id   id of object to query
+ * @param string $option      switch to pass in to md request
+ *
+ * @return array
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_details($object_type, $object_id, $option=FALSE)
+{
+    $object_map = array(
+        'instrument' => array('url' => 'instrumentinfo/by_instrument_id'),
+        'proposal' => array('url' => 'proposalinfo/by_proposal_id'),
+        'user' => array('url' => 'userinfo/by_id')
+    );
+    $url = $object_map[$object_type]['url'];
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     // $md_url = $CI->config->item('metadata_url');
     $md_url = $CI->metadata_url_base;
-    $query_url = "{$md_url}/userinfo/by_id/{$eus_id}/{$option}";
-    $query = Requests::get($query_url, array('Accept' => 'application/json'));
-    if($query->status_code == 200) {
-        $results_body = $query->body;
-    }else{
-        $results_body = array();
+    $url_object = array(
+        $md_url, $url, $object_id
+    );
+    if($option) {
+        $url_object[] = $option;
     }
-
+    $query_url = implode('/', $url_object);
+    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    $results_body = $query->body;
 
     return json_decode($results_body, TRUE);
+
 }
 
+/**
+ * [get_proposal_abstract description]
+ *
+ * @param string $proposal_id [description]
+ *
+ * @return string [description]
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_proposal_abstract($proposal_id)
+{
+    $url = "proposals?_id={$proposal_id}";
+    $CI =& get_instance();
+    $CI->load->library('PHPRequests');
+    $md_url = $CI->metadata_url_base;
+    $query_url = "{$md_url}/{$url}";
+    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    $results_body = $query->body;
+    $results = json_decode($results_body, TRUE);
+    $result = array_pop($results);
+    $ret_array = array(
+        'title' => $result['title'],
+        'abstract' => $result['abstract']
+    );
+
+    return $ret_array;
+}
 
 /**
  *  Read and parse the '*general.ini*' file to retrieve things

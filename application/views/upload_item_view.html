@@ -11,75 +11,75 @@
       $transaction_info = $transaction_data['transactions'][$transaction_id];
       $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia T');
 ?>
-    <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
+    <div class="fieldset_container">
+      <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
         <legend>
-            <a href="/view/<?= $transaction_id ?>">Upload ID <?= $transaction_id ?></a>
-            <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
+          <a href="/view/<?= $transaction_id ?>">Upload ID <?= $transaction_id ?></a>
+          <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
         </legend>
-            <span class="short_instrument_name"><?= $transaction_info['metadata']['instrument_name'] ?></span>
-            <div class="metadata_fieldset">
-                <div class="full_width_block">
-                    <h3><span>Metadata Uploaded</span><span id='metadata_<?= $transaction_id ?>_dc' class="disclosure_button dc_up"></span></h3>
-                    <div class="metadata_container" style="display:none;">
-                        <div class="left">
-                            <h4>Basic Metadata</h4>
-                            <dl class="metadata_description_list">
-                            <?php ksort($transaction_info['metadata']); ?>
-                            <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
-                                <?php if(stripos($md_name, "file") === 0) continue; ?>
-                                <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
-                                <dt><?= $cleaned_type_name ?></dt>
-                                <dd><?= $md_value ?></dd>
-                            <?php endforeach; ?>
-                            </dl>
-                        </div>
-                        <div class="right">
-                            <h4>User-Specified Metadata</h4>
-                            <dl class="metadata_description_list">
-                            <?php ksort($transaction_info['kv_pairs']); ?>
-                            <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
-                                <dt><?= $md_name ?></dt>
-                                <?php if(strtolower($md_name) == 'user of record'): ?>
-                                    <?php
-                                        $md_value_string = get_user_details($md_value)["display_name"] ?: $md_value;
-                                        $md_value = $md_value_string;
-                                    ?>
-                                <?php endif; ?>
-                                <dd><?= $md_value ?></dd>
-                            <?php endforeach; ?>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-                <?php if($request_type == 't'): ?>
-                <div class="full_width_block" style="width:95%;float:left;">
-                    <!-- <h3>File List <span id="status_block_<?= $transaction_id ?>" class='download_status'>&nbsp;</span></h3> -->
-
-                    <div class="disclosure_block">
-                        <div id="tree_<?= $transaction_id ?>" class="tree_holder">
-                            <ul id="treeData_<?= $transaction_id ?>" style="display:none;">
-                                <li id="treeData_<?= $transaction_id ?>" class="lazy folder"><span>Uploaded Data
-                    <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
-                    <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>
-                                    <?php endif; ?>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class='full_width_block buttons' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
-                            <input type='hidden' id='cart_id_<?= $transaction_id ?>' class='cart_id_storage' value='' />
-                            <div class="right_block button_container">
-                                <input type="button" class="dl_button" id="dl_button_<?= $transaction_id ?>" style="position:relative;right:0;bottom:0;" value="Queue Selected Files for Download" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <span class="short_instrument_name"><?= $transaction_info['metadata']['instrument_name'] ?></span>
+        <div class="metadata_fieldset">
+          <div class="full_width_block">
+            <h3><span>Metadata Uploaded</span><span id='metadata_<?= $transaction_id ?>_dc' class="disclosure_button dc_up"></span></h3>
+            <div class="metadata_container" style="display:none;">
+              <div class="left">
+                <h4>Basic Metadata</h4>
+                <dl class="metadata_description_list">
+                  <?php ksort($transaction_info['metadata']); ?>
+                  <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
+                    <?php if(stripos($md_name, "file") === 0) continue; ?>
+                    <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
+                    <dt><?= $cleaned_type_name ?></dt>
+                    <dd><?= $md_value ?></dd>
+                  <?php endforeach; ?>
+                </dl>
+              </div>
+              <div class="right">
+                <h4>User-Specified Metadata</h4>
+                <dl class="metadata_description_list">
+                  <?php ksort($transaction_info['kv_pairs']); ?>
+                  <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
+                    <dt><?= $md_name ?></dt>
+                    <?php if(strtolower($md_name) == 'user of record'): ?>
+                      <?php
+                      $md_value_string = get_user_details($md_value)["display_name"] ?: $md_value;
+                      $md_value = $md_value_string;
+                      ?>
+                    <?php endif; ?>
+                    <dd><?= $md_value ?></dd>
+                  <?php endforeach; ?>
+                </dl>
+              </div>
             </div>
-            <?php endif; ?>
-            <div class="full_width_block" id="error_msg_container_<?= $transaction_id ?>" style="display:none;">
-                <span class="error" id="error_msg_<?= $transaction_id ?>"></span>
+          </div>
+          <?php if($request_type == 't'): ?>
+            <div class="full_width_block" style="width:95%;float:left;">
+              <div class="disclosure_block">
+                <div id="tree_<?= $transaction_id ?>" class="tree_holder">
+                  <ul id="treeData_<?= $transaction_id ?>" style="display:none;">
+                    <li id="treeData_<?= $transaction_id ?>" class="lazy folder"><span>Uploaded Data
+                      <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
+                        <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>
+                      <?php endif; ?>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class='full_width_block buttons' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
+                <input type='hidden' id='cart_id_<?= $transaction_id ?>' class='cart_id_storage' value='' />
+                <div class="right_block button_container">
+                  <input type="button" class="dl_button" id="dl_button_<?= $transaction_id ?>" style="position:relative;right:0;bottom:0;" value="Queue Selected Files for Download" />
+                </div>
+              </div>
             </div>
-    </fieldset>
+          </div>
+        </div>
+        <?php endif; ?>
+        <div class="full_width_block" id="error_msg_container_<?= $transaction_id ?>" style="display:none;">
+          <span class="error" id="error_msg_<?= $transaction_id ?>"></span>
+        </div>
+      </fieldset>
+    </div>
     <?php endforeach; ?>
     <?php endif; ?>
     <script type="application/javascript">

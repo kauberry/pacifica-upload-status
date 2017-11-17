@@ -74,9 +74,12 @@ class Status_api extends Baseline_api_controller
             '/resources/scripts/fancytree/dist/jquery.fancytree-all.js',
             '/resources/scripts/jquery-crypt/jquery.crypt.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            '/resources/scripts/select2-4/dist/js/select2.js'
+            '/resources/scripts/select2-4/dist/js/select2.js',
+            '/resources/scripts/bootstrap-daterangepicker/daterangepicker.js'
         );
         $this->page_data['css_uris'] = array(
+            '/resources/scripts/bootstrap/css/bootstrap.css',
+            '/resources/scripts/bootstrap-daterangepicker/daterangepicker.css',
             '/resources/scripts/fancytree/dist/skin-lion/ui.fancytree.min.css',
             '/project_resources/stylesheets/combined.css',
             '/resources/scripts/select2-4/dist/css/select2.css',
@@ -105,23 +108,25 @@ class Status_api extends Baseline_api_controller
      *
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
-     * @param string $time_period   time period the status should be displayed
+     * @param string $starting_date starting time period
+     * @param string $ending_date   ending time period
      *
      * @return void
      */
     public function overview(
         $proposal_id = '',
         $instrument_id = '',
-        $time_period = ''
+        $starting_date = '',
+        $ending_date = ''
     )
     {
         $proposal_id = $proposal_id ?: get_cookie('last_proposal_selector');
         $instrument_id = $instrument_id ?: get_cookie('last_instrument_selector');
-        $time_period = $time_period ?: get_cookie('last_timeframe_selector');
-
+        // $time_period = $time_period ?: get_cookie('last_timeframe_selector');
+        $starting_date = $starting_date ?: get_cookie('last_starting_date_selector');
+        $ending_date = $ending_date ?: get_cookie('last_ending_date_selector');
         $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
-        $time_period = $time_period != 'null' ? $time_period : 0;
 
         $view_name = $this->overview_template;
             $this->page_data['page_header'] = 'Status Reporting';
@@ -157,7 +162,8 @@ class Status_api extends Baseline_api_controller
             krsort($proposal_list);
             $js = "var initial_proposal_id = '{$proposal_id}';
                     var initial_instrument_id = '{$instrument_id}';
-                    var initial_time_period = '{$time_period}';
+                    var initial_starting_date = '{$starting_date}';
+                    var initial_ending_date = '{$ending_date}';
                     var email_address = '{$this->email}';
                     var lookup_type = 't';
                     var initial_instrument_list = [];
@@ -166,13 +172,14 @@ class Status_api extends Baseline_api_controller
 
             $this->page_data['proposal_list'] = $proposal_list;
             $this->page_data['selected_proposal'] = $proposal_id;
-            $this->page_data['time_period'] = $time_period;
+            $this->page_data['starting_date'] = $starting_date;
+            $this->page_date['ending_date'] = $ending_date;
             $this->page_data['instrument_id'] = $instrument_id;
             $this->page_data['js'] = $js;
 
         $this->overview_worker(
             $proposal_id, $instrument_id,
-            $time_period, $view_name
+            $starting_date, $ending_date, $view_name
         );
     }
 
@@ -181,55 +188,46 @@ class Status_api extends Baseline_api_controller
      *
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
-     * @param string $time_period   time period the status should be displayed
+     * @param string $starting_date starting time period
+     * @param string $ending_date   ending time period
      *
      * @return void
      */
     public function overview_insert(
         $proposal_id = FALSE,
         $instrument_id = FALSE,
-        $time_period = FALSE
+        $starting_date = FALSE,
+        $ending_date = FALSE
     )
     {
-        if(!$proposal_id || !$instrument_id || !$time_period) {
+        if(!$proposal_id || !$instrument_id) {
             $message = "Some parameters missing. Please supply values for: ";
             $criteria_array = array();
             if(!$proposal_id) $criteria_array[] = "proposal";
             if(!$instrument_id) $criteria_array[] = "instrument";
-            if(!$time_period) $criteria_array[] = "time period";
-            $message .= implode(", ", $criteria_array);
+            $message .= implode(" and ", $criteria_array);
             http_response_code(412);
             print "<p class=\"error_msg\">{$message}</p>";
+            return;
         }
 
-        // $cookie_base_name = "myemsl_status_last_";
-        // $default_cookie_params = array(
-        //     "name" => "",
-        //     "value" => "",
-        //     "expire" => 86500,
-        //     "domain" => ".local",
-        //     "path" => "/",
-        //     "prefix" => $cookie_base_name
-        // );
-        // $new_cookie = $default_cookie_params;
-        // $new_cookie['name'] = "proposal_selector";
-        // $new_cookie['value'] = $proposal_id;
-        // $this->input->set_cookie($new_cookie);
-        //
-        // $new_cookie = $default_cookie_params;
-        // $new_cookie['name'] = "instrument_selector";
-        // $new_cookie['value'] = $instrument_id;
-        // $this->input->set_cookie($new_cookie);
-        //
-        // $new_cookie = $default_cookie_params;
-        // $new_cookie['name'] = "timeframe_selector";
-        // $new_cookie['value'] = $time_period;
-        // $this->input->set_cookie($new_cookie);
+        if(!$starting_date || !$ending_date) {
+            $today = new DateTime();
+            if(!$ending_date) {
+                $ending_date = $today->format('Y-m-d');
+            }
+            if(!$starting_date) {
+                $today->modify('-30 days');
+                $starting_date = $today->format('Y-m-d');
+            }
+        }
 
-        // $this->page_data['css_uris'][] = '/project_resources/stylesheets/external.css';
+        $this->page_data['proposal_info'] = get_proposal_abstract($proposal_id);
+        $this->page_data['instrument_info'] = get_instrument_details($instrument_id);
+
         $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
 
-        $this->overview($proposal_id, $instrument_id, $time_period);
+        $this->overview($proposal_id, $instrument_id, $starting_date, $ending_date);
     }
 
 
@@ -238,7 +236,8 @@ class Status_api extends Baseline_api_controller
      *
      * @param string $proposal_id   id of the proposal to display
      * @param string $instrument_id id of the instrument to display
-     * @param string $time_period   time period the status should be displayed
+     * @param string $starting_date starting time period
+     * @param string $ending_date   ending time period
      * @param string $view_name     CodeIgniter view to use for formatting this information
      *
      * @return void
@@ -246,23 +245,25 @@ class Status_api extends Baseline_api_controller
     public function overview_worker(
         $proposal_id = '',
         $instrument_id = '',
-        $time_period = '',
+        $starting_date = '',
+        $ending_date = '',
         $view_name = 'upload_item_view.html'
     )
     {
         $time_period_empty = TRUE;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
-            && isset($time_period) && intval($time_period) != 0
         ) {
-            $message = "No data available for this instrument and proposal in the last {$time_period} days";
+
+            $message = "No data available for this instrument and proposal in the specified time period";
             //all criteria set, proceed with load
             $now = new DateTime();
-            $end = clone $now;
-            $end_time = $end->format('Y-m-d H:i');
-            $start = clone $now;
-            $start->modify("-{$time_period} days");
-            $start_time = $start->format('Y-m-d H:i');
+            $end = strtotime($ending_date) ? new DateTime($ending_date) : new DateTime();
+            $end_time = $end->format('Y-m-d');
+            $clone_start = clone $now;
+            $clone_start->modify("-30 days");
+            $start = strtotime($starting_date) ? new DateTime($starting_date) : $clone_start;
+            $start_time = $start->format('Y-m-d');
             $transaction_list = $this->status->get_transactions(
                 $instrument_id, $proposal_id, $start_time, $end_time
             );

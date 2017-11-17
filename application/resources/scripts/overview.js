@@ -1,6 +1,7 @@
 var current_proposal_id;
 var current_instrument_id;
-var current_timeframe;
+var current_starting_date;
+var current_ending_date;
 // var currently_updating = false;
 var spinner_opts = {
     lines: 9, // The number of lines to draw
@@ -24,18 +25,52 @@ var cookie_base = "myemsl_status_last_";
 
 
 $(function() {
-    current_proposal_id = $.cookie(cookie_base + "proposal_selector") || initial_proposal_id;
+    if(window.disable_cookies){
+        current_proposal_id = $("#proposal_selector").val() || initial_proposal_id;
+        current_instrument_id = $("#instrument_selector").val() || initial_instrument_id;
+        current_starting_date = $("#timeframe_selector").val() || initial_starting_date;
+        current_ending_date = $("#timeframe_selector").val() || initial_ending_date;
+    }else{
+        current_proposal_id = $.cookie(cookie_base + "proposal_selector") || initial_proposal_id;
+        current_instrument_id = $.cookie(cookie_base + "instrument_selector") || initial_instrument_id;
+        current_starting_date = $.cookie(cookie_base + "starting_date_selector") || initial_starting_date;
+        current_ending_date = $.cookie(cookie_base + "ending_date_selector") || initial_ending_date;
+    }
     current_proposal_id = current_proposal_id != "null" ? current_proposal_id : -1;
-    current_instrument_id = $.cookie(cookie_base + "instrument_selector") || initial_instrument_id;
     current_instrument_id = current_instrument_id != "null" ? current_instrument_id : -1;
-    current_timeframe = $.cookie(cookie_base + "timeframe_selector") || initial_time_period;
-    current_timeframe = current_timeframe == undefined ? 2 : current_timeframe;
+    // current_timeframe = current_timeframe == undefined ? 2 : current_timeframe;
 
     setup_selectors(true);
     if ($("#proposal_selector").val()) {
         current_proposal_id = $("#proposal_selector").val();
         get_instrument_list(current_proposal_id);
     }
+    function cb(start, end) {
+        $("#time_range_container span.time_range_display").html(start.format("MMMM D, YYYY") + " &ndash; " + end.format("MMMM D, YYYY"));
+    }
+    cb(moment(correctTZ(new Date(current_starting_date))), moment(correctTZ(new Date(current_ending_date))));
+
+    $("#time_range_container").daterangepicker({
+        parentEl: "#bottom_selector_container",
+        startDate: moment(current_starting_date).format("MM/DD/YYYY"),
+        endDate: moment(current_ending_date).format("MM/DD/YYYY"),
+        autoUpdateInput: true,
+        linkedCalendars:false,
+        ranges: {
+            "Last 7 Days": [moment().subtract(6, "days"), moment()],
+            "Last 30 Days": [moment().subtract(29, "days"), moment()],
+            "Last 60 Days": [moment().subtract(59, "days"), moment()],
+            "Last 3 Months": [moment().subtract(3, "months"), moment()],
+            "Last 6 Months": [moment().subtract(6, "months"), moment()],
+            "Last Year": [moment().subtract(12, "months"), moment()],
+        }
+    }, cb);
+
+    $("#time_range_container").on("apply.daterangepicker", function(event, picker){
+        current_starting_date = picker.startDate.format("YYYY-MM-DD");
+        current_ending_date = picker.endDate.format("YYYY-MM-DD");
+        update_content();
+    });
     cart_status();
 });
 
@@ -252,7 +287,8 @@ var update_content = function(event) {
     var ts = moment().format("YYYYMMDDHHmmss");
     current_proposal_id = $("#proposal_selector").val() != null ? $("#proposal_selector").val() : current_proposal_id;
     current_instrument_id = $("#instrument_selector").val() != null ? $("#instrument_selector").val() : current_instrument_id;
-    current_timeframe = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : current_timeframe;
+    // current_timeframe = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : current_timeframe;
+    // current_starting_date = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : current_timeframe;
     setup_selectors(false);
 
     if (event) {
@@ -261,12 +297,12 @@ var update_content = function(event) {
             if (el.prop("id") == "proposal_selector" && el.val() != null) {
                 get_instrument_list(el.val());
             }
-            $.cookie(cookie_base + el.prop("id"), el.val());
+            // $.cookie(cookie_base + el.prop("id"), el.val());
         }
     }
 
-    if (current_proposal_id != 0 && current_instrument_id != 0 && current_timeframe > 0) {
-        var url = base_url + "status_api/overview_worker/" + current_proposal_id + "/" + current_instrument_id + "/" + current_timeframe + "?ovr_" + ts;
+    if (current_proposal_id != 0 && current_instrument_id != 0) {
+        var url = base_url + "status_api/overview_worker/" + current_proposal_id + "/" + current_instrument_id + "/" + current_starting_date + "/" + current_ending_date + "?ovr_" + ts;
         $("#item_info_container").hide();
         $("#loading_status").fadeIn(
             "slow",
