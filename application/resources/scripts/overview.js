@@ -75,6 +75,8 @@ $(function() {
     $("#time_range_container").on("apply.daterangepicker", function(event, picker){
         current_starting_date = picker.startDate.format("YYYY-MM-DD");
         current_ending_date = picker.endDate.format("YYYY-MM-DD");
+        $.cookie(cookie_base + "starting_date_selector", current_starting_date);
+        $.cookie(cookie_base + "ending_date_selector", current_ending_date);
         update_content();
     });
     cart_status();
@@ -303,7 +305,7 @@ var update_content = function(event) {
             if (el.prop("id") == "proposal_selector" && el.val() != null) {
                 get_instrument_list(el.val());
             }
-            // $.cookie(cookie_base + el.prop("id"), el.val());
+            $.cookie(cookie_base + el.prop("id"), el.val());
         }
     }
 

@@ -295,6 +295,8 @@ button:hover, .buttons input[type="button"]:hover {
 }
 .metadata_container h4 {
     margin:0;
+    font-size: 1em;
+    font-weight: 600;
 }
 
 dl.metadata_description_list {
