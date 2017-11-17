@@ -227,12 +227,12 @@ class Status_api extends Baseline_api_controller
             return;
         }
 
-        if(!$starting_date || !$ending_date) {
+        if(!$starting_date || !strtotime($starting_date) || !$ending_date || !strtotime($ending_date)) {
             $today = new DateTime();
-            if(!$ending_date) {
+            if(!$ending_date || !strtotime($ending_date)) {
                 $ending_date = $today->format('Y-m-d');
             }
-            if(!$starting_date) {
+            if(!$starting_date || !strtotime($starting_date)) {
                 $today->modify('-30 days');
                 $starting_date = $today->format('Y-m-d');
             }
