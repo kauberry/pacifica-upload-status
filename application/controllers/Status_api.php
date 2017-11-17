@@ -128,6 +128,16 @@ class Status_api extends Baseline_api_controller
         $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
 
+        if(!$starting_date || !$ending_date) {
+            $today = new DateTime();
+            if(!$ending_date) {
+                $ending_date = $today->format('Y-m-d');
+            }
+            if(!$starting_date) {
+                $today->modify('-30 days');
+                $starting_date = $today->format('Y-m-d');
+            }
+        }
 
         $view_name = $this->overview_template;
         $this->page_data['page_header'] = 'Status Reporting';
