@@ -58,11 +58,12 @@ $(function() {
 
     $("#time_range_container").daterangepicker({
         parentEl: "#bottom_selector_container",
-        startDate: moment(current_starting_date).format("MM/DD/YYYY"),
-        endDate: moment(current_ending_date).format("MM/DD/YYYY"),
-        autoUpdateInput: true,
+        startDate: moment(correctTZ(new Date(current_starting_date))).format("MM/DD/YYYY"),
+        endDate: moment(correctTZ(new Date(current_ending_date))).format("MM/DD/YYYY"),
+        autoUpdateInput: false,
         linkedCalendars:false,
         ranges: {
+            "Last 24 Hours": [moment().subtract(24, "hours"), moment()],
             "Last 7 Days": [moment().subtract(6, "days"), moment()],
             "Last 30 Days": [moment().subtract(29, "days"), moment()],
             "Last 60 Days": [moment().subtract(59, "days"), moment()],
@@ -329,7 +330,6 @@ var update_content = function(event) {
                                         function() {
                                             setup_tree_data();
                                             setup_metadata_disclosure();
-                                            setup_hover_info();
                                         }
                                     );
                                 }
@@ -352,24 +352,4 @@ var update_content = function(event) {
             }
         );
     }
-};
-
-var setup_hover_info = function() {
-    $(".status_item_bar").each(
-        function(index, item) {
-            var el = $(item);
-            var block_type = "status_block_" + el.prop("id").slice(-1);
-            var status = el.hasClass("red_bar_end") ? "success" : "failure";
-            // var info = item_info_obj[block_type][status];
-            el.attr("title", item_info_obj[block_type]["title"]);
-        }
-    );
-    $(".status_item_bar").tooltip({
-        show: true,
-        position: {
-            my: "right top+10",
-            at: "right center"
-        }
-    });
-
 };

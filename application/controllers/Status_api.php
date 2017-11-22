@@ -278,7 +278,7 @@ class Status_api extends Baseline_api_controller
             //all criteria set, proceed with load
             $now = new DateTime();
             $end = strtotime($ending_date) ? new DateTime($ending_date) : new DateTime();
-            $end_time = $end->format('Y-m-d');
+            $end_time = $end->modify('+1 day')->modify('-1 sec')->format('Y-m-d H:i:s');
             $clone_start = clone $now;
             $clone_start->modify("-30 days");
             $start = strtotime($starting_date) ? new DateTime($starting_date) : $clone_start;
