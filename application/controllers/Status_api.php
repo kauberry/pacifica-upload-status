@@ -52,20 +52,17 @@ class Status_api extends Baseline_api_controller
         // $this->load->model('Cart_model', 'cart');
         $this->load->helper(
             array(
-                'url', 'html', 'myemsl_api', 'file_info', 'theme', 'time'
+                'url', 'html', 'myemsl_api',
+                'file_info', 'theme', 'time'
             )
         );
-
         $this->load->helper(
             array(
-                'inflector', 'item', 'form', 'network', 'cookie',
+                'inflector', 'item', 'form',
+                'network', 'cookie', 'ingest_status'
             )
         );
         $this->load->library(array('table'));
-        $this->status_list = array(
-          0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
-          3 => 'Verified', 4 => 'Stored', 5 => 'Available', 6 => 'Archived',
-        );
 
         $this->last_update_time = get_last_update(APPPATH);
         $this->page_data['site_identifier'] = $this->config->item('site_identifier');
@@ -88,7 +85,6 @@ class Status_api extends Baseline_api_controller
         );
         $this->page_data['load_prototype'] = FALSE;
         $this->page_data['load_jquery'] = TRUE;
-        $this->page_data['status_list'] = $this->status_list;
         $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
 
     }
@@ -317,7 +313,6 @@ class Status_api extends Baseline_api_controller
         $this->page_data['selected_proposal_id'] = $proposal_id;
         $this->page_data['selected_instrument_id'] = $instrument_id;
         $this->page_data['enable_breadcrumbs'] = FALSE;
-        $this->page_data['status_list'] = $this->status_list;
         $this->page_data['transaction_data'] = $results['transaction_list'];
         if (array_key_exists('transactions', $results['transaction_list'])
             && !empty($results['transaction_list']['transactions'])

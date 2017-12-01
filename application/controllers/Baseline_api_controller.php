@@ -43,6 +43,7 @@ class Baseline_api_controller extends CI_Controller
         $this->output->enable_profiler(FALSE);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
+        $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://127.0.0.1:8066');
         $this->file_url_base = $this->config->item('external_file_url');
         $this->cart_url_base = $this->config->item('external_cart_url');
         $this->user_id = get_user();
@@ -52,11 +53,7 @@ class Baseline_api_controller extends CI_Controller
 
         $this->benchmark->mark('get_user_details_start');
         $user_info = get_user_details($this->user_id);
-        if($user_info['first_name'] != NULL) {
-            $this->username = $user_info['first_name'];
-        } else {
-            'Anonymous Stranger';
-        }
+        $this->username = $user_info['first_name'] ?: 'Anonymous Stranger';
         $this->fullname = "{$this->username} {$user_info['last_name']}";
         $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? TRUE : FALSE;
         $this->proposal_list = $user_info['proposals'];

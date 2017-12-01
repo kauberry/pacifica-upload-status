@@ -107,7 +107,7 @@ $autoload['helper'] = array();
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array('pacifica');
+$autoload['config'] = array('pacifica', 'ingester_status');
 
 /*
 | -------------------------------------------------------------------

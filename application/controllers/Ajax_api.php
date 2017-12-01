@@ -123,4 +123,25 @@ class Ajax_api extends Baseline_api_controller
         transmit_array_with_json_header(array('last_transaction_id' => $last_id));
     }
 
+    /**
+     * Grabs ingest status information from the ingest subsystem
+     *
+     * @param int $transaction_id transaction_id to investigate
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_ingest_status($transaction_id)
+    {
+        $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
+        $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
+        $results_obj = json_decode($query->body, TRUE);
+        $translated_message_obj = translate_ingest_status_message($results_obj['task']);
+        $results_obj['message'] = strtolower($results_obj['state']) == "ok" ?
+            $translated_message_obj['success_message'] : $translated_message_obj['failure_message'];
+        $results_obj['overall_percentage'] = $translated_message_obj['percent_complete'];
+
+        print json_encode($results_obj);
+    }
 }
