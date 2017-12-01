@@ -137,7 +137,8 @@ class Ajax_api extends Baseline_api_controller
         $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
         $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
         $results_obj = json_decode($query->body, TRUE);
-        $translated_message_obj = translate_ingest_status_message($results_obj['task']);
+        $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
+        $translated_message_obj = $this->ingester_messages[$task_topic];
         $results_obj['message'] = strtolower($results_obj['state']) == "ok" ?
             $translated_message_obj['success_message'] : $translated_message_obj['failure_message'];
         $results_obj['overall_percentage'] = $translated_message_obj['percent_complete'];

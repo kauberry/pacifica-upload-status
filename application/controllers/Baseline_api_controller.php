@@ -47,6 +47,7 @@ class Baseline_api_controller extends CI_Controller
         $this->file_url_base = $this->config->item('external_file_url');
         $this->cart_url_base = $this->config->item('external_cart_url');
         $this->user_id = get_user();
+        $this->ingester_messages = $this->config->itrem('ingest_status_messages');
 
         $this->application_version = $this->config->item('application_version');
         $this->page_address = implode('/', $this->uri->rsegments);
