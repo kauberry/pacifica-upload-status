@@ -15,27 +15,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['ingest_status_messages'] = array(
     'open_tar' => array(
-        'percent_complete' => 20,
+        'percent_complete' => 10,
         'success_message' => 'Checking uploaded file bundle consistency',
         'failure_message' => 'Unable to read uploaded file bundle'
     ),
     'bad_tarfile' => array(
-        'percent_complete' => 20,
+        'percent_complete' => 10,
         'success_message' => 'Checking uploaded file bundle consistency',
         'failure_message' => 'Unable to read uploaded file bundle'
     ),
     'load_metadata' => array(
-        'percent_complete' => 40,
+        'percent_complete' => 25,
         'success_message' => 'Loading and parsing file metadata',
         'failure_message' => 'Unable to extract file metadata'
     ),
     'policy_validation' => array(
-        'percent_complete' => 60,
+        'percent_complete' => 35,
         'success_message' => 'Checking file metadata for consistency and validity',
         'failure_message' => 'Uploaded file metadata is invalid. This may be due to an invalid combination of user/proposal/instrument'
     ),
     'ingest_files' => array(
-        'percent_complete' => 80,
+        'percent_complete' => 75,
         'success_message' => 'Extracting and verifying uploaded files',
         'failure_message' => 'Unable to extract files from uploaded bundle'
     ),

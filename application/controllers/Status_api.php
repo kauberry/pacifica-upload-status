@@ -356,6 +356,8 @@ class Status_api extends Baseline_api_controller
                 )
             );
 
+        $this->page_data['js'] = "var transaction_id = '{$id}';
+";
         if (!is_numeric($id) || $id < 0) {
             //that doesn't look like a real id
             //send to error page saying so
@@ -370,40 +372,17 @@ class Status_api extends Baseline_api_controller
         }
 
         $transaction_info = $this->status->get_formatted_transaction($id);
-        if(sizeof($transaction_info['transactions']) == 0) {
-            $last_id = $this->status->get_last_known_transaction();
-            if($id >= $last_id) {
-                $this->page_data['page_header'] = 'New Transaction';
-                $this->page_data['title'] = 'Transaction Pending';
-                $err_msg = "This transaction is still being processed by the uploader";
-                $this->page_data['error_message'] = $err_msg;
-                $this->page_data['js'] = "
-var transaction_id = '{$id}';
+        if(sizeof($transaction_info['transactions']) >= 0) {
+            $this->page_data['js'] .= "
 $(function(){
     setInterval(function(){
         refresh();
     }, 5000);
 });
 var refresh = function(){
-    var getter = $.get(base_url + 'ajax_api/get_latest_transaction_id', function(data){
-        var last_id = data.last_transaction_id;
-        if(transaction_id <= last_id){
-            location.reload(true);
-        }
-    });
+    display_ingest_status();
 }
 ";
-            }else{
-                $this->page_data['page_header'] = 'Missing Transaction';
-                $this->page_data['title'] = 'Transaction not available';
-                $err_msg = "No transaction with an ID of {$id} could be found in the system";
-                $this->page_data['error_message'] = $err_msg;
-                $this->page_data['force_refresh'] = FALSE;
-            }
-            $this->page_data['lookup_type_desc'] = $lookup_type_description;
-            $this->page_data['lookup_type'] = $lookup_type;
-            $this->load->view('status_error_page.html', $this->page_data);
-
         }
 
         $this->page_data['page_header'] = 'Upload Report';
@@ -422,7 +401,7 @@ var refresh = function(){
         );
         $this->page_data['request_type'] = 't';
         $this->page_data['enable_breadcrumbs'] = FALSE;
-        $this->page_data['js'] = "var initial_inst_id = '{$inst_id}';
+        $this->page_data['js'] .= "var initial_inst_id = '{$inst_id}';
                             var lookup_type = 't';
                             var email_address = '{$this->email}';
                             var cart_access_url_base = '{$this->config->item('external_cart_url')}';

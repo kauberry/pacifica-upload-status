@@ -1,5 +1,6 @@
 <?php
 	$cart_list = isset($cart_list) && !empty($cart_list) ? $cart_list : array();
+  $lookup = isset($lookup) && !empty($lookup) ? $lookup : array();
 ?>
 <div id="cart_item_container">
 	<?php foreach($lookup as $status => $friendly_status): ?>

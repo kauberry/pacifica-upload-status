@@ -1,9 +1,78 @@
-$(function(){
-  setup_tree_data();
-  setup_metadata_disclosure();
-  // var bc_interval = lookup_type == 'j' ? 1500 : 15000;
-  // window.setInterval(check_cart_status, 30000);
-  // window.setInterval(update_breadcrumbs, bc_interval);
-  // setup_hover_info();
-  cart_status();
+$(function() {
+    setup_tree_data();
+    setup_metadata_disclosure();
+    display_ingest_status();
+    cart_status();
 });
+var first_load = true;
+
+var display_ingest_status = function() {
+    var ingest_url = base_url + "/ajax_api/get_ingest_status/" + transaction_id;
+    $.get(ingest_url, function(data){
+        if(data.overall_percentage < 99.5 || !first_load) {
+            format_ingest_status(data);
+            first_load = false;
+        }
+    });
+};
+
+var format_ingest_status = function(status_object) {
+    var ingest_block;
+    var pgb;
+    if($("#ingest_status_message_" + transaction_id).length === 0){
+        ingest_block =
+        $("<span class=\"ingest_status_message ingest_status_animate\" id=\"ingest_status_message_" + transaction_id + "\">")
+            .append("<span class=\"message_text\">Starting Ingest Process</span>")
+            .append(
+                $("<div class=\"progressbar_ingest\" id=\"progressbar_ingest_" + transaction_id + "\">")
+                    .append(
+                        $("<div class=\"progressbar_label\">0%</div>")
+                    )
+            );
+        $("#ingest_status_block_" + transaction_id)
+            .append(ingest_block)
+            .append("<span class=\"ingest_update_time\" id=\"ingest_update_time_" + transaction_id + "\" style=\"display:none;\">")
+            .addClass("ingest_ok");
+        pgb = $("#progressbar_ingest_" + transaction_id);
+        pglabel = pgb.find(".progressbar_label");
+        pgb.progressbar({
+            value: 0,
+            min: 0,
+            max: 100,
+            change: function() {
+                pglabel.text(pgb.progressbar("value") + "%");
+            },
+            complete: function() {
+                var delaytimoutID = window.setTimeout(function(){
+                    $("#ingest_status_block_" + transaction_id).fadeOut();
+                    window.refresh();
+                }, 2000);
+            }
+        });
+        $("#ingest_status_block_" + transaction_id).fadeIn("slow");
+    }else{
+        ingest_block = $("#ingest_status_message_" + transaction_id);
+        pgb = $("#progressbar_ingest_" + transaction_id);
+        $("#ingest_status_message_" + transaction_id).find(".message_text").html(status_object.message);
+        pgb = $("#progressbar_ingest_" + transaction_id);
+        pgb.progressbar("option", "value", status_object.overall_percentage);
+        var update_time = moment(status_object.updated);
+        if(!$("#ingest_update_time_" + transaction_id).hasClass("loaded_ingest_update_time")) {
+            $("#ingest_update_time_" + transaction_id)
+                .addClass("loaded_ingest_update_time")
+                .fadeIn();
+        }
+        $("#ingest_update_time_" + transaction_id)
+            .html(update_time.format("MMMM Do YYYY, h:mma"));
+        if(status_object.state != "ok") {
+            $("#ingest_status_block_" + transaction_id).removeClass("ingest_ok").addClass("ingest_error");
+            $("#ingest_status_message_" + transaction_id).removeClass("ingest_status_animate");
+            pgb.progressbar("disable");
+        }else{
+            $("#ingest_status_block_" + transaction_id).addClass("ingest_ok").removeClass("ingest_error");
+            $("#ingest_status_message_" + transaction_id).addClass("ingest_status_animate");
+            pgb.progressbar("enable");
+        }
+    }
+
+};
