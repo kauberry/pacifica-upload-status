@@ -1,26 +1,26 @@
 <?php $hash_list = array(); ?>
-<?php $informational_message = !empty($informational_message) ? $informational_message : ""; ?>
-<?php if(!isset($transaction_data) || empty($transaction_data)): ?>
-<div id="info_message_container">
-    <h2 style="margin-top:1em;text-align:center;font-size:1.2em;"><?= $informational_message ?></h2>
-</div>
-<?php else: ?>
-<h2 style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
 <?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
-<?php
-      $transaction_info = $transaction_data['transactions'][$transaction_id];
-      $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia T');
-?>
+  <?php
+  $transaction_info = $transaction_data['transactions'][$transaction_id];
+  $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia T');
+  ?>
+  <?php $informational_message = !empty($transaction_info['informational_message']) ? $transaction_info['informational_message'] : ""; ?>
     <div class="fieldset_container">
       <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
         <legend>
           <a href="/view/<?= $transaction_id ?>">Upload ID <?= $transaction_id ?></a>
           <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
         </legend>
+        <h2 id="message_block_<?= $transaction_id ?>" style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
         <span class="short_instrument_name"><?= $transaction_info['metadata']['instrument_name'] ?></span>
-        <div class="metadata_fieldset">
+        <?php $metadata_visibility = !isset($transaction_info['metadata']['files']) ? "display:none;" : ""; ?>
+        <div class="metadata_fieldset" style="<?= $metadata_visibility ?>">
           <div class="full_width_block">
-            <h3><span>Metadata Uploaded</span><span id='metadata_<?= $transaction_id ?>_dc' class="disclosure_button dc_up"></span></h3>
+            <h3>
+              <span>Metadata Uploaded</span>
+              <span id="metadata_<?= $transaction_id ?>_dc" class="disclosure_button dc_up"></span>
+              <span id="status_block_<?= $transaction_id ?>" class="download_status"></span>
+            </h3>
             <div class="metadata_container" style="display:none;">
               <div class="left">
                 <h4>Basic Metadata</h4>
@@ -82,7 +82,6 @@
       <div class="ingest_status_block" id="ingest_status_block_<?= $transaction_id ?>" style="display:none;"></div>
     </div>
     <?php endforeach; ?>
-    <?php endif; ?>
     <script type="application/javascript">
         var hash_list = <?=  json_encode($hash_list); ?>;
     </script>

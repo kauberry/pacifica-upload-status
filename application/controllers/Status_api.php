@@ -365,24 +365,58 @@ class Status_api extends Baseline_api_controller
                     "<strong>{$id}</strong> could be found in the system";
             $this->page_data['page_header'] = "{$lookup_type_description} Not Found";
             $this->page_data['title'] = $this->page_data['page_header'];
-            $this->page_data['error_message'] = $err_msg;
+            // $this->page_data['error_message'] = $err_msg;
             $this->page_data['lookup_type_desc'] = $lookup_type_description;
             $this->page_data['lookup_type'] = $lookup_type;
             $this->load->view('status_error_page.html', $this->page_data);
         }
-
+        $ingest_info = $this->status->get_ingest_status($id);
         $transaction_info = $this->status->get_formatted_transaction($id);
-        if(sizeof($transaction_info['transactions']) >= 0) {
-            $this->page_data['js'] .= "
+        if(sizeof($transaction_info['transactions']) == 0) {
+            // $last_id = $this->status->get_last_known_transaction();
+            // if($id >= $last_id) {
+            if($ingest_info && $id == $ingest_info['job_id']) {
+                $transaction_info = array(
+                    'times' => array(
+                        $ingest_info['updated'] => intval($ingest_info['job_id'])
+                    ),
+                    'transactions' => array(
+                        $id => array(
+                            'status' => array(),
+                            'metadata' => array(
+                                'instrument_id' => -1,
+                                'instrument_name' => ""
+                            ),
+                            'file_size_bytes' => -1,
+                            'informational_message' => "Upload in progress..."
+                        )
+                    )
+                );
+                if($ingest_info['state'] == 'ok') {
+                    $this->page_data['page_header'] = 'New Transaction';
+                    $this->page_data['title'] = 'Transaction Pending';
+                    $err_msg = "This transaction is still being processed by the uploader";
+                }else{
+                    $this->page_data['page_header'] = 'Missing Transaction';
+                    $this->page_data['title'] = 'Transaction not available';
+
+                    $err_msg = "No transaction with an ID of {$id} could be found in the system";
+                    $this->page_data['force_refresh'] = FALSE;
+                }
+                $transaction_info['transactions'][$id]['informational_message'] = $err_msg;
+                $this->page_data['js'] .= "
 $(function(){
     setInterval(function(){
         refresh();
-    }, 5000);
+    }, ingest_check_interval);
 });
 var refresh = function(){
     display_ingest_status();
 }
 ";
+            }else{
+
+            }
         }
 
         $this->page_data['page_header'] = 'Upload Report';

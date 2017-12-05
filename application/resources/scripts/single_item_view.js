@@ -5,7 +5,7 @@ $(function() {
     cart_status();
 });
 var first_load = true;
-
+var ingest_check_interval = 5000;
 var display_ingest_status = function() {
     var ingest_url = base_url + "/ajax_api/get_ingest_status/" + transaction_id;
     $.get(ingest_url, function(data){
@@ -19,6 +19,14 @@ var display_ingest_status = function() {
 var format_ingest_status = function(status_object) {
     var ingest_block;
     var pgb;
+    if(status_object.state == "ok"){
+        $("#message_block_" + transaction_id).html("Upload in progress...");
+    }else{
+        return;
+    }
+    if(status_object.upload_present_on_mds) {
+        location.reload();
+    }
     if($("#ingest_status_message_" + transaction_id).length === 0){
         ingest_block =
         $("<span class=\"ingest_status_message ingest_status_animate\" id=\"ingest_status_message_" + transaction_id + "\">")
@@ -43,7 +51,8 @@ var format_ingest_status = function(status_object) {
                 pglabel.text(pgb.progressbar("value") + "%");
             },
             complete: function() {
-                var delaytimoutID = window.setTimeout(function(){
+                $("#message_block_" + transaction_id).html("");
+                var delaytimeoutID = window.setTimeout(function(){
                     $("#ingest_status_block_" + transaction_id).fadeOut();
                     window.refresh();
                 }, 2000);

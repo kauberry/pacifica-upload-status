@@ -14,6 +14,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['ingest_status_messages'] = array(
+    'no_transaction' => array( //handles 404 errors
+        'percent_complete' => 0,
+        'success_message' => "",
+        'failure_message' => "No record of this upload exists in the system"
+    ),
+    'server_error' => array( //handles 500 errors
+        'percent_complete' => 0,
+        'success_message' => "",
+        'failure_message' => "An error occurred on the server side of things"
+    ),
     'open_tar' => array(
         'percent_complete' => 10,
         'success_message' => 'Checking uploaded file bundle consistency',

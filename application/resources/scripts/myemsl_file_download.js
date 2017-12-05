@@ -44,10 +44,6 @@ $(function(){
     cart_status();
 });
 
-// var createCart = function(event){
-//
-// };
-
 var setup_file_download_links = function(parent_item) {
     parent_item = $(parent_item);
     var tx_id = parent_item.prop("id").replace("tree_","");

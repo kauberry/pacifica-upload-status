@@ -43,8 +43,7 @@ class Baseline_api_controller extends CI_Controller
         $this->output->enable_profiler(FALSE);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
-        // $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://ingest');
-        $this->ingester_url_base = "http://ingest";
+        $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://127.0.0.1:8066');
         $this->file_url_base = $this->config->item('external_file_url');
         $this->cart_url_base = $this->config->item('external_cart_url');
         $this->user_id = get_user();
