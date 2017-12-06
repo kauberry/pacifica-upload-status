@@ -1,11 +1,13 @@
 <?php
 // @codingStandardsIgnoreFile
+$user_id_string = $logged_in_user_id ? " ({$logged_in_user_id})" : "";
+var_dump($logged_in_user_id);
 ?>
 <div id="subBanner" style="position:relative;">
   <?php if(empty($banner_file)) : ?>
   <div class="banner_bar_background">
     <div class="banner_bar banner_bar_left banner_bar_<?= $this->site_color ?>">
-      <div class='user_login_info'>Signed in as: <?= $logged_in_user ?></div>
+      <div class='user_login_info'>Signed in as: <?= $logged_in_user ?><?= $user_id_string ?></div>
     </div>
     <div class="banner_bar banner_bar_right banner_bar_grey">
       <div id="site_label"><?= ucwords($site_identifier) ?> Status Reporting</div>
@@ -13,7 +15,7 @@
     </div>
   </div>
     <?php else: ?>
-    <div class='user_login_info'>Signed in as: <?= $logged_in_user ?></div>
+    <div class='user_login_info'>Signed in as: <?= $logged_in_user ?><?= $user_id_string ?></div>
     <img src="<?=$banner_path ?>" <?=$banner_dimensions?> alt="" />
     <?php endif; ?>
 </div>

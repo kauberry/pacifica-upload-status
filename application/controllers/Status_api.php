@@ -373,7 +373,7 @@ class Status_api extends Baseline_api_controller
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);
-        if(empty($transaction_info['transactions'])) {
+        if(!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
             if($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
                     'times' => array(

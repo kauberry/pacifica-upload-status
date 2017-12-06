@@ -95,7 +95,7 @@ class Status_api_model extends CI_Model
      */
     public function get_formatted_transaction($transaction_id)
     {
-        $transactions_url = "{$this->policy_url_base}/status/transactions/search/details?";
+        $transactions_url = "{$this->metadata_url_base}/transactioninfo/search/details?";
         $url_args_array = array(
             // 'user' => $this->user_id,
             'transaction_id' => $transaction_id
@@ -148,7 +148,7 @@ class Status_api_model extends CI_Model
      */
     public function get_transaction_details($transaction_id)
     {
-        $transaction_url = "{$this->policy_url_base}/status/transactions/by_id/{$transaction_id}?";
+        $transaction_url = "{$this->metadata_url_base}/transactioninfo/by_id/{$transaction_id}?";
         $results = array();
 
         try{
@@ -157,7 +157,7 @@ class Status_api_model extends CI_Model
             if($sc / 100 == 2) {
                 //good data, move along
                 $results = json_decode($query->body, TRUE);
-                if($results['status'] && intval($results['status'] / 100) == 4) {
+                if(isset($results['status']) && intval($results['status'] / 100) == 4) {
                     $results = array();
                 }
             }elseif($sc / 100 == 4) {
@@ -276,8 +276,6 @@ class Status_api_model extends CI_Model
         $results_obj = json_decode(stripslashes($query->body), TRUE);
         if(intval($query->status_code / 100) == 2) {
             $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
-            $results_obj['created'] = utc_to_local_time($results_obj['created'])->format('Y-m-d H:i:s');
-            $results_obj['updated'] = utc_to_local_time($results_obj['updated'])->format('Y-m-d H:i:s');
         }else{
             $now = new DateTime();
             if(intval($query->status_code / 100) == 4) {
@@ -289,10 +287,10 @@ class Status_api_model extends CI_Model
             }
             $default_results_obj = array(
                 'task_percent' => "0.000",
-                'updated' => $now->format('Y-m-d H:i:s'),
+                'updated' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
                 'task' => $task_topic,
                 'job_id' => $transaction_id,
-                'created' => $now->format('Y-m-d H:i:s'),
+                'created' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
                 'exception' => $results_obj['message'],
                 'state' => 'fail'
             );

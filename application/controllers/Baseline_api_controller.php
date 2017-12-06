@@ -60,10 +60,7 @@ class Baseline_api_controller extends CI_Controller
         $this->proposal_list = $user_info['proposals'];
         $this->email = $user_info['email_address'];
         $user_info['full_name'] = $this->fullname;
-        $user_info['network_id'] = 'unknown';
-        if(!empty($user_info['network_id'])) {
-            $user_info['network_id'] = $user_info['network_id'];
-        }
+        $user_info['network_id'] = !empty($user_info['network_id']) ? $user_info['network_id'] : 'unknown';
 
         if(isset($_SERVER['PATH_INFO'])) {
             $current_path_info = ltrim($_SERVER['PATH_INFO'], '/');
@@ -72,6 +69,7 @@ class Baseline_api_controller extends CI_Controller
         }
 
         $this->nav_info['current_page_info']['logged_in_user'] = "{$this->fullname}";
+        $this->nav_info['current_page_info']['logged_in_user_id'] = $user_info['network_id'] ?: "";
         $this->benchmark->mark('get_user_details_end');
 
         $this->page_data = array();

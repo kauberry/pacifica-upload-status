@@ -5,7 +5,7 @@ $(function() {
     cart_status();
 });
 var first_load = true;
-var ingest_check_interval = 5000;
+var ingest_check_interval = 1000;
 var display_ingest_status = function() {
     if(!ingest_complete){
         var ingest_url = base_url + "/ajax_api/get_ingest_status/" + transaction_id;
@@ -14,7 +14,9 @@ var display_ingest_status = function() {
                 format_ingest_status(data);
                 first_load = false;
             }else{
-                window.location.href = base_url + "view/" + transaction_id + "?refresh=1"; 
+                setTimeout(function(){
+                    window.location.href = base_url + "view/" + transaction_id;
+                }, 2000);
             }
         });
     }
