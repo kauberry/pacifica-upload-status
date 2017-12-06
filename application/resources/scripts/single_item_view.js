@@ -7,13 +7,17 @@ $(function() {
 var first_load = true;
 var ingest_check_interval = 5000;
 var display_ingest_status = function() {
-    var ingest_url = base_url + "/ajax_api/get_ingest_status/" + transaction_id;
-    $.get(ingest_url, function(data){
-        if(data.overall_percentage < 99.5 || !first_load) {
-            format_ingest_status(data);
-            first_load = false;
-        }
-    });
+    if(!ingest_complete){
+        var ingest_url = base_url + "/ajax_api/get_ingest_status/" + transaction_id;
+        $.get(ingest_url, function(data){
+            if(!data.upload_present_on_mds || first_load) {
+                format_ingest_status(data);
+                first_load = false;
+            }else{
+                window.location.href = base_url + "view/" + transaction_id + "?refresh=1"; 
+            }
+        });
+    }
 };
 
 var format_ingest_status = function(status_object) {
@@ -23,9 +27,6 @@ var format_ingest_status = function(status_object) {
         $("#message_block_" + transaction_id).html("Upload in progress...");
     }else{
         return;
-    }
-    if(status_object.upload_present_on_mds) {
-        location.reload();
     }
     if($("#ingest_status_message_" + transaction_id).length === 0){
         ingest_block =
@@ -60,6 +61,9 @@ var format_ingest_status = function(status_object) {
         });
         $("#ingest_status_block_" + transaction_id).fadeIn("slow");
     }else{
+        if(!$("#ingest_status_block_" + transaction_id).is(":visible")) {
+            $("#ingest_status_block_" + transaction_id).fadeIn("slow");
+        }
         ingest_block = $("#ingest_status_message_" + transaction_id);
         pgb = $("#progressbar_ingest_" + transaction_id);
         $("#ingest_status_message_" + transaction_id).find(".message_text").html(status_object.message);

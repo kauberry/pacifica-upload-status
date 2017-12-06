@@ -371,10 +371,9 @@ class Status_api extends Baseline_api_controller
             $this->load->view('status_error_page.html', $this->page_data);
         }
         $ingest_info = $this->status->get_ingest_status($id);
+        $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);
-        if(sizeof($transaction_info['transactions']) == 0) {
-            // $last_id = $this->status->get_last_known_transaction();
-            // if($id >= $last_id) {
+        if(empty($transaction_info['transactions'])) {
             if($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
                     'times' => array(
@@ -414,8 +413,6 @@ var refresh = function(){
     display_ingest_status();
 }
 ";
-            }else{
-
             }
         }
 
@@ -436,9 +433,10 @@ var refresh = function(){
         $this->page_data['request_type'] = 't';
         $this->page_data['enable_breadcrumbs'] = FALSE;
         $this->page_data['js'] .= "var initial_inst_id = '{$inst_id}';
-                            var lookup_type = 't';
-                            var email_address = '{$this->email}';
-                            var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                            var ingest_complete = {$ingest_completed};
+                            var lookup_type = \"t\";
+                            var email_address = \"{$this->email}\";
+                            var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                             ";
         $this->page_data['show_instrument_data'] = TRUE;
         $this->load->view('single_item_view.html', $this->page_data);

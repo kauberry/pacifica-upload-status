@@ -149,11 +149,6 @@ class Status_api_model extends CI_Model
     public function get_transaction_details($transaction_id)
     {
         $transaction_url = "{$this->policy_url_base}/status/transactions/by_id/{$transaction_id}?";
-        // $url_args_array = array(
-        //     'user' => $this->user_id
-        // );
-        // $transaction_url .= http_build_query($url_args_array, '', '&');
-
         $results = array();
 
         try{
@@ -162,7 +157,9 @@ class Status_api_model extends CI_Model
             if($sc / 100 == 2) {
                 //good data, move along
                 $results = json_decode($query->body, TRUE);
-
+                if($results['status'] && intval($results['status'] / 100) == 4) {
+                    $results = array();
+                }
             }elseif($sc / 100 == 4) {
                 if($sc == 404) {
                     //transaction not found
@@ -171,7 +168,7 @@ class Status_api_model extends CI_Model
                     //some other input error
                 }
             }else{
-
+                $results = array();
             }
         } catch (Exception $e){
             //some other error
@@ -279,6 +276,8 @@ class Status_api_model extends CI_Model
         $results_obj = json_decode(stripslashes($query->body), TRUE);
         if(intval($query->status_code / 100) == 2) {
             $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
+            $results_obj['created'] = utc_to_local_time($results_obj['created'])->format('Y-m-d H:i:s');
+            $results_obj['updated'] = utc_to_local_time($results_obj['updated'])->format('Y-m-d H:i:s');
         }else{
             $now = new DateTime();
             if(intval($query->status_code / 100) == 4) {
@@ -299,13 +298,15 @@ class Status_api_model extends CI_Model
             );
             $results_obj = $default_results_obj;
         }
+        $results_obj['upload_present_on_mds'] = !empty($transaction_details) ? TRUE : FALSE;
+        if($task_topic == "ingest_metadata" && !empty($transaction_details)) {
+            $task_topic = "ingest_complete";
+        }
         $translated_message_obj = $this->ingester_messages[$task_topic];
         $results_obj['message'] = strtolower($results_obj['state']) == "ok" ?
             $translated_message_obj['success_message'] : $translated_message_obj['failure_message'];
         $results_obj['state'] = strtolower($results_obj['state']);
-        $results_obj['upload_present_on_mds'] = !empty($transaction_details) ? TRUE : FALSE;
         $results_obj['overall_percentage'] = $translated_message_obj['percent_complete'];
-
         return $results_obj;
     }
 

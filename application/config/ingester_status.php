@@ -24,13 +24,18 @@ $config['ingest_status_messages'] = array(
         'success_message' => "",
         'failure_message' => "An error occurred on the server side of things"
     ),
-    'open_tar' => array(
+    'uploading' => array(
         'percent_complete' => 10,
+        'success_message' => 'Transferring bundle file',
+        'failure_message' => 'Unable to upload bundle file'
+    ),
+    'open_tar' => array(
+        'percent_complete' => 20,
         'success_message' => 'Checking uploaded file bundle consistency',
         'failure_message' => 'Unable to read uploaded file bundle'
     ),
     'bad_tarfile' => array(
-        'percent_complete' => 10,
+        'percent_complete' => 20,
         'success_message' => 'Checking uploaded file bundle consistency',
         'failure_message' => 'Unable to read uploaded file bundle'
     ),
@@ -45,13 +50,19 @@ $config['ingest_status_messages'] = array(
         'failure_message' => 'Uploaded file metadata is invalid. This may be due to an invalid combination of user/proposal/instrument'
     ),
     'ingest_files' => array(
-        'percent_complete' => 75,
+        'percent_complete' => 40,
         'success_message' => 'Extracting and verifying uploaded files',
         'failure_message' => 'Unable to extract files from uploaded bundle'
     ),
     'ingest_metadata' => array(
+        'percent_complete' => 50,
+        'success_message' => 'Processing Files and Metadata for Storage',
+        'failure_message' => 'Unable to store file metadata'
+    ),
+    'ingest_complete' => array(
         'percent_complete' => 100,
         'success_message' => 'Ingest Complete',
-        'failure_message' => 'Unable to store file metadata'
+        'failure_message' => 'Unable to complete data upload operation'
     )
+
 );
