@@ -5,7 +5,7 @@ $(function() {
     cart_status();
 });
 var first_load = true;
-var ingest_check_interval = 1000;
+var ingest_check_interval = 5000;
 var display_ingest_status = function() {
     if(!ingest_complete){
         var ingest_url = base_url + "ajax_api/get_ingest_status/" + transaction_id;
@@ -76,7 +76,8 @@ var format_ingest_status = function(status_object) {
         $("#ingest_status_message_" + transaction_id).find(".message_text").html(status_object.message);
         pgb = $("#progressbar_ingest_" + transaction_id);
         pgb.progressbar("option", "value", status_object.overall_percentage);
-        var update_time = moment(status_object.updated);
+        var tz_name = moment.tz.guess();
+        var update_time = moment(status_object.updated + "-0000").tz(tz_name);
         if(!$("#ingest_update_time_" + transaction_id).hasClass("loaded_ingest_update_time")) {
             $("#ingest_update_time_" + transaction_id)
                 .addClass("loaded_ingest_update_time")
