@@ -29,7 +29,11 @@ var format_ingest_status = function(status_object) {
     if(status_object.state == "ok"){
         mb.html("Upload in progress...");
     }else{
-        mb.remove(mb.find("p")).append($("<p>").addClass("error").html(status_object.message));
+        if(mb.find("p").length > 0){
+            $("#message_block_" + transaction_id + " .error").remove();
+        }
+        mb.append($("<p>").addClass("error").html(status_object.message));
+        return;
     }
     if($("#ingest_status_message_" + transaction_id).length === 0){
         ingest_block =
