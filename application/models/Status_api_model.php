@@ -274,7 +274,7 @@ class Status_api_model extends CI_Model
         $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
         $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
         $results_obj = json_decode(stripslashes($query->body), TRUE);
-        if(intval($query->status_code / 100) == 2) {
+        if(intval($query->status_code / 100) == 2 && $results_obj) {
             $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
         }else{
             $now = new DateTime();

@@ -315,6 +315,7 @@ dl.metadata_description_list {
 
 .metadata_description_list dd {
 	float: left;
+    margin-bottom: 0;
 }
 
 .metadata_container .left{
