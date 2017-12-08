@@ -24,6 +24,15 @@ body {
     border-radius: 4px;
 }
 
+.disabled_button{
+  color:#aaaaaa;
+  background-color: #efefef !important;
+  border-color: #aaaaaa !important;
+  box-shadow: none;
+}
+
+
+
 /*.glyphicon-calendar {
     background-image: url("/project_resources/images/glyphicons-46-calendar.png");
 }*/

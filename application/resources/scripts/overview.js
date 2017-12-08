@@ -45,6 +45,11 @@ $(function() {
         current_proposal_id = $("#proposal_selector").val();
         get_instrument_list(current_proposal_id);
     }
+    setup_daterangepicker();
+    cart_status();
+});
+
+var setup_daterangepicker = function() {
     function cb(start, end) {
         var datepicker_message = "";
         if(!start._isValid || !end._isValid){
@@ -54,9 +59,9 @@ $(function() {
         }
         $("#time_range_container span.time_range_display").html(datepicker_message);
     }
+    var trc = $("#time_range_container");
     cb(moment(correctTZ(new Date(current_starting_date))), moment(correctTZ(new Date(current_ending_date))));
-
-    $("#time_range_container").daterangepicker({
+    trc.daterangepicker({
         parentEl: "#bottom_selector_container",
         startDate: moment(correctTZ(new Date(current_starting_date))).format("MM/DD/YYYY"),
         endDate: moment(correctTZ(new Date(current_ending_date))).format("MM/DD/YYYY"),
@@ -73,25 +78,18 @@ $(function() {
         }
     }, cb);
 
-    $("#time_range_container").on("apply.daterangepicker", function(event, picker){
+    trc.on("apply.daterangepicker", function(event, picker){
         current_starting_date = picker.startDate.format("YYYY-MM-DD");
         current_ending_date = picker.endDate.format("YYYY-MM-DD");
         $.cookie(cookie_base + "starting_date_selector", current_starting_date);
         $.cookie(cookie_base + "ending_date_selector", current_ending_date);
         update_content();
     });
-    cart_status();
-});
-
+    if("#instrument_selector").
+    trc.enable();
+};
 
 var setup_selectors = function(initial_load) {
-    $("#timeframe_selector")
-        .select2({
-            placeholder: "Select a Time Frame..."
-        })
-        .off("change")
-        .on("change", update_content);
-
     if (current_proposal_id == undefined || initial_load) {
         $("#instrument_selector")
             .select2({
@@ -191,32 +189,46 @@ var get_instrument_list = function(proposal_id) {
     $.getJSON(
         inst_url,
         function(data) {
-            $("#instrument_selector").select2({
-                data: data.items,
-                placeholder: "Select an Instrument...",
-                templateResult: formatInstrument,
-                templateSelection: formatInstrumentSelection,
-                matcher: my_matcher,
-                escapeMarkup: function(markup) {
-                    return markup;
+            if(data.total_count > 0){
+                $("#instrument_selector").select2({
+                    data: data.items,
+                    placeholder: "Select an Instrument...",
+                    templateResult: formatInstrument,
+                    templateSelection: formatInstrumentSelection,
+                    matcher: my_matcher,
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    }
+                });
+                $("#instrument_selector").enable();
+                setup_daterangepicker();
+                $.each(
+                    data.items,
+                    function(index, item) {
+                        initial_instrument_list.push(item.id);
+                    }
+                );
+                if (initial_instrument_list.indexOf(current_instrument_id) < 0) {
+                    $("#instrument_selector").val("").trigger("change");
+                } else {
+                    $("#instrument_selector").val(parseInt(current_instrument_id, 10)).trigger("change");
+                    // update_content();
                 }
-            });
-            $("#instrument_selector").enable();
+            }else{
+                $("#instrument_selector").select2({
+                    data: data.items,
+                    placeholder: "No Instruments Available for This Proposal",
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    }
+                });
+                $("#instrument_selector").disable();
+                $("#time_range_container").data("daterangepicker").remove();
+                $("#time_range_container").disable();
+            }
             initial_instrument_list = [];
 
-            $.each(
-                data.items,
-                function(index, item) {
-                    initial_instrument_list.push(item.id);
-                }
-            );
             spinner.stop();
-            if (initial_instrument_list.indexOf(current_instrument_id) < 0) {
-                $("#instrument_selector").val("").trigger("change");
-            } else {
-                $("#instrument_selector").val(parseInt(current_instrument_id, 10)).trigger("change");
-                // update_content();
-            }
         }
     );
     $("#instrument_selector").on("change", update_content);

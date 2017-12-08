@@ -1,4 +1,12 @@
 <?php $hash_list = array(); ?>
+<?php $informational_message = !empty($informational_message) ? $informational_message : ""; ?>
+<?php if(!isset($transaction_data) || empty($transaction_data)): ?>
+<div id="info_message_container">
+    <h2 style="margin-top:1em;text-align:center;font-size:1.2em;"><?= $informational_message ?></h2>
+</div>
+<?php else: ?>
+<h2 style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
+
 <?php foreach($transaction_data['times'] as $upload_time_string => $transaction_id): ?>
   <?php
   $transaction_info = $transaction_data['transactions'][$transaction_id];
@@ -82,6 +90,7 @@
       <div class="ingest_status_block" id="ingest_status_block_<?= $transaction_id ?>" style="display:none;"></div>
     </div>
     <?php endforeach; ?>
+  <?php endif; ?>
     <script type="application/javascript">
         var hash_list = <?=  json_encode($hash_list); ?>;
     </script>

@@ -60,10 +60,10 @@ var format_ingest_status = function(status_object) {
             },
             complete: function() {
                 $("#message_block_" + transaction_id).html("");
-                var delaytimeoutID = window.setTimeout(function(){
+                window.setTimeout(function(){
                     $("#ingest_status_block_" + transaction_id).fadeOut();
                     window.refresh();
-                }, 2000);
+                }, ingest_check_interval);
             }
         });
         $("#ingest_status_block_" + transaction_id).fadeIn("slow");
