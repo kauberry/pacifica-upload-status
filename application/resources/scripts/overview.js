@@ -85,7 +85,6 @@ var setup_daterangepicker = function() {
         $.cookie(cookie_base + "ending_date_selector", current_ending_date);
         update_content();
     });
-    if("#instrument_selector").
     trc.enable();
 };
 
