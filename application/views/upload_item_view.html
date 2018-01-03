@@ -32,31 +32,37 @@
             <div class="metadata_container" style="display:none;">
               <div class="left">
                 <h4>Basic Metadata</h4>
-                <dl class="metadata_description_list">
-                  <?php ksort($transaction_info['metadata']); ?>
-                  <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
-                    <?php if(stripos($md_name, "file") === 0) continue; ?>
-                    <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
-                    <dt><?= $cleaned_type_name ?></dt>
-                    <dd><?= $md_value ?></dd>
-                  <?php endforeach; ?>
-                </dl>
+                <?php ksort($transaction_info['metadata']); ?>
+                <table class="metadata_description_table">
+                  <tbody>
+                    <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
+                      <?php if(stripos($md_name, "file") === 0) continue; ?>
+                      <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
+                    <tr class="metadata_description_list">
+                      <td class="metadata_header"><?= $cleaned_type_name ?></td>
+                      <td class="metadata_item"><?= $md_value ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
               </div>
               <div class="right">
                 <h4>User-Specified Metadata</h4>
-                <dl class="metadata_description_list">
+                <table class="metadata_description_table">
                   <?php ksort($transaction_info['kv_pairs']); ?>
                   <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
-                    <dt><?= $md_name ?></dt>
+                  <tr class="metadata_description_list">
+                    <td class="metadata_header"><?= $md_name ?></td>
                     <?php if(strtolower($md_name) == 'user of record'): ?>
                       <?php
                       $md_value_string = get_user_details($md_value)["display_name"] ?: $md_value;
                       $md_value = $md_value_string;
                       ?>
                     <?php endif; ?>
-                    <dd><?= $md_value ?></dd>
+                    <td class="metadata_item"><?= $md_value ?></td>
+                  </tr>
                   <?php endforeach; ?>
-                </dl>
+                </table>
               </div>
             </div>
           </div>

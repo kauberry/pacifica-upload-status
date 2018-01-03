@@ -27,6 +27,12 @@ header.secondary .page_header{
   font-size:1.35em;
 }
 
+@media (max-width: 960px) {
+    .underline {
+        border-radius: 0;
+    }
+}
+
 .loading_status span {
     color: #216a38;
     font-size: 1.3em;

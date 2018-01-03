@@ -15,6 +15,15 @@ body {
     margin-top: 1em;
 }
 
+td.metadata_header, td.metadata_item {
+    width: 50%;
+    vertical-align: top;
+}
+
+td.metadata_item {
+    font-weight: bold;
+}
+
 .time_range_container {
     cursor: pointer;
     padding: 4px 10px;
@@ -31,6 +40,20 @@ body {
   box-shadow: none;
 }
 
+.smallprint {
+    font-size: 0.6em;
+    margin: 0;
+    margin-right: 5px;
+}
+
+.login_id_container a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.login_id_container a:hover {
+    text-decoration: underline;
+}
 
 
 /*.glyphicon-calendar {
@@ -259,11 +282,26 @@ button:hover, .buttons input[type="button"]:hover {
     position: relative;
 }
 
-.graphic_logo {
+.logo_image {
     display:none;
 }
 
-.text_logo {
+.themed .themed_input {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.fancytree-node {
+    background-color: #efefef;
+    margin-top: 0 !important;
+}
+
+.ui-fancytree ul {
+    background-color: #efefef;
+}
+
+.logo_container {
     color: white;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 2em;
@@ -275,7 +313,7 @@ button:hover, .buttons input[type="button"]:hover {
 .underline {
     color: white;
     padding: 0.25em;
-    padding-left: 0.5em;
+    padding-left: 1.0em;
     background-color: rgb(42, 70, 103);
     margin-top: 0px;
     font-weight: normal;
@@ -304,8 +342,14 @@ button:hover, .buttons input[type="button"]:hover {
 }
 .metadata_container h4 {
     margin:0;
+    margin-bottom: 4px;
     font-size: 1em;
     font-weight: 600;
+    border-bottom: 1px solid grey;
+}
+
+.metadata_description_table {
+    width: 100%;
 }
 
 dl.metadata_description_list {
@@ -335,8 +379,7 @@ dl.metadata_description_list {
 }
 
 .metadata_container .right {
-    display: inline-block;
-    position: relative;
+    position: absolute;
     /* margin-top: 1em; */
     margin-left: 30px;
     width: 46%;
@@ -368,6 +411,7 @@ dl.metadata_description_list {
         width: 100%;
     }
     .metadata_container .right {
+        position:relative;
         margin-top: 1em;
         margin-left: 0;
         width: 100%;
@@ -376,9 +420,13 @@ dl.metadata_description_list {
         width: 100%;
     }
     .underline {
-        border-radius: 0;
+        border-radius: 0 0 0 0;
         transition: all 0.5s;
     }
+    .fancytree-node, .ui-fancytree ul {
+        background-color: #fff;
+    }
+
     .select2-container {
         width: 650px;
     }
@@ -441,7 +489,7 @@ dl.metadata_description_list {
     .site_slogan {
         display:none;
     }
-    .text_logo {
+    .logo_container {
         font-size: 1.25em;
     }
     .metadata_container {
@@ -560,6 +608,10 @@ ul.metadata_container li {
     margin-bottom: 2px !important;
 }
 
+.themed li {
+    list-style: none;
+}
+
 .metadata_term {
     font-weight: bold;
     color: #3c4c1f;
@@ -613,6 +665,10 @@ div.form_container table {
     font-size: 13px;
 }
 
+table.metadata_description_table {
+    table-layout: fixed;
+}
+
 div.form_container tr {
     padding: 0px;
 }
@@ -641,4 +697,9 @@ div.form_container td {
     padding: 5px;
     vertical-align: middle;
     text-align: center;
+}
+
+.main_page_selector {
+  width:100%;
+  font-size:1em !important;
 }
