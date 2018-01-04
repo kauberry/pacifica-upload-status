@@ -16,12 +16,19 @@ body {
 }
 
 td.metadata_header, td.metadata_item {
-    width: 50%;
     vertical-align: top;
 }
 
-td.metadata_item {
+td.metadata_header {
     font-weight: bold;
+}
+
+td.metadata_item {
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
 
 .time_range_container {
@@ -379,11 +386,8 @@ dl.metadata_description_list {
 }
 
 .metadata_container .right {
-    position: absolute;
-    /* margin-top: 1em; */
-    margin-left: 30px;
-    width: 46%;
-    right: 0px;
+    margin-left: 50%;
+    width: 50%;
     vertical-align: top;
 }
 
