@@ -9,11 +9,7 @@ header.secondary .page_header{
   height:55px;
 }
 
-.graphic_logo {
-    display:block;
-}
-
-.text_logo {
+.site_name {
     display:none;
 }
 
@@ -42,22 +38,21 @@ header.secondary .page_header{
 
 .logo_container {
   height:73px;
-  max-width:174px;
   margin-left:15px;
   margin-right:10px;
 }
 
 header.secondary .logo_container {
-    height: 36px;
-    width: 87px;
+    width: 100%;
     margin-left: 15px;
     margin-right: 10px;
     position: absolute;
-    top: 8px;
+    top: 0;
     left:0;
 }
 
 .logo_image {
+    display:block;
     width: 100%;
     height: 100%;
     background: url("/resources/images/emsl_logos/emsl_logo_white.png") 0% 0% / 87px 36px no-repeat;
@@ -70,26 +65,19 @@ header.secondary .logo_container {
 
 .site_slogan {
   position:absolute;
-  left:210px;
-  top:48px;
+  top: 35px;
   color:#FDA508;
   text-transform:uppercase;
-  font-size:0.9em;
   font-weight:bold;
-  padding-left: 0;
-}
-
-header.secondary .site_slogan {
-    left: 100px;
-    top: 32px;
+  padding-left: 85px;
 }
 
 div.buttons button, div.buttons input[type="button"], div.buttons input[type="reset"], div.buttons input[type="submit"], div.buttons a {
   color:#ffffff;
   float:right;
-  background-color:rgb(213,117,0);
+  background-color:rgb(19, 110, 20);
   display:block;
-  border:1px solid #8c440e;
+  border:1px solid #004503;
   line-height:130%;
   font-size:0.9em;
   font-weight:bold;
@@ -119,23 +107,12 @@ div.buttons img, div.buttons a img {
   height:16px;
 }
 button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
-  background-color:#b15611;
+  background-color:#004503;
   text-decoration:none;
 }
 
 .buttons a {
   padding: 4px 10px 3px 7px;
-}
-
-
-.logo_container {
-    background: url("/resources/images/emsl_logos/emsl-doe_combined.png") left top / 346px 107px no-repeat;
-    position: absolute;
-    top: 10px;
-    height: 107px;
-    width: 346px;
-    right: 20px;
-    background-size: 346px 107px;
 }
 
 .cart_tree thead th {
@@ -146,10 +123,6 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .logo_container {
-        background: url("/resources/images/emsl_logos/emsl-doe_combined@2x.png") left top / 346px 107px no-repeat;
-        background-size: 346px 107px;
-    }
     .logo_image {
         background: url("/resources/images/emsl_logos/emsl_logo_white@2x.png") 0% 0% / 87px 36px no-repeat;
         /*background-size: 174px 73px;*/
@@ -157,10 +130,6 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
 }
 
 @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
-    .logo_container {
-        background: url("/resources/images/emsl_logos/emsl-doe_combined@3x.png") left top / 346px 107px no-repeat;
-        background-size: 346px 107px;
-    }
     .logo_image {
         background: url("/resources/images/emsl_logos/emsl_logo_white@3x.png") 0% 0% / 87px 36px no-repeat;
         /*background-size: 174px 73px;*/

@@ -27,14 +27,10 @@
     <div class="page_content">
       <header class="secondary">
           <div class="page_header">
-              <div class="graphic_logo">
-                  <div class="logo_container" >
-                      <div class="logo_image">&nbsp;</div>
-                  </div>
-                  <div class="site_slogan"><?= $site_identifier ?></div>
-              </div>
-              <div class="text_logo">
-                  <?= $site_identifier ?><span class="site_slogan">Data Management for Science</span>
-              </div>
+            <div class="logo_container">
+              <div class="logo_image">&nbsp;</div>
+              <span class="site_name"><?= $site_identifier ?></span>
+              <span class="site_slogan"><?= $site_slogan ?></span>
+            </div>
           </div>
       </header>
