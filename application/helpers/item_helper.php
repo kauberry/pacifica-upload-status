@@ -24,7 +24,9 @@
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
- if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /**
  *  Recursively construct the proper HTML
@@ -71,23 +73,23 @@ function build_folder_structure(&$dirs, $path_array, $item_info)
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function format_folder_object_json($folder_obj,$folder_name)
+function format_folder_object_json($folder_obj, $folder_name)
 {
     $output = array();
-    if(array_key_exists('folders', $folder_obj)) {
-        foreach($folder_obj['folders'] as $folder_entry => $folder_tree){
-            $folder_output = array('title' => $folder_entry, 'folder' => TRUE);
+    if (array_key_exists('folders', $folder_obj)) {
+        foreach ($folder_obj['folders'] as $folder_entry => $folder_tree) {
+            $folder_output = array('title' => $folder_entry, 'folder' => true);
             $children = format_folder_object_json($folder_tree, $folder_entry);
-            if(!empty($children)) {
-                foreach($children as $child){
+            if (!empty($children)) {
+                foreach ($children as $child) {
                     $folder_output['children'][] = $child;
                 }
             }
             $output[] = $folder_output;
         }
     }
-    if(array_key_exists('files', $folder_obj)) {
-        foreach($folder_obj['files'] as $item_id => $file_entry){
+    if (array_key_exists('files', $folder_obj)) {
+        foreach ($folder_obj['files'] as $item_id => $file_entry) {
             $output[] = array('title' => $file_entry, 'key' => "ft_item_{$item_id}");
         }
     }
@@ -106,13 +108,13 @@ function format_folder_object_json($folder_obj,$folder_name)
  */
 function format_folder_object_html($folder_obj, &$output_structure)
 {
-    foreach(array_keys($folder_obj) as $folder_entry){
+    foreach (array_keys($folder_obj) as $folder_entry) {
         $output_structure .= "<li class='folder'>{$folder_entry}<ul>";
-        if(array_key_exists('folders', $folder_obj[$folder_entry])) {
+        if (array_key_exists('folders', $folder_obj[$folder_entry])) {
             $f_obj = $folder_obj[$folder_entry]['folders'];
             format_folder_object_html($f_obj, $output_structure);
         }
-        if(array_key_exists('files', $folder_obj[$folder_entry])) {
+        if (array_key_exists('files', $folder_obj[$folder_entry])) {
             $file_obj = $folder_obj[$folder_entry]['files'];
             format_file_object_html($file_obj, $output_structure);
         }

@@ -11,7 +11,9 @@
  * @link     http://github.com/EMSL-MSC/pacifica-upload-status
  */
 
- if (! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -60,7 +62,7 @@
 
 $active_group = 'default';
 // $active_record = TRUE;
-$query_builder = TRUE;
+$query_builder = true;
 // $ini_file_name = stristr($_SERVER['SERVER_NAME'], 'dev1.my') === FALSE ? 'general.ini' : 'general_dpp.ini';
 $db['default'] = array(
   'hostname' => getenv('CARTDB_ADDR'),
@@ -69,9 +71,9 @@ $db['default'] = array(
   'database' => getenv('CARTDB_DB_NAME'),
   'dbdriver' => getenv('CARTDB_DBDRIVER'),
   'dbprefix' => "",
-  'pconnect' => FALSE,
+  'pconnect' => false,
   'db_debug' => (ENVIRONMENT !== 'production'),
-  'cache_on' => FALSE,
+  'cache_on' => false,
   'cachedir' => ""
 );
 // $db['init_postgres'] = $db['default'];

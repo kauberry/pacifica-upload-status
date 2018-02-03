@@ -23,7 +23,8 @@
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 
-if(!defined('BASEPATH')) { exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
 }
 
 /**
@@ -95,7 +96,7 @@ function get_proposal_details($proposal_id)
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function get_details($object_type, $object_id, $option=FALSE)
+function get_details($object_type, $object_id, $option = false)
 {
     $object_map = array(
         'instrument' => array('url' => 'instrumentinfo/by_instrument_id'),
@@ -110,15 +111,14 @@ function get_details($object_type, $object_id, $option=FALSE)
     $url_object = array(
         $md_url, $url, $object_id
     );
-    if($option) {
+    if ($option) {
         $url_object[] = $option;
     }
     $query_url = implode('/', $url_object);
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     $results_body = $query->body;
 
-    return json_decode($results_body, TRUE);
-
+    return json_decode($results_body, true);
 }
 
 /**
@@ -139,7 +139,7 @@ function get_proposal_abstract($proposal_id)
     $query_url = "{$md_url}/{$url}";
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     $results_body = $query->body;
-    $results = json_decode($results_body, TRUE);
+    $results = json_decode($results_body, true);
     $result = array_pop($results);
     $ret_array = array(
         'title' => $result['title'],
@@ -164,7 +164,7 @@ function read_myemsl_config_file($file_specifier = 'general')
 {
     $CI =& get_instance();
     $ini_path = $CI->config->item('application_config_file_path');
-    $ini_items = parse_ini_file("{$ini_path}{$file_specifier}.ini", TRUE);
+    $ini_items = parse_ini_file("{$ini_path}{$file_specifier}.ini", true);
     return $ini_items;
 }
 
@@ -181,7 +181,7 @@ function read_myemsl_config_file($file_specifier = 'general')
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function generate_cart_token($item_list,$eus_person_id)
+function generate_cart_token($item_list, $eus_person_id)
 {
     $uuid = "huYNwptYEeGzDAAmucepzw";
     $duration = 3600;
@@ -213,7 +213,6 @@ function generate_cart_token($item_list,$eus_person_id)
     $cart_token_b64 = base64_encode($cart_token);
 
     return $cart_token_b64;
-
 }
 
 /**
@@ -230,18 +229,15 @@ function generate_cart_token($item_list,$eus_person_id)
  */
 function array_to_xml($data, &$xml_data)
 {
-    foreach( $data as $key => $value ) {
-        if(is_array($value)) {
-            if(is_numeric($key)) {
+    foreach ($data as $key => $value) {
+        if (is_array($value)) {
+            if (is_numeric($key)) {
                 $key = 'item'.$key; //dealing with <0/>..<n/> issues
             }
             $subnode = $xml_data->addChild($key);
             array_to_xml($value, $subnode);
-        }else{
+        } else {
             $xml_data->addChild("$key", htmlspecialchars("$value"));
         }
     }
 }
-
-
-?>

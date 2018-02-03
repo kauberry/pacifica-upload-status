@@ -39,7 +39,7 @@ class Ajax_api extends Baseline_api_controller
 
         parent::__construct();
         $this->load->model('status_api_model', 'status');
-        $this->load->model('myemsl_api_model', 'myemsl');
+        $this->load->model('MyEMSL_api_model', 'myemsl');
         $this->load->helper('network');
         $this->load->library('PHPRequests');
     }
@@ -55,19 +55,21 @@ class Ajax_api extends Baseline_api_controller
      *
      * @return void
      */
-    public function get_proposals_by_name($terms = FALSE)
+    public function get_proposals_by_name($terms = false)
     {
         $prop_list = $this->status->get_proposals_by_name(
-            $terms, $this->user_id, FALSE
+            $terms,
+            $this->user_id,
+            false
         );
         $results = array(
             'total_count' => sizeof($prop_list),
-            'incomplete_results' => FALSE,
-            'more' => FALSE,
+            'incomplete_results' => false,
+            'more' => false,
             'items' => array()
         );
         $max_text_len = 200;
-        foreach($prop_list as $item){
+        foreach ($prop_list as $item) {
             $textLength = strlen($item['title']);
             $result = substr_replace(
                 $item['title'],
@@ -96,10 +98,11 @@ class Ajax_api extends Baseline_api_controller
      * @return void
      */
     public function get_instruments_for_proposal(
-        $proposal_id = FALSE, $terms = FALSE
-    )
-    {
-        if(!$proposal_id || empty($proposal_id)) {
+        $proposal_id = false,
+        $terms = false
+    ) {
+    
+        if (!$proposal_id || empty($proposal_id)) {
             //some kind of error callback
             return array();
         }

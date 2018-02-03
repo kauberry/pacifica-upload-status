@@ -10,7 +10,9 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://github.com/EMSL-MSC/pacifica-reporting
  */
-if (! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -58,7 +60,7 @@ if (! defined('BASEPATH')) exit('No direct script access allowed');
 */
 
 $active_group = 'default';
-$query_builder = TRUE;
+$query_builder = true;
 //myemsl db
 $db['default'] = array(
   'dsn'   => '',
@@ -67,9 +69,9 @@ $db['default'] = array(
   'password' => '',
   'database' => APPPATH.'/pacifica_upload_status.sqlite3',
   'dbdriver' => "sqlite3",
-  'pconnect' => FALSE,
+  'pconnect' => false,
   'db_debug' => (ENVIRONMENT !== 'production'),
-  'cache_on' => FALSE,
+  'cache_on' => false,
   'cachedir' => ""
 );
 

@@ -11,7 +11,7 @@
  * @link     http://github.com/EMSL-MSC/pacifica-upload-status
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $config['local_timezone'] = 'America/Los_Angeles';
 
@@ -38,20 +38,19 @@ $config['external_file_url'] = !empty($files_dl_port) ?
 $config['template'] = 'emsl';
 $config['site_color'] = 'orange';
 
-if($site_theme_name == 'external') {
+if ($site_theme_name == 'external') {
     $config['theme_name'] = 'myemsl';
     $config['site_identifier'] = "MyEMSL";
     $config['site_slogan'] = 'EMSL User Portal Data Retrieval';
     // $config['main_overview_template'] = "external_view.html";
-}elseif($site_theme_name == 'myemsl') {
+} elseif ($site_theme_name == 'myemsl') {
     $config['theme_name'] = 'myemsl';
     $config['site_identifier'] = "MyEMSL";
     $config['site_slogan'] = 'Data Management for Science';
-}else{
+} else {
     $config['theme_name'] = 'demos';
     $config['site_identifier'] = 'dēmos';
     $config['site_slogan'] = 'Data Management for Science';
 }
 
 $config['application_version'] = "1.99.0";
-?>

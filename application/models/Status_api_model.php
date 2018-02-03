@@ -42,7 +42,7 @@ class Status_api_model extends CI_Model
     {
         parent::__construct();
         $this->local_timezone = $this->config->item('local_timezone');
-        $this->load->model('Myemsl_api_model', 'myemsl');
+        $this->load->model('MyEMSL_api_model', 'myemsl');
         $this->load->helper(array('item', 'network', 'time'));
 
         $this->status_list = array(
@@ -79,7 +79,7 @@ class Status_api_model extends CI_Model
         );
         $transactions_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));
-        $results = json_decode($query->body, TRUE);
+        $results = json_decode($query->body, true);
 
         return $results;
     }
@@ -103,7 +103,7 @@ class Status_api_model extends CI_Model
         $transactions_url .= http_build_query($url_args_array, '', '&');
 
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));
-        $results = json_decode($query->body, TRUE);
+        $results = json_decode($query->body, true);
         return $results;
     }
 
@@ -127,11 +127,11 @@ class Status_api_model extends CI_Model
         );
         $proposals_url .= http_build_query($url_args_array, '', '&');
 
-        try{
+        try {
             $query = Requests::get($proposals_url, array('Accept' => 'application/json'));
             // var_dump($query);
-            $results = json_decode($query->body, TRUE);
-        } catch (Exception $e){
+            $results = json_decode($query->body, true);
+        } catch (Exception $e) {
             $results = array();
         }
         return $results;
@@ -151,31 +151,30 @@ class Status_api_model extends CI_Model
         $transaction_url = "{$this->metadata_url_base}/transactioninfo/by_id/{$transaction_id}?";
         $results = array();
 
-        try{
+        try {
             $query = Requests::get($transaction_url, array('Accept' => 'application/json'));
             $sc = $query->status_code;
-            if($sc / 100 == 2) {
+            if ($sc / 100 == 2) {
                 //good data, move along
-                $results = json_decode($query->body, TRUE);
-                if(isset($results['status']) && intval($results['status'] / 100) == 4) {
+                $results = json_decode($query->body, true);
+                if (isset($results['status']) && intval($results['status'] / 100) == 4) {
                     $results = array();
                 }
-            }elseif($sc / 100 == 4) {
-                if($sc == 404) {
+            } elseif ($sc / 100 == 4) {
+                if ($sc == 404) {
                     //transaction not found
                     $results = array();
-                }else{
+                } else {
                     //some other input error
                 }
-            }else{
+            } else {
                 $results = array();
             }
-        } catch (Exception $e){
+        } catch (Exception $e) {
             //some other error
         }
 
         return $results;
-
     }
 
     /**
@@ -191,7 +190,7 @@ class Status_api_model extends CI_Model
     {
         $transaction = $this->get_transaction_details($transaction_id);
         $total_file_size_bytes = 0;
-        foreach($transaction['files'] as $file_id => $file_info){
+        foreach ($transaction['files'] as $file_id => $file_info) {
             $total_file_size_bytes += $file_info['size'];
         }
         return $total_file_size_bytes;
@@ -216,21 +215,21 @@ class Status_api_model extends CI_Model
         );
         $results = array();
         $query = Requests::get($files_url, array('Accept' => 'application/json'));
-        if(intval($query->status_code / 100) == 2) {
-            $results = json_decode($query->body, TRUE);
+        if (intval($query->status_code / 100) == 2) {
+            $results = json_decode($query->body, true);
         }
 
         if ($results && !empty($results) > 0) {
             $dirs = array();
             $file_list = array();
-            foreach($results as $item_id => $item_info){
+            foreach ($results as $item_id => $item_info) {
                 $subdir = preg_replace('|^proposal\s[^/]+/[^/]+/\d{4}\.\d{1,2}\.\d{1,2}/?|i', '', trim($item_info['subdir'], '/'));
                 $filename = $item_info['name'];
                 $path = !empty($subdir) ? "{$subdir}/{$filename}" : $filename;
                 $file_list[$path] = $item_id;
             }
             ksort($file_list);
-            foreach ($file_list as $path => $item_id){
+            foreach ($file_list as $path => $item_id) {
                 $item_info = $results[$item_id];
                 $path_array = explode('/', $path);
                 build_folder_structure($dirs, $path_array, $item_info);
@@ -252,8 +251,8 @@ class Status_api_model extends CI_Model
         $txn_url = "{$this->metadata_url_base}/transactioninfo/last/";
         $last_txn = -1;
         $query = Requests::get($txn_url);
-        if(intval($query->status_code / 100) == 2) {
-            $results = json_decode($query->body, TRUE);
+        if (intval($query->status_code / 100) == 2) {
+            $results = json_decode($query->body, true);
             $last_txn = $results['latest_transaction_id'];
         }
         return $last_txn;
@@ -273,15 +272,15 @@ class Status_api_model extends CI_Model
         $transaction_details = $this->get_transaction_details($transaction_id);
         $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
         $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
-        $results_obj = json_decode(stripslashes($query->body), TRUE);
-        if(intval($query->status_code / 100) == 2 && $results_obj) {
+        $results_obj = json_decode(stripslashes($query->body), true);
+        if (intval($query->status_code / 100) == 2 && $results_obj) {
             $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
-        }else{
+        } else {
             $now = new DateTime();
-            if(intval($query->status_code / 100) == 4) {
+            if (intval($query->status_code / 100) == 4) {
                 $task_topic = "no_transaction";
                 $message = $results_obj['message'];
-            }else{
+            } else {
                 $task_topic = "server_error";
                 $message = "a server error has occurred";
             }
@@ -296,8 +295,8 @@ class Status_api_model extends CI_Model
             );
             $results_obj = $default_results_obj;
         }
-        $results_obj['upload_present_on_mds'] = !empty($transaction_details) ? TRUE : FALSE;
-        if($task_topic == "ingest_metadata" && !empty($transaction_details)) {
+        $results_obj['upload_present_on_mds'] = !empty($transaction_details) ? true : false;
+        if ($task_topic == "ingest_metadata" && !empty($transaction_details)) {
             $task_topic = "ingest_complete";
         }
         $translated_message_obj = $this->ingester_messages[$task_topic];
@@ -307,5 +306,4 @@ class Status_api_model extends CI_Model
         $results_obj['overall_percentage'] = $translated_message_obj['percent_complete'];
         return $results_obj;
     }
-
 }

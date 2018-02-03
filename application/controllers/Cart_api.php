@@ -57,13 +57,13 @@ class Cart_api extends Baseline_api_controller
     {
         $accept = $this->input->get_request_header('Accept');
         $cart_list = $this->cart->cart_status();
-        if(stristr(strtolower($accept), 'json')) {
+        if (stristr(strtolower($accept), 'json')) {
             //looks like a json request
             transmit_array_with_json_header($cart_list);
-        }else{
-            if(empty($cart_list)) {
+        } else {
+            if (empty($cart_list)) {
                 print('');
-            }else{
+            } else {
                 //let's assume that they want html
                 $this->load->view('cart_status_insert_view.html', $cart_list);
             }
@@ -80,13 +80,13 @@ class Cart_api extends Baseline_api_controller
     public function create()
     {
         $req_method = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : "GET";
-        if($req_method != "POST") {
+        if ($req_method != "POST") {
             //return info on how to use this function
             echo "That's not how you use this function!!!";
             exit();
         }
-        $submit_block = json_decode($this->input->raw_input_stream, TRUE);
-        if(empty($submit_block)) {
+        $submit_block = json_decode($this->input->raw_input_stream, true);
+        if (empty($submit_block)) {
             //bad json-block or empty post body
             echo "Hey! There's no real data here!";
         }
@@ -107,15 +107,15 @@ class Cart_api extends Baseline_api_controller
     public function delete($cart_uuid)
     {
         $req_method = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : "GET";
-        if($req_method != "DELETE") {
+        if ($req_method != "DELETE") {
             echo "That's not how you use this function!!!";
             exit();
         }
         $status_message = $this->cart->cart_delete($cart_uuid);
-        $success = FALSE;
+        $success = false;
         if ($status_message / 100 == 2) {
             //looks like it went through ok
-            $success = TRUE;
+            $success = true;
         }
         $success_message = $success ? "" : " not";
         $ret_message = array(
@@ -123,5 +123,4 @@ class Cart_api extends Baseline_api_controller
         );
         transmit_array_with_json_header($ret_message, "", $success);
     }
-
 }

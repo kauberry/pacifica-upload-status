@@ -64,7 +64,7 @@ class Api_model extends CI_Model
      */
     public function get_available_group_types($filter = '')
     {
-        $DB_metadata = $this->load->database('default', TRUE);
+        $DB_metadata = $this->load->database('default', true);
 
         if (!empty($filter)) {
             $DB_metadata->like('type', $filter);
@@ -94,7 +94,7 @@ class Api_model extends CI_Model
      */
     public function search_by_metadata($metadata_pairs, $search_operator = 'AND')
     {
-        $DB_metadata = $this->load->database('default', TRUE);
+        $DB_metadata = $this->load->database('default', true);
         // check for valid search operator
         $search_operator = strtoupper($search_operator);
         $valid_operators = array('AND', 'OR');
@@ -173,7 +173,7 @@ class Api_model extends CI_Model
      */
     public function get_item_info($item_id)
     {
-        $DB_metadata = $this->load->database('default', TRUE);
+        $DB_metadata = $this->load->database('default', true);
 
         $select_array = array(
             'f.item_id as itemid', "CONCAT(f.subdir,'/',f.name) as full_path",
@@ -207,7 +207,7 @@ class Api_model extends CI_Model
      */
     private function _get_transaction_info($item_list)
     {
-        $DB_metadata = $this->load->database('default', TRUE);
+        $DB_metadata = $this->load->database('default', true);
 
         //get a list of transactions for this list of item_id's
         $trans_query = $DB_metadata->select('f."transaction"')->distinct()->where_in('f.item_id', $item_list)->get('files f');
@@ -261,7 +261,7 @@ class Api_model extends CI_Model
      */
     private function _get_metadata_entries($file_info)
     {
-        $DB_metadata = $this->load->database('default', TRUE);
+        $DB_metadata = $this->load->database('default', true);
 
         //get a representative item_id from each transaction
         $DB_metadata->select(array('MIN(item_id) as rep_item_id', 'transaction'))->group_by('transaction');

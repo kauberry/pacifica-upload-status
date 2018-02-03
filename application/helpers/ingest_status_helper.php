@@ -24,13 +24,15 @@
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
- if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /**
  * Provides a more user friendly version of the status messages from ingest
  *
  * @param string $ingest_status The task name from the ingest system
- * 
+ *
  * @return array object with new status messages for that task type
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>

@@ -24,7 +24,9 @@
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 
-  if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /**
  *  Converts a numeric year quarter into starting/ending month
@@ -47,7 +49,6 @@ function quarter_to_range($quarter_num)
     $last_month = date("M", mktime(0, 0, 0, $last_month_num, 1, 2012));
 
     return "{$first_month}&ndash;{$last_month}";
-
 }
 
 /**
@@ -63,8 +64,8 @@ function quarter_to_range($quarter_num)
  */
 function is_file_on_tape($path)
 {
-    $on_tape = check_disk_stage($path, TRUE);
-    $on_tape = $on_tape == 0 ? TRUE : FALSE;
+    $on_tape = check_disk_stage($path, true);
+    $on_tape = $on_tape == 0 ? true : false;
     return $on_tape;
 }
 
@@ -81,12 +82,12 @@ function is_file_on_tape($path)
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function check_disk_stage($path, $numeric = FALSE)
+function check_disk_stage($path, $numeric = false)
 {
     //fake it out until I get real support
-    if($numeric) {
+    if ($numeric) {
         return 0;
-    }else{
+    } else {
         return "on_tape";
     }
     $attr = exec("which attr");
@@ -111,25 +112,27 @@ function check_disk_stage($path, $numeric = FALSE)
  */
 function get_last_update()
 {
-    if (func_num_args() < 1 ) return 0;
+    if (func_num_args() < 1) {
+        return 0;
+    }
     $dirs = func_get_args();
     $files = array();
     $accepted_subdirs = array('controllers','models','views','helpers');
-    foreach ( $dirs as $dir )
-    foreach($accepted_subdirs as $subdir){
-        {
-        // $directory = new RecursiveDirectoryIterator($dir);
-        $fulldir = $dir . $subdir;
-        $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($fulldir), RecursiveIteratorIterator::LEAVES_ONLY);
-        $files = array_merge($files, array_keys(iterator_to_array($objects, TRUE)));
+    foreach ($dirs as $dir) {
+        foreach ($accepted_subdirs as $subdir) {
+            {
+            // $directory = new RecursiveDirectoryIterator($dir);
+            $fulldir = $dir . $subdir;
+            $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($fulldir), RecursiveIteratorIterator::LEAVES_ONLY);
+            $files = array_merge($files, array_keys(iterator_to_array($objects, true)));
+            }
         }
     }
     $maxtimestamp = 0;
     $maxfilename = "";
-    foreach ( $files as $file )
-    {
+    foreach ($files as $file) {
         $timestamp = filemtime($file);
-        if ($timestamp > $maxtimestamp ) {
+        if ($timestamp > $maxtimestamp) {
             $maxtimestamp = $timestamp;
             $maxfilename = $file;
         }

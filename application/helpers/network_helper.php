@@ -24,7 +24,9 @@
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 
 /**
@@ -41,21 +43,21 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function transmit_array_with_json_header($response, $statusMessage = '', $operationSuccessful = TRUE)
+function transmit_array_with_json_header($response, $statusMessage = '', $operationSuccessful = true)
 {
     header("Content-type: application/json");
     $headerArray = array();
     $headerArray['status'] = $operationSuccessful ? "ok" : "fail";
     $headerArray['message'] = !empty($statusMessage) ? $statusMessage : "";
     header("X-JSON: (".json_encode($headerArray).")");
-    if(!$operationSuccessful) {
+    if (!$operationSuccessful) {
         $this->output->set_status_header(404);
     }
     $response = !is_array($response) ? array('results' => $response) : $response;
 
-    if(is_array($response) && sizeof($response) > 0) {
+    if (is_array($response) && sizeof($response) > 0) {
         print(json_encode($response));
-    }else{
+    } else {
         print("0");
     }
 }
@@ -82,7 +84,6 @@ function send_json_array($response_array)
 
     $CI->output->set_output(json_encode($response_array));
     $CI->output->set_header("Operation-status:ok");
-
 }
 
 
@@ -103,18 +104,17 @@ function format_array_for_select2($response)
 
     $results = array();
 
-    foreach($response['items'] as $id => $text){
+    foreach ($response['items'] as $id => $text) {
         $results[] = array('id' => $id, 'text' => $text);
     }
 
     $ret_object = array(
     'total_count' => sizeof($results),
-    'incomplete_results' => FALSE,
+    'incomplete_results' => false,
     'items' => $results
     );
 
     print(json_encode($ret_object));
-
 }
 
 /**
@@ -133,11 +133,11 @@ function format_array_for_select2($response)
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function truncate_text($string, $limit, $break=" ", $pad="...")
+function truncate_text($string, $limit, $break = " ", $pad = "...")
 {
     $textLength = strlen($string);
     $result = $string;
-    if($textLength > $limit) {
+    if ($textLength > $limit) {
         $result = substr_replace(
             $string,
             '...',
@@ -147,5 +147,3 @@ function truncate_text($string, $limit, $break=" ", $pad="...")
     }
     return $result;
 }
-
-?>

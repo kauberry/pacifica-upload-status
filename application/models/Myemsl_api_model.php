@@ -32,7 +32,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link    http://github.com/EMSL-MSC/pacifica-upload-status
  */
-class Myemsl_api_model extends CI_Model
+class MyEMSL_api_model extends CI_Model
 {
     /**
      *  Class constructor
@@ -57,8 +57,5 @@ class Myemsl_api_model extends CI_Model
     {
 
         return get_user_details($this->user_id);
-
     }
-
-
 }

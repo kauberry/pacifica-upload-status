@@ -40,7 +40,7 @@ class Baseline_api_controller extends CI_Controller
         date_default_timezone_set($this->config->item('local_timezone'));
         $this->load->model('System_setup_model', 'setup');
         $this->load->helper(array('url', 'html', 'myemsl_api', 'file_info', 'user'));
-        $this->output->enable_profiler(FALSE);
+        $this->output->enable_profiler(false);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
         $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://127.0.0.1:8066');
@@ -56,15 +56,15 @@ class Baseline_api_controller extends CI_Controller
         $user_info = get_user_details($this->user_id);
         $this->username = $user_info['first_name'] ?: 'Anonymous Stranger';
         $this->fullname = "{$this->username} {$user_info['last_name']}";
-        $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? TRUE : FALSE;
+        $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;
         $this->proposal_list = $user_info['proposals'];
         $this->email = $user_info['email_address'];
         $user_info['full_name'] = $this->fullname;
         $user_info['network_id'] = !empty($user_info['network_id']) ? $user_info['network_id'] : 'unknown';
 
-        if(isset($_SERVER['PATH_INFO'])) {
+        if (isset($_SERVER['PATH_INFO'])) {
             $current_path_info = ltrim($_SERVER['PATH_INFO'], '/');
-        }else {
+        } else {
             $current_path_info = './';
         }
 
@@ -80,9 +80,8 @@ class Baseline_api_controller extends CI_Controller
         );
         $this->page_data['username'] = $this->username;
         $this->page_data['fullname'] = $this->fullname;
-        $this->page_data['load_prototype'] = FALSE;
-        $this->page_data['load_jquery'] = TRUE;
+        $this->page_data['load_prototype'] = false;
+        $this->page_data['load_jquery'] = true;
         $this->controller_name = $this->uri->rsegment(1);
-
     }
 }

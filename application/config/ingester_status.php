@@ -11,7 +11,7 @@
  * @link     http://github.com/EMSL-MSC/pacifica-upload-status
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $config['ingest_status_messages'] = array(
     'no_transaction' => array( //handles 404 errors

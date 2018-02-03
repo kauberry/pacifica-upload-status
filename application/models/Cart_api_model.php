@@ -66,14 +66,14 @@ class Cart_api_model extends CI_Model
     public function cart_create($cart_submission_json)
     {
         $return_array = array(
-            'cart_uuid' => NULL,
+            'cart_uuid' => null,
             'message' => '',
-            'success' => FALSE,
-            'retrieval_url' => NULL
+            'success' => false,
+            'retrieval_url' => null
         );
-        $local_cart_success = FALSE;
+        $local_cart_success = false;
         $new_submission_info = $this->_clean_cart_submission($cart_submission_json);
-        if(!$new_submission_info) {
+        if (!$new_submission_info) {
             $return_array['message'] = 'No files were located for this submission';
             $this->output->set_status_header(410);
             return $return_array;
@@ -89,7 +89,7 @@ class Cart_api_model extends CI_Model
                 $cart_submission_object,
                 $new_submission_info['file_details']
             );
-            if(!$local_cart_success) {
+            if (!$local_cart_success) {
                 $return_array['message'] = "An error occurred while saving changes to the local database";
                 $this->output->set_status_header(500);
                 return $return_array;
@@ -100,7 +100,7 @@ class Cart_api_model extends CI_Model
             $return_array['message'] = 'cart creation was unsuccessful';
             return $return_array;
         }
-        $return_array['success'] = TRUE;
+        $return_array['success'] = true;
         $return_array['cart_uuid'] = $cart_uuid;
         $return_array['message'] = "A cart named '{$cart_submission_object['name']}' was successfully created";
         $return_array['retrieval_url'] = "{$this->cart_dl_base}/{$cart_uuid}";
@@ -179,13 +179,13 @@ class Cart_api_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function cart_status($cart_uuid_list = FALSE)
+    public function cart_status($cart_uuid_list = false)
     {
         if (!$cart_uuid_list) {
             $cart_uuid_list = $this->_get_user_cart_list();
         }
 
-        if(empty($cart_uuid_list)) {
+        if (empty($cart_uuid_list)) {
             return array();
         }
 
@@ -207,14 +207,14 @@ class Cart_api_model extends CI_Model
             $response_overview = intval($response->status_code / 100);
             if ($response_overview == 2 && $status != 'error') {
                 //looks like it went through ok
-                $success = TRUE;
-            }elseif($response->status_code == 404) {
-                $success = FALSE;
+                $success = true;
+            } elseif ($response->status_code == 404) {
+                $success = false;
                 continue;
             } else {
-                $success = FALSE;
+                $success = false;
             }
-            if($status == 'deleted') {
+            if ($status == 'deleted') {
                 continue;
             }
             $this->update_cart_info($cart_uuid, array('last_known_state' => $status));
@@ -255,11 +255,11 @@ class Cart_api_model extends CI_Model
         $cart_url = "{$this->cart_url_base}/{$cart_uuid}";
         //check for ready status
         $status_info = $this->cart_status(array($cart_uuid));
-        if ($status_info['success'] == TRUE && $status_info['status'] == 'ready') {
+        if ($status_info['success'] == true && $status_info['status'] == 'ready') {
             //looks like the cart is ready to download. Let's go.
             $download_url = "{$this->cart_dl_base}/{$cart_uuid}";
         } else {
-            $download_url = FALSE;
+            $download_url = false;
         }
         $this->output->set_header('X-Pacifica-Status: {$status_info["status"]}');
         $this->output->set_header('X-Pacifica-Message: {$status_info["message"]}');
@@ -282,11 +282,11 @@ class Cart_api_model extends CI_Model
         $query = Requests::delete($cart_url);
         if ($query->status_code / 100 == 2) {
             //looks like it went through ok
-            $success = TRUE;
+            $success = true;
         } else {
-            $success = FALSE;
+            $success = false;
         }
-        if($success) {
+        if ($success) {
             //gone in the cartd, now mark it in ours
             $nowtime = new DateTime('', new DateTimeZone('UTC'));
             $this->db->set('deleted', 'now()')->where('cart_uuid', $cart_uuid);
@@ -314,11 +314,11 @@ class Cart_api_model extends CI_Model
         );
         $clean_update = array();
         foreach ($update_object as $name => $new_value) {
-            if(array_key_exists($name, $acceptable_names)) {
+            if (array_key_exists($name, $acceptable_names)) {
                 $clean_update[$name] = $new_value;
             }
         }
-        if(!empty($clean_update)) {
+        if (!empty($clean_update)) {
             $this->db->where('cart_uuid', $cart_uuid);
             $this->db->update('cart', $clean_update);
         }
@@ -339,16 +339,16 @@ class Cart_api_model extends CI_Model
     {
         $submission_timestamp = new DateTime();
         $default_cart_name = "Cart for {$this->fullname}";
-        $raw_object = json_decode($cart_submission_json, TRUE);
+        $raw_object = json_decode($cart_submission_json, true);
         $description = array_key_exists('description', $raw_object) ? $raw_object['description'] : '';
         $name = array_key_exists('name', $raw_object) ? $raw_object['name'] : $default_cart_name;
-        $file_list = array_key_exists('files', $raw_object) ? $raw_object['files'] : FALSE;
+        $file_list = array_key_exists('files', $raw_object) ? $raw_object['files'] : false;
         if (!$file_list) {
             //throw an error, as this is an incomplete cart object
         }
         $file_info = $this->_check_and_clean_file_list($file_list);
-        if(empty($file_info)) {
-            return FALSE;
+        if (empty($file_info)) {
+            return false;
         }
 
         $cleaned_object = array(
@@ -391,7 +391,7 @@ class Cart_api_model extends CI_Model
             //some kind of error
             return array();
         }
-        $results = json_decode($query->body, TRUE);
+        $results = json_decode($query->body, true);
 
         $postable_results = array('fileids' => array());
 
@@ -469,16 +469,16 @@ class Cart_api_model extends CI_Model
         $this->db->insert_batch('cart_items', $file_insert_data);
         $this->db->trans_complete();
 
-        if ($this->db->trans_status() === FALSE) {
+        if ($this->db->trans_status() === false) {
             $this->db->trans_rollback();
 
-            return FALSE;
+            return false;
             //error thrown during db insert
         } else {
             $this->db->trans_commit();
         }
 
-        return TRUE;
+        return true;
     }
 
     /**

@@ -48,7 +48,7 @@ class Status_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Status_api_model', 'status');
-        $this->load->model('Myemsl_api_model', 'myemsl');
+        $this->load->model('MyEMSL_api_model', 'myemsl');
         // $this->load->model('Cart_model', 'cart');
         $this->load->helper(
             array(
@@ -84,10 +84,9 @@ class Status_api extends Baseline_api_controller
             '/resources/stylesheets/file_directory_styling.css',
             '/project_resources/stylesheets/cart.css'
         );
-        $this->page_data['load_prototype'] = FALSE;
-        $this->page_data['load_jquery'] = TRUE;
+        $this->page_data['load_prototype'] = false;
+        $this->page_data['load_jquery'] = true;
         $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
-
     }
 
     /**
@@ -115,8 +114,8 @@ class Status_api extends Baseline_api_controller
         $instrument_id = '',
         $starting_date = '',
         $ending_date = ''
-    )
-    {
+    ) {
+    
         $proposal_id = $proposal_id ?: get_cookie('last_proposal_selector');
         $instrument_id = $instrument_id ?: get_cookie('last_instrument_selector');
         // $time_period = $time_period ?: get_cookie('last_timeframe_selector');
@@ -125,12 +124,12 @@ class Status_api extends Baseline_api_controller
         $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
         $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
 
-        if(!$starting_date || !$ending_date) {
+        if (!$starting_date || !$ending_date) {
             $today = new DateTime();
-            if(!$ending_date) {
+            if (!$ending_date) {
                 $ending_date = $today->format('Y-m-d');
             }
-            if(!$starting_date) {
+            if (!$starting_date) {
                 $today->modify('-30 days');
                 $starting_date = $today->format('Y-m-d');
             }
@@ -166,9 +165,9 @@ class Status_api extends Baseline_api_controller
                     $proposal_list[$prop_id] = $prop_info['title'];
                 }
             }
-            if(array_key_exists('proposal_list', $this->page_data)) {
+            if (array_key_exists('proposal_list', $this->page_data)) {
                 $this->page_data['proposal_list'] = $this->page_data['proposal_list'] + $proposal_list;
-            }else{
+            } else {
                 $this->page_data['proposal_list'] = $proposal_list;
             }
             ksort($this->page_data['proposal_list']);
@@ -191,8 +190,11 @@ class Status_api extends Baseline_api_controller
         $this->page_data['js'] = $js;
 
         $this->overview_worker(
-            $proposal_id, $instrument_id,
-            $starting_date, $ending_date, $view_name
+            $proposal_id,
+            $instrument_id,
+            $starting_date,
+            $ending_date,
+            $view_name
         );
     }
 
@@ -207,29 +209,33 @@ class Status_api extends Baseline_api_controller
      * @return void
      */
     public function overview_insert(
-        $proposal_id = FALSE,
-        $instrument_id = FALSE,
-        $starting_date = FALSE,
-        $ending_date = FALSE
-    )
-    {
-        if(!$proposal_id || !$instrument_id) {
+        $proposal_id = false,
+        $instrument_id = false,
+        $starting_date = false,
+        $ending_date = false
+    ) {
+    
+        if (!$proposal_id || !$instrument_id) {
             $message = "Some parameters missing. Please supply values for: ";
             $criteria_array = array();
-            if(!$proposal_id) $criteria_array[] = "proposal";
-            if(!$instrument_id) $criteria_array[] = "instrument";
+            if (!$proposal_id) {
+                $criteria_array[] = "proposal";
+            }
+            if (!$instrument_id) {
+                $criteria_array[] = "instrument";
+            }
             $message .= implode(" and ", $criteria_array);
             http_response_code(412);
             print "<p class=\"error_msg\">{$message}</p>";
             return;
         }
 
-        if(!$starting_date || !strtotime($starting_date) || !$ending_date || !strtotime($ending_date)) {
+        if (!$starting_date || !strtotime($starting_date) || !$ending_date || !strtotime($ending_date)) {
             $today = new DateTime();
-            if(!$ending_date || !strtotime($ending_date)) {
+            if (!$ending_date || !strtotime($ending_date)) {
                 $ending_date = $today->format('Y-m-d');
             }
-            if(!$starting_date || !strtotime($starting_date)) {
+            if (!$starting_date || !strtotime($starting_date)) {
                 $today->modify('-30 days');
                 $starting_date = $today->format('Y-m-d');
             }
@@ -264,13 +270,12 @@ class Status_api extends Baseline_api_controller
         $starting_date = '',
         $ending_date = '',
         $view_name = 'upload_item_view.html'
-    )
-    {
-        $time_period_empty = TRUE;
+    ) {
+    
+        $time_period_empty = true;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
         ) {
-
             $message = "No data available for this instrument and proposal in the specified time period";
             //all criteria set, proceed with load
             $now = new DateTime();
@@ -281,13 +286,16 @@ class Status_api extends Baseline_api_controller
             $start = strtotime($starting_date) ? new DateTime($starting_date) : $clone_start;
             $start_time = $start->format('Y-m-d');
             $transaction_list = $this->status->get_transactions(
-                $instrument_id, $proposal_id, $start_time, $end_time
+                $instrument_id,
+                $proposal_id,
+                $start_time,
+                $end_time
             );
             $file_size_totals = array();
-            foreach($transaction_list['transactions'] as $transaction_id => $transaction_info){
+            foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
                 $file_size_totals[$transaction_id] = $transaction_info['file_size_bytes'];
                 $message = "";
-                $time_period_emtpy = FALSE;
+                $time_period_emtpy = false;
             }
             $transaction_list['file_size_totals'] = $file_size_totals;
             $results = array(
@@ -298,7 +306,7 @@ class Status_api extends Baseline_api_controller
         } else {
             $results = array(
                 'transaction_list' => array(),
-                'time_period_empty' => TRUE,
+                'time_period_empty' => true,
                 'message' => 'No data available for this instrument and proposal',
             );
         }
@@ -313,7 +321,7 @@ class Status_api extends Baseline_api_controller
         }
         $this->page_data['selected_proposal_id'] = $proposal_id;
         $this->page_data['selected_instrument_id'] = $instrument_id;
-        $this->page_data['enable_breadcrumbs'] = FALSE;
+        $this->page_data['enable_breadcrumbs'] = false;
         $this->page_data['transaction_data'] = $results['transaction_list'];
         if (array_key_exists('transactions', $results['transaction_list'])
             && !empty($results['transaction_list']['transactions'])
@@ -374,8 +382,8 @@ class Status_api extends Baseline_api_controller
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);
-        if(!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
-            if($ingest_info && $id == $ingest_info['job_id']) {
+        if (!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
+            if ($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
                     'times' => array(
                         $ingest_info['updated'] => intval($ingest_info['job_id'])
@@ -392,16 +400,16 @@ class Status_api extends Baseline_api_controller
                         )
                     )
                 );
-                if($ingest_info['state'] == 'ok') {
+                if ($ingest_info['state'] == 'ok') {
                     $this->page_data['page_header'] = 'New Transaction';
                     $this->page_data['title'] = 'Transaction Pending';
                     $err_msg = "This transaction is still being processed by the uploader";
-                }else{
+                } else {
                     $this->page_data['page_header'] = 'Missing Transaction';
                     $this->page_data['title'] = 'Transaction not available';
 
                     $err_msg = "No transaction with an ID of {$id} could be found in the system";
-                    $this->page_data['force_refresh'] = FALSE;
+                    $this->page_data['force_refresh'] = false;
                 }
                 $transaction_info['transactions'][$id]['informational_message'] = $err_msg;
                 $this->page_data['js'] .= "
@@ -421,7 +429,7 @@ var refresh = function(){
         $this->page_data['title'] = 'Upload Report';
         $file_size = 0;
         $inst_id = -1;
-        if(array_key_exists($id, $transaction_info['transactions'])) {
+        if (array_key_exists($id, $transaction_info['transactions'])) {
             $file_size = $transaction_info['transactions'][$id]['file_size_bytes'];
             $inst_id = $transaction_info['transactions'][$id]['metadata']['instrument_id'];
         }
@@ -432,16 +440,15 @@ var refresh = function(){
             'carts' => array()
         );
         $this->page_data['request_type'] = 't';
-        $this->page_data['enable_breadcrumbs'] = FALSE;
+        $this->page_data['enable_breadcrumbs'] = false;
         $this->page_data['js'] .= "var initial_inst_id = '{$inst_id}';
                             var ingest_complete = {$ingest_completed};
                             var lookup_type = \"t\";
                             var email_address = \"{$this->email}\";
                             var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                             ";
-        $this->page_data['show_instrument_data'] = TRUE;
+        $this->page_data['show_instrument_data'] = true;
         $this->load->view('single_item_view.html', $this->page_data);
-
     }
 
     /**
