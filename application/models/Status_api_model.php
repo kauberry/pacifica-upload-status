@@ -42,7 +42,7 @@ class Status_api_model extends CI_Model
     {
         parent::__construct();
         $this->local_timezone = $this->config->item('local_timezone');
-        $this->load->model('MyEMSL_api_model', 'myemsl');
+        $this->load->model('Myemsl_api_model', 'myemsl');
         $this->load->helper(array('item', 'network', 'time'));
 
         $this->status_list = array(

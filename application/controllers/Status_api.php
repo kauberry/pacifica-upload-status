@@ -48,7 +48,7 @@ class Status_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Status_api_model', 'status');
-        $this->load->model('MyEMSL_api_model', 'myemsl');
+        $this->load->model('Myemsl_api_model', 'myemsl');
         // $this->load->model('Cart_model', 'cart');
         $this->load->helper(
             array(
