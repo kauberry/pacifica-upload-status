@@ -48,8 +48,8 @@ if ($site_theme_name == 'external') {
     $config['site_identifier'] = "MyEMSL";
     $config['site_slogan'] = 'Data Management for Science';
 } else {
-    $config['theme_name'] = 'demos';
-    $config['site_identifier'] = 'dēmos';
+    $config['theme_name'] = 'datahub';
+    $config['site_identifier'] = 'DataHub';
     $config['site_slogan'] = 'Data Management for Science';
 }
 

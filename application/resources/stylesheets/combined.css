@@ -314,7 +314,7 @@ button:hover, .buttons input[type="button"]:hover {
     font-size: 2em;
     padding: 0.25em;
     padding-top: 0.5em;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 
 .underline {
