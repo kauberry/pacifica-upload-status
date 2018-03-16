@@ -223,20 +223,60 @@ class Status_api_model extends CI_Model
             $dirs = array();
             $file_list = array();
             foreach ($results as $item_id => $item_info) {
-                $subdir = preg_replace('|^proposal\s[^/]+/[^/]+/\d{4}\.\d{1,2}\.\d{1,2}/?|i', '', trim($item_info['subdir'], '/'));
+                $subdir = trim($item_info['subdir'], '/');
                 $filename = $item_info['name'];
                 $path = !empty($subdir) ? "{$subdir}/{$filename}" : $filename;
+                $path_array = explode('/', $path);
                 $file_list[$path] = $item_id;
             }
             ksort($file_list);
+            $temp_list = array_keys($file_list);
+            $first_path = array_shift($temp_list);
+            $last_path = array_pop($temp_list);
+            $common_path_prefix_array = $this->get_common_path_prefix($first_path, $last_path);
+            $common_path_prefix = implode('/', $common_path_prefix_array);
             foreach ($file_list as $path => $item_id) {
                 $item_info = $results[$item_id];
+                $path = ltrim(preg_replace('/^' . preg_quote($common_path_prefix, '/') . '/', '', $path), '/');
+                $item_info['subdir'] = $path;
                 $path_array = explode('/', $path);
                 build_folder_structure($dirs, $path_array, $item_info);
             }
 
-            return array('treelist' => $dirs, 'files' => $results);
+            return array(
+                'treelist' => $dirs,
+                'files' => $results,
+                'common_path_prefix_array' => $common_path_prefix_array
+            );
         }
+    }
+
+    /**
+     * Get the common directory prefix for a set of paths so that we can remove it.
+     *
+     * @param  string $first_path first path to compare
+     * @param  string $last_path second path to compare
+     * @param  string $delimiter path delimiter (defaults to '/')
+     *
+     * @return array array of common path elements
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_common_path_prefix($first_path, $last_path, $delimiter = '/')
+    {
+        $shortest_path = sizeof($first_path) < sizeof($last_path) ? $first_path : $last_path;
+        $longest_path = $shortest_path == $first_path ? $last_path : $first_path;
+        $short_path_array = explode($delimiter, $shortest_path);
+        $longest_path_array = explode($delimiter, $longest_path);
+        $common_path_array = array();
+        for ($i=0; $i<sizeof($short_path_array); $i++) {
+            if ($short_path_array[$i] == $longest_path_array[$i]) {
+                $common_path_array[] = $short_path_array[$i];
+            } else {
+                break;
+            }
+        }
+        return $common_path_array;
     }
 
     /**
