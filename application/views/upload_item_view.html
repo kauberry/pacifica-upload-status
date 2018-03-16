@@ -78,6 +78,8 @@
                         <span class="instrument_ident"><?= $transaction_info['metadata']['instrument_name'] ?></span>
                         <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
                           <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>
+                        <?php elseif(isset($transaction_info['file_size_bytes'])): ?>
+                          <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_info['file_size_bytes']) ?>]</span>
                         <?php endif; ?>
                         </span>
                     </span>

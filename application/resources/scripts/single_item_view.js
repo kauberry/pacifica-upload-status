@@ -3,7 +3,20 @@ $(function() {
     setup_metadata_disclosure();
     display_ingest_status();
     cart_status();
+    var tree = $(".tree_holder").fancytree("getTree");
+    tree.visit(function(node){
+        node.setExpanded();
+    });
+
+    // tree.on("fancyonloadchildren", function(event, data){
+    //     data.node.visit(function(subNode){
+    //         if( subNode.isUndefined() && subNode.isExpanded() ) {
+    //             subNode.load();
+    //         }
+    //     });
+    // });
 });
+
 var first_load = true;
 var ingest_check_interval = 5000;
 var display_ingest_status = function() {

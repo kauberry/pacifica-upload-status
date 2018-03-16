@@ -269,33 +269,44 @@ class Status_api_model extends CI_Model
      */
     public function get_ingest_status($transaction_id)
     {
+        $now = new DateTime();
+        $default_results_obj = array(
+            'task_percent' => "0.000",
+            'updated' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
+            'task' => '',
+            'job_id' => $transaction_id,
+            'created' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
+            'exception' => '',
+            'state' => 'fail'
+        );
         $transaction_details = $this->get_transaction_details($transaction_id);
+        $upload_present_on_mds = !empty($transaction_details) ? true : false;
         $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
-        $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
-        $results_obj = json_decode(stripslashes($query->body), true);
-        if (intval($query->status_code / 100) == 2 && $results_obj) {
-            $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
-        } else {
-            $now = new DateTime();
-            if (intval($query->status_code / 100) == 4) {
-                $task_topic = "no_transaction";
-                $message = $results_obj['message'];
+        try {
+            $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
+            $results_obj = json_decode(stripslashes($query->body), true);
+            if (intval($query->status_code / 100) == 2 && $results_obj) {
+                $task_topic = strtolower(str_replace(' ', '_', $results_obj['task']));
             } else {
-                $task_topic = "server_error";
-                $message = "a server error has occurred";
+                if (intval($query->status_code / 100) == 4) {
+                    $task_topic = "no_transaction";
+                    $message = $results_obj['message'];
+                } else {
+                    $task_topic = "server_error";
+                    $message = "a server error has occurred";
+                }
             }
-            $default_results_obj = array(
-                'task_percent' => "0.000",
-                'updated' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
-                'task' => $task_topic,
-                'job_id' => $transaction_id,
-                'created' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
-                'exception' => $results_obj['message'],
-                'state' => 'fail'
-            );
+        } catch (\Exception $e) {
             $results_obj = $default_results_obj;
+            $results_obj['task'] = "server_error";
+            $results_obj['exception'] = "Could not contact ingester service for status";
+            $results_obj['upload_present_on_mds'] = $upload_present_on_mds;
+            return $results_obj;
         }
-        $results_obj['upload_present_on_mds'] = !empty($transaction_details) ? true : false;
+        $results_obj = $default_results_obj;
+        $results_obj['task'] = $task_topic;
+        $results_obj['exception'] = $message;
+        $results_obj['upload_present_on_mds'] = $upload_present_on_mds;
         if ($task_topic == "ingest_metadata" && !empty($transaction_details)) {
             $task_topic = "ingest_complete";
         }
