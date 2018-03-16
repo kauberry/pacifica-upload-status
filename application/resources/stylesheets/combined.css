@@ -596,6 +596,7 @@ footer a:hover {
 .folder_size_summary {
     font-size: 0.75em;
     font-style: italic;
+    font-weight: lighter;
 }
 .transaction_container h3 {
     /*margin-top: 10px;*/
@@ -624,6 +625,7 @@ ul.metadata_container li {
 .transaction_container {
     margin-bottom: 1em;
     padding: 0.5em 1.25em !important;
+    padding-top: 0 !important;
 }
 
 .fieldset_container {
