@@ -39,7 +39,7 @@ class Baseline_api_controller extends CI_Controller
         //get user info
         date_default_timezone_set($this->config->item('local_timezone'));
         $this->load->model('System_setup_model', 'setup');
-        $this->load->helper(array('url', 'html', 'myemsl_api', 'file_info', 'user'));
+        $this->load->helper(array('url', 'html', 'myemsl_api', 'file_info', 'user', 'network'));
         $this->output->enable_profiler(false);
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
@@ -48,7 +48,7 @@ class Baseline_api_controller extends CI_Controller
         $this->cart_url_base = $this->config->item('external_cart_url');
         $this->user_id = get_user();
         $this->ingester_messages = $this->config->item('ingest_status_messages');
-
+        $this->git_hash = get_current_git_hash();
         $this->application_version = $this->config->item('application_version');
         $this->page_address = implode('/', $this->uri->rsegments);
 
