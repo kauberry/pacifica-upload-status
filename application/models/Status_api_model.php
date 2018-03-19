@@ -232,6 +232,7 @@ class Status_api_model extends CI_Model
             ksort($file_list);
             $temp_list = array_keys($file_list);
             $first_path = array_shift($temp_list);
+            $temp_list = array_keys($file_list);
             $last_path = array_pop($temp_list);
             $common_path_prefix_array = $this->get_common_path_prefix($first_path, $last_path);
             $common_path_prefix = implode('/', $common_path_prefix_array);
@@ -266,8 +267,8 @@ class Status_api_model extends CI_Model
     {
         $shortest_path = sizeof($first_path) < sizeof($last_path) ? $first_path : $last_path;
         $longest_path = $shortest_path == $first_path ? $last_path : $first_path;
-        $short_path_array = explode($delimiter, $shortest_path);
-        $longest_path_array = explode($delimiter, $longest_path);
+        $short_path_array = explode($delimiter, dirname($shortest_path));
+        $longest_path_array = explode($delimiter, dirname($longest_path));
         $common_path_array = array();
         for ($i=0; $i<sizeof($short_path_array); $i++) {
             if ($short_path_array[$i] == $longest_path_array[$i]) {
