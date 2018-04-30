@@ -16,54 +16,25 @@
             </div>
           </div>
           <div class="form_container">
-            <form id="instrument_selection" class="themed">
-              <fieldset id="inst_select_container">
-                <legend>Instrument Selection</legend>
-                <div class="full_width_block" id="proposal_selector_container">
-                  <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:100%;">
-                    <?php
-                        if(!empty($proposal_list)){
-                            $this->load->view(
-                                'proposal_selector_insert.html',
-                                array(
-                                    'proposal_list' => $proposal_list,
-                                    'selected_proposal' => $selected_proposal
-                                )
-                            );
-                        }
-                    ?>
-                  </select>
-                </div>
-
-                <div class="full_width_block" id="bottom_selector_container" style="margin-top:1em;">
-                  <div class="left_block" id="instrument_selector_container">
-                    <select id="instrument_selector" class="criterion_selector" disabled="disabled" name="instrument_selector" style="width:100%;">
-                        <option></option>
-                    </select>
-                    <div class="selector_spinner_container" id="instrument_selector_spinner"></div>
-                  </div>
-                  <div class="right_block" id="timeframe_selector_container">
-                    <div id="time_range_container" class="time_range_container pull-right">
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
-                        <span class="time_range_display"></span><span class="fake_selection_arrow" role="presentation"><b role="presentation">&nbsp;</b></span>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-
+              <?php $this->load->view('selector_module_insert.html') ?>
           </div>
+        <?php if($page_mode == 'cart'): ?>
             <?php $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : ""; ?>
           <div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
             <fieldset id="cart_listing_fieldset">
-              <legend>Download Queue</legend>
+              <legend><?= $cart_legend ?></legend>
               <div id="cart_listing"></div>
             </fieldset>
           </div>
+        <?php elseif($page_mode == 'transfer'): ?>
+            <?php $this->load->view("doi_transfer_cart_table_view.html"); ?>
+        <?php endif; ?>
 
           <div class="loading_status loading_progress_container status_messages" id="loading_status" style="display:none;">
-            <span class="spinner" id="load_status_spinner"></span>
-            <span id="loading_status_text">Loading...</span>
+            <div class="spinner_message_container">
+              <span class="spinner" id="load_status_spinner"></span>
+              <span id="loading_status_text">Loading...</span>
+            </div>
           </div>
           <div class="themed" id="item_info_container" style="margin-top:20px;"></div>
         </div>
@@ -89,7 +60,7 @@
       , zIndex: 2e9 // The z-index (defaults to 2000000000)
       , className: 'load_spinner' // The CSS class to assign to the spinner
       , top: '50%' // Top position relative to parent
-      , left: '38%' // Left position relative to parent
+      , left: '5%' // Left position relative to parent
       , shadow: false // Whether to render a shadow
       , hwaccel: true // Whether to use hardware acceleration
       , position: 'absolute' // Element positioning
@@ -101,5 +72,7 @@ var loading_spinner = new Spinner(load_spinner_opts).spin(target);
 </script>
 
 </body>
+<?php if($page_mode == 'cart'): ?>
 <?php $this->load->view("cart_create_dialog_view.html"); ?>
+<?php endif; ?>
 </html>

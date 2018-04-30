@@ -54,6 +54,7 @@ class Baseline_api_controller extends CI_Controller
 
         $this->benchmark->mark('get_user_details_start');
         $user_info = get_user_details($this->user_id);
+        $this->user_info = $user_info;
         $this->username = $user_info['first_name'] ?: 'Anonymous Stranger';
         $this->fullname = "{$this->username} {$user_info['last_name']}";
         $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;

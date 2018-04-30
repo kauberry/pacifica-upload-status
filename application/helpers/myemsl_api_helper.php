@@ -241,3 +241,33 @@ function array_to_xml($data, &$xml_data)
         }
     }
 }
+
+function get_selection_defaults($incoming)
+{
+    $proposal_id = $incoming['proposal_id'] ?: get_cookie('last_proposal_selector');
+    $instrument_id = $incoming['instrument_id'] ?: get_cookie('last_instrument_selector');
+    $starting_date = $incoming['starting_date'] ?: get_cookie('last_starting_date_selector');
+    $ending_date = $incoming['ending_date'] ?: get_cookie('last_ending_date_selector');
+    $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
+    $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
+
+    if (!$starting_date || !$ending_date) {
+        $today = new DateTime();
+        if (!$ending_date) {
+            $ending_date = $today->format('Y-m-d');
+        }
+        if (!$starting_date) {
+            $today->modify('-30 days');
+            $starting_date = $today->format('Y-m-d');
+        }
+    }
+
+    $outgoing = [
+        'proposal_id' => $proposal_id,
+        'instrument_id' => $instrument_id,
+        'starting_date' => $starting_date,
+        'ending_date' => $ending_date
+    ];
+
+    return $outgoing;
+}

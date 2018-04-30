@@ -101,7 +101,7 @@ class Ajax_api extends Baseline_api_controller
         $proposal_id = false,
         $terms = false
     ) {
-    
+
         if (!$proposal_id || empty($proposal_id)) {
             //some kind of error callback
             return array();
@@ -111,6 +111,56 @@ class Ajax_api extends Baseline_api_controller
         // $results_body = $query->body;
 
         print($query->body);
+    }
+
+    /**
+     * [get_release_states description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_release_states()
+    {
+        $md_url = "{$this->metadata_url_base}/transactioninfo/release_state";
+        $transaction_list = [];
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $transaction_list = json_decode($http_raw_post_data, true);
+        }
+        $query = Requests::post($md_url, array(
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ), json_encode($transaction_list));
+        print $query->body;
+    }
+
+    /**
+     * [set_release_state description]
+     *
+     * @param  [type] $transaction_id [description]
+     * @param  [type] $release_state [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function set_release_state($transaction_id, $release_state)
+    {
+        //This really needs to check permissions
+        $release_state_id = $release_state == 'released' ? 1 : 0;
+        $content = [
+            'person_id' => $this->user_id,
+            'transaction_id' => $transaction_id,
+            'release_state_id' => $release_state_id
+        ];
+        $md_url = "{$this->metadata_url_base}/transaction_release";
+        $query = Requests::put($md_url, array(
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ), json_encode($content));
+
+        $check_url = "{$this->metadata_url_base}/transactioninfo/release_state/{$transaction_id}";
+        $check_query = Requests::get($check_url);
+        print $check_query->body;
     }
 
     /**

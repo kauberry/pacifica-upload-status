@@ -9,7 +9,7 @@
 ?>
 <html>
   <head>
-    <title><?= ucwords($site_identifier) ?> Status - <?= $title ?></title>
+    <title><?= ucwords($site_identifier) ?> &ndash; <?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="description" content="" />
     <?php //$this->load->view("{$this->template_version}_template/content_sec_policy.html"); ?>

@@ -80,7 +80,6 @@ class Status_api_model extends CI_Model
         $transactions_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));
         $results = json_decode($query->body, true);
-
         return $results;
     }
 

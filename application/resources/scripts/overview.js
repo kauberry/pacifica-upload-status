@@ -46,7 +46,7 @@ $(function() {
         get_instrument_list(current_proposal_id);
     }
     setup_daterangepicker();
-    cart_status();
+    // cart_status();
 });
 
 var setup_daterangepicker = function() {
@@ -92,7 +92,7 @@ var setup_selectors = function(initial_load) {
     if (current_proposal_id == undefined || initial_load) {
         $("#instrument_selector")
             .select2({
-                placeholder: "Select an Instrument..."
+                placeholder: ui_markup.instrument_selection_desc + "..."
             });
     }
 
@@ -127,8 +127,7 @@ var setup_selectors = function(initial_load) {
                 return markup;
             },
             templateResult: formatProposal,
-            templateSelection: formatProposalSelection,
-            placeholder: "Please Select an EUS Proposal...",
+            templateSelection: formatProposalSelection
         })
         .off("change")
         .on("change", update_content);
@@ -172,7 +171,7 @@ var formatProposal = function(item) {
 };
 
 var formatProposalSelection = function(item) {
-    var markup = "Please Select an EUS Proposal...";
+    var markup =  ui_markup.proposal_selection_desc + "...";
     if (item.id.length > 0) {
         markup = "<span title=\"" + item.title + "\">" + item.text + "</span>";
     }
@@ -191,7 +190,7 @@ var get_instrument_list = function(proposal_id) {
             if(data.total_count > 0){
                 $("#instrument_selector").select2({
                     data: data.items,
-                    placeholder: "Select an Instrument...",
+                    placeholder: ui_markup.instrument_selection_desc + "...",
                     templateResult: formatInstrument,
                     templateSelection: formatInstrumentSelection,
                     matcher: my_matcher,
@@ -257,7 +256,7 @@ var formatInstrument = function(item) {
 };
 
 var formatInstrumentSelection = function(item) {
-    var markup = "Select an Instrument...";
+    var markup = ui_markup.instrument_selection_desc + "...";
     var current_proposal_id = $("#proposal_selector").val();
     if (item.id > 0) {
         markup = item.text;
@@ -341,6 +340,9 @@ var update_content = function(event) {
                                         function() {
                                             setup_tree_data();
                                             setup_metadata_disclosure();
+                                            if(typeof setup_staging_buttons == "function"){
+                                                setup_staging_buttons();
+                                            }
                                         }
                                     );
                                 }
@@ -363,4 +365,16 @@ var update_content = function(event) {
             }
         );
     }
+};
+
+var myemsl_size_format = function(bytes) {
+    var suffixes = ["B", "KB", "MB", "GB", "TB", "EB"];
+    if (bytes == 0) {
+        suffix = "B";
+    } else {
+        var order = Math.floor(Math.log(bytes) / Math.log(10) / 3);
+        bytes = (bytes / Math.pow(1024, order)).toFixed(1);
+        suffix = suffixes[order];
+    }
+    return bytes + " " + suffix;
 };
