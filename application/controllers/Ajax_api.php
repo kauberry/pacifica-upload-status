@@ -146,18 +146,20 @@ class Ajax_api extends Baseline_api_controller
     public function set_release_state($transaction_id, $release_state)
     {
         //This really needs to check permissions
-        $release_state_id = $release_state == 'released' ? 1 : 0;
+        if (!in_array($release_state, array('released', 'not_released'))) {
+            $release_state = 'not_released';
+        }
         $content = [
-            'person_id' => $this->user_id,
-            'transaction_id' => $transaction_id,
-            'release_state_id' => $release_state_id
+            'authorized_person' => $this->user_id,
+            'transaction' => $transaction_id,
         ];
         $md_url = "{$this->metadata_url_base}/transaction_release";
-        $query = Requests::put($md_url, array(
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
-        ), json_encode($content));
-
+        if ($release_state == 'released') {
+            $query = Requests::put($md_url, array(
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ), json_encode($content));
+        }
         $check_url = "{$this->metadata_url_base}/transactioninfo/release_state/{$transaction_id}";
         $check_query = Requests::get($check_url);
         print $check_query->body;

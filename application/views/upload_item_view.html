@@ -137,6 +137,10 @@
       </fieldset>
       <div class="ingest_status_block" id="ingest_status_block_<?= $transaction_id ?>" style="display:none;"></div>
     </div>
+    <div class="publication_status_block" id="pub_status_block_<?= $transaction_id ?>" style="display:none;overflow:hidden;">
+        <div class="publication_left_block"></div>
+        <div class="publication_right_block"></div>
+    </div>
     <?php endforeach; ?>
   <?php endif; ?>
     <script type="application/javascript">

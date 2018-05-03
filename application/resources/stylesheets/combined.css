@@ -740,6 +740,14 @@ div.form_container td {
         background-color: transparent;
         min-height: auto;
     }
+    div.form_container {
+        padding-left: 1em;
+    }
+    .publication_status_block {
+        width: 100%;
+        background-color: #efefef;
+        border: none;
+    }
     div.themed, div.form_container {
         width: 100%;
         margin-left: auto;

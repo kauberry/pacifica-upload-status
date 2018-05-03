@@ -67,25 +67,57 @@ var set_release_state_banners = function(release_states, selector){
         var txn_id = el.find(".transaction_identifier").val();
         var ribbon_el = el.find(".ribbon");
         var release_info = release_states[txn_id];
-        if($.isEmptyObject(release_info)){
+        if(release_info.release_state == "not_released"){
             var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
             if(!$.isEmptyObject(current_session_contents) && txn_id in current_session_contents){
-                release_info.machine_name = "staged";
-                release_info.display_name = "Staged";
+                release_info.release_state = "staged";
+                release_info.display_state = "Staged";
             }else{
-                release_info.machine_name = "not_released";
-                release_info.display_name = "Not Released";
+                release_info.release_state = "not_released";
+                release_info.display_state = "Not Released";
                 var content = build_staging_button(txn_id);
                 el.find("legend").after(content);
                 el.find(".staging_button").off().on("click", function(event){
                     stage_transaction($(event.target));
                 });
             }
+        }else{
+            var pub_status_block = el.next(".publication_status_block");
+            if(release_info.release_doi_entries != null){
+
+                var lb = pub_status_block.find(".publication_left_block");
+                lb.append($("<div>", {"class": "reference_header", "text": "Published DOI References"}));
+                var list = $("<ul/>").appendTo(lb);
+                $.each(release_info.release_doi_entries, function(index, item){
+                    $("<li/>").appendTo(list).append($("<a/>", {
+                        "href": format_doi_ref(item.doi_reference),
+                        "text": item.doi_name,
+                        "title": "DOI Reference: " + item.doi_reference
+                    }));
+                });
+                pub_status_block.show();
+            }
+            if(release_info.release_citations != null){
+                var rb = pub_status_block.find(".publication_right_block");
+                rb.append($("<div>", {"class": "reference_header", "text": "Published Citations"}));
+                list = $("<ul/>").appendTo(rb);
+                $.each(release_info.release_citations, function(index, item){
+                    $("<li/>").appendTo(list).append($("<a/>", {
+                        "href": format_doi_ref(item.doi_reference),
+                        "text": item.title + " " + item.title + " " + item.title,
+                    }));
+                });
+                pub_status_block.show();
+            }
         }
-        ribbon_el.removeClass().addClass("ribbon").addClass(release_info.machine_name);
-        ribbon_el.find("span").text(release_info.display_name);
+        ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
+        ribbon_el.find("span").text(release_info.display_state);
 
     });
+};
+
+var format_doi_ref = function(doi_reference){
+    return "https://dx.doi.org/" + doi_reference;
 };
 
 var setup_staging_buttons = function(){
@@ -123,8 +155,8 @@ var submit_selections = function(event){
         var release_url = base_url + "ajax_api/set_release_state/" + transaction_id + "/released";
         $.get(release_url, function(data){
             var ribbon = $("#fieldset_container_" + transaction_id + " .ribbon");
-            ribbon.removeClass().addClass("ribbon").addClass(data.machine_name);
-            ribbon.find("span").text(data.display_name);
+            ribbon.removeClass().addClass("ribbon").addClass(data.release_state);
+            ribbon.find("span").text(data.display_state);
             set_staged_transaction_completed(transaction_id);
             setup_staging_buttons();
         });
