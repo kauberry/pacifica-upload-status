@@ -334,7 +334,9 @@ class Status_api extends Baseline_user_api_controller
                 $this->page_data['script_uris'],
                 array(
                     '/project_resources/scripts/single_item_view.js',
-                    '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js'
+                    '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
+                    '/project_resources/scripts/myemsl_file_download.js'
+
                 )
             );
 
