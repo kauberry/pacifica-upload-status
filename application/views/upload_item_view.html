@@ -28,7 +28,7 @@
         <?php $instrument_id = $transaction_info['metadata']['instrument_id']; ?>
         <?php $proposal_id = $transaction_info['metadata']['proposal_id']; ?>
         <?php $submit_time = $transaction_info['metadata']['submitted']; ?>
-        <?php $download_url = $page_mode == 'release' ? "https://status.my.emsl.pnnl.gov/pnnl/released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
+        <?php $download_url = $page_mode == 'release' && $release_class == 'released'? "https://status.my.emsl.pnnl.gov/pnnl/released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
         <input
             type="hidden"
             class="instrument_identifier"
