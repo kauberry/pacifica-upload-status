@@ -56,7 +56,7 @@ class Baseline_user_api_controller extends Baseline_api_controller
         $this->load->helper(
             array(
                 'inflector', 'item', 'form',
-                'network', 'cookie', 'ingest_status'
+                'network', 'ingest_status'
             )
         );
         $this->load->library(array('table'));

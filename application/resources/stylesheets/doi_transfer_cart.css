@@ -2,10 +2,21 @@
     border-radius: 5px 5px 0 0;
     margin-top: 1.5em;
     padding-top: 0.2em;
-    background-color: rgb(77, 101, 146);
-    border: 2px solid rgb(77, 101, 146);
     border-bottom: 0;
 }
+
+.transfer_cart_bottom {
+    height: 20px;
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 2.5em;
+    padding-bottom: 1em;
+}
+
+.transfer_cart_headers {
+    background-color: rgb(77, 101, 146);
+    border: 2px solid rgb(77, 101, 146);
+}
+
 
 .transfer_cart {
     width: 960px;
@@ -32,8 +43,7 @@
 } */
 
 .transfer_cart_button {
-    border: 1px solid rgb(77, 101, 146);
-    background-color: rgb(77, 101, 146);
+    border-width: 1px
     font-size: 0.9em;
     font-weight: bold;
     border-radius: 5px;
@@ -65,17 +75,8 @@
     background-color: rgb(50, 70, 93);
 }
 
-.transfer_cart_bottom {
-    height: 20px;
-    border-radius: 0 0 5px 5px;
-    margin-bottom: 2.5em;
-    padding-bottom: 1em;
-    background-color: rgb(77, 101, 146);
-    border: 2px solid rgb(77, 101, 146);
-}
-
 .transfer_cart thead tr {
-    color: #efefef;
+    color: rgb(239, 239, 239);
 }
 
 .transfer_cart tbody tr {
@@ -117,8 +118,8 @@
 
 .publication_status_block {
     width: 90%;
-    background-color: #f6f6f6;
-    border: 2px solid #d1d1d1;
+    background-color: rgb(246, 246, 246);
+    border: 2px solid rgb(209, 209, 209);
     border-radius: 0 0 6px 6px;
     border-top: 0;
     margin: -15px auto 1em auto;
@@ -142,13 +143,13 @@
 
 .publication_status_block a {
     text-decoration: none;
-    color: #333;
+    color: rgb(51, 51, 51);
     position: relative;
     transition: all 0.5s ease;
 }
 
 .publication_status_block a:hover {
-    color: #333;
+    color: rgb(51, 51, 51);
     text-decoration: underline;
 }
 
@@ -164,6 +165,8 @@
 
 @media (max-width: 960px) {
     .publication_status_block {
-        display:none;
+        border-radius: 6px;
+        border: 1px solid rgb(209, 209, 209);
+        background-color: rgb(250, 250, 250);
     }
 }

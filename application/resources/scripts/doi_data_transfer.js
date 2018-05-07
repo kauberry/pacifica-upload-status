@@ -84,8 +84,8 @@ var set_release_state_banners = function(release_states, selector){
         }else{
             var pub_status_block = el.next(".publication_status_block");
             if(release_info.release_doi_entries != null){
-
                 var lb = pub_status_block.find(".publication_left_block");
+                lb.empty();
                 lb.append($("<div>", {"class": "reference_header", "text": "Published DOI References"}));
                 var list = $("<ul/>").appendTo(lb);
                 $.each(release_info.release_doi_entries, function(index, item){
@@ -99,6 +99,7 @@ var set_release_state_banners = function(release_states, selector){
             }
             if(release_info.release_citations != null){
                 var rb = pub_status_block.find(".publication_right_block");
+                rb.empty();
                 rb.append($("<div>", {"class": "reference_header", "text": "Published Citations"}));
                 list = $("<ul/>").appendTo(rb);
                 $.each(release_info.release_citations, function(index, item){

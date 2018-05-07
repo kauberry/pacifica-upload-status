@@ -36,6 +36,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 |
 */
 $config['base_url']    = 'http://status.local';
+$config['cookie_domain']    = '.local';
 $config['base_dir'] = '';
 
 $config['log_threshold'] = 4;

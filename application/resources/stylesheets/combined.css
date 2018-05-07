@@ -760,10 +760,6 @@ div.form_container td {
         margin-bottom: 0.5em;
     }
 
-    .themed .fieldset_container:last-of-type {
-        border-bottom: 3px solid #aaa !important;
-    }
-
     .ribbon {
         right: 0;
         top: 0;
@@ -777,6 +773,7 @@ div.form_container td {
         border-top: 3px solid #aaa !important;
         padding-top: 1em;
     }
+
 }
 
 @media (max-width:640px){

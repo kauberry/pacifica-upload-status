@@ -68,7 +68,8 @@ class Status_api extends Baseline_user_api_controller
     public function data_transfer($data_identifier = '')
     {
         $this->data_identifier = $data_identifier;
-        $this->page_mode = 'transfer';
+        $this->page_mode = 'release';
+        set_cookie('page_mode', $this->page_mode, 64000, '', '/');
         $updated_page_info = [
             'page_header' => 'DOI Data Selection Interface',
             'title' => 'DOI Data Selection'
@@ -100,6 +101,7 @@ class Status_api extends Baseline_user_api_controller
             'starting_date' => $starting_date,
             'ending_date' => $ending_date
         ];
+        set_cookie('page_mode', $this->page_mode, 64000, '', '/');
         $defaults = get_selection_defaults($defaults);
         extract($defaults);
         $view_name = $this->overview_template;
@@ -112,7 +114,7 @@ class Status_api extends Baseline_user_api_controller
                 )
             );
         $extra_scripts_array = ['/project_resources/scripts/overview.js'];
-        if ($this->page_mode == 'transfer') {
+        if ($this->page_mode == 'release') {
             $extra_scripts_array[] = '/project_resources/scripts/doi_data_transfer.js';
         } else {
             $extra_scripts_array[] = '/project_resources/scripts/myemsl_file_download.js';
@@ -157,7 +159,7 @@ class Status_api extends Baseline_user_api_controller
 
         $this->page_data['selected_proposal'] = $proposal_id;
         $this->page_data['starting_date'] = $starting_date;
-        $this->page_date['ending_date'] = $ending_date;
+        $this->page_data['ending_date'] = $ending_date;
         $this->page_data['instrument_id'] = $instrument_id;
         $this->page_data['js'] = $js;
         $this->page_data['cart_legend'] = "Download Queue";
@@ -245,7 +247,9 @@ class Status_api extends Baseline_user_api_controller
         $ending_date = '',
         $view_name = 'upload_item_view.html'
     ) {
-
+        if (get_cookie('myemsl_status_page_mode')) {
+            $this->page_mode = get_cookie('myemsl_status_page_mode');
+        }
         $time_period_empty = true;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
@@ -296,6 +300,8 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['selected_proposal_id'] = $proposal_id;
         $this->page_data['selected_instrument_id'] = $instrument_id;
         $this->page_data['enable_breadcrumbs'] = false;
+        $this->page_data['page_mode'] = $this->page_mode;
+
         $this->page_data['transaction_data'] = $results['transaction_list'];
         if (array_key_exists('transactions', $results['transaction_list'])
             && !empty($results['transaction_list']['transactions'])
