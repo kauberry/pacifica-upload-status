@@ -71,8 +71,8 @@ class Status_api extends Baseline_user_api_controller
         $this->page_mode = 'release';
         set_cookie('page_mode', $this->page_mode, 64000, '', '/');
         $updated_page_info = [
-            'page_header' => 'DOI Data Selection Interface',
-            'title' => 'DOI Data Selection'
+            'page_header' => 'Data Release Interface',
+            'title' => 'Data Release'
         ];
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
         $this->page_data = array_merge($this->page_data, $updated_page_info);
