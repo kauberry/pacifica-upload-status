@@ -111,6 +111,8 @@ var set_release_state_banners = function(release_states, selector){
                 pub_status_block.show();
             }
         }
+        el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
+        el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
         ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
         ribbon_el.find("span").text(release_info.display_state);
 
@@ -145,7 +147,6 @@ var setup_staging_buttons = function(){
 var clear_selections = function(){
     sessionStorage.clear();
     update_staged_transactions_view();
-    setup_staging_buttons();
 };
 
 var submit_selections = function(event){
@@ -159,7 +160,7 @@ var submit_selections = function(event){
             ribbon.removeClass().addClass("ribbon").addClass(data.release_state);
             ribbon.find("span").text(data.display_state);
             set_staged_transaction_completed(transaction_id);
-            setup_staging_buttons();
+            update_staged_transactions_view();
         });
     });
 };
@@ -181,7 +182,6 @@ var unstage_transaction = function(el){
     var banner = container.find(".ribbon");
     banner.removeClass().addClass("ribbon").addClass("not_released");
     banner.find("span").text("Not Released");
-    setup_staging_buttons();
     update_staged_transactions_view();
 };
 
@@ -242,6 +242,7 @@ var update_staged_transactions_view = function(){
     }else{
         $("#doi_transfer_cart").hide();
     }
+    setup_staging_buttons();
 };
 
 $(function(){

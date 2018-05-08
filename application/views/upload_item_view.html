@@ -71,7 +71,7 @@
                       <?php if(stripos($md_name, "file") === 0) continue; ?>
                       <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
                     <tr class="metadata_description_list">
-                      <td class="metadata_header"><?= $cleaned_type_name ?></td>
+                      <td class="metadata_header <?= $md_name ?>"><?= $cleaned_type_name ?></td>
                       <td class="metadata_item"><?= $md_value ?></td>
                     </tr>
                     <?php endforeach; ?>
