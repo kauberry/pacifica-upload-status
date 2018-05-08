@@ -49,7 +49,7 @@
             id="submit_time_<?= $transaction_id ?>", name="submit_time_<?= $transaction_id ?>",
             value="<?= $submit_time ?>" />
         <legend>
-          <a href="<?= $download_url ?>">Upload ID <?= $transaction_id ?></a>
+          <a id="upload_url_<?= $transaction_id ?>" class="upload_url" href="<?= $download_url ?>">Upload ID <?= $transaction_id ?></a>
           <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
         </legend>
         <h2 id="message_block_<?= $transaction_id ?>" style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
