@@ -52,6 +52,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['page_header'] = 'Status Reporting';
         $this->page_data['title'] = 'Status Overview';
         $this->page_mode = 'cart';
+        $this->page_data['view_mode'] = 'multiple';
         $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
     }
 
@@ -269,6 +270,12 @@ class Status_api extends Baseline_user_api_controller
                 $start_time,
                 $end_time
             );
+            $transactions = $transaction_list;
+            foreach ($transactions['transactions'] as $transaction_id => $transaction_info) {
+                $transaction_list['transactions'][$transaction_id]['metadata']['transaction_id'] =
+                    "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
+            }
+
             $file_size_totals = array();
             foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
                 $file_size_totals[$transaction_id] = $transaction_info['file_size_bytes'];
@@ -325,6 +332,11 @@ class Status_api extends Baseline_user_api_controller
      */
     public function view($id)
     {
+        $path_splitter_regex = '/\/?([^\/]+)\/(\d+)$/';
+        if (preg_match($path_splitter_regex, $_SERVER['REQUEST_URI'], $matches)) {
+            $page_state = $matches[1];
+        }
+        $this->page_mode = 'cart';
         $lookup_type_description = 'Transaction';
         $lookup_type = 'transaction';
         $instrument_id = -1;
@@ -345,7 +357,7 @@ class Status_api extends Baseline_user_api_controller
 
                 )
             );
-
+        $this->page_data['view_mode'] = 'single';
         $this->page_data['js'] = "var transaction_id = '{$id}';
 ";
         if (!is_numeric($id) || $id < 0) {
@@ -363,6 +375,16 @@ class Status_api extends Baseline_user_api_controller
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);
+        $release_state = $transaction_info['transactions'][$id]['metadata']['release_state'];
+        if ($page_state == 'released_data' && $release_state != 'released') {
+            $err_msg = 'This data resource has not been made publicly available.';
+            $this->page_data['page_header'] = "Data Unavailable";
+            $this->page_data['title'] = $this->page_data['page_header'];
+            $this->page_data['error_message'] = $err_msg;
+            $this->page_data['lookup_type_desc'] = $lookup_type_description;
+            $this->page_data['lookup_type'] = $lookup_type;
+            $this->load->view('status_error_page.html', $this->page_data);
+        }
         if (!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
             if ($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
@@ -407,6 +429,7 @@ var refresh = function(){
         }
 
         $this->page_data['page_header'] = 'Upload Report';
+        $this->page_data['page_mode'] = $this->page_mode;
         $this->page_data['title'] = 'Upload Report';
         $file_size = 0;
         $inst_id = -1;

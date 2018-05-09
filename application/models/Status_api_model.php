@@ -81,10 +81,6 @@ class Status_api_model extends CI_Model
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));
         $results = json_decode($query->body, true);
         $transactions = $results['transactions'];
-        foreach ($transactions as $transaction_id => $transaction_info) {
-            $results['transactions'][$transaction_id]['metadata']['transaction_id'] =
-                "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
-        }
         return $results;
     }
 
@@ -108,8 +104,6 @@ class Status_api_model extends CI_Model
 
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));
         $results = json_decode($query->body, true);
-        $results['transactions'][$transaction_id]['metadata']['transaction_id'] =
-            "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
         return $results;
     }
 

@@ -1,4 +1,4 @@
-var setup_metadata_disclosure = function(){
+var setup_metadata_disclosure = function(){ // eslint-disable-line no-unused-vars
     $("ul.metadata_container").hide();
     $(".disclosure_button").off("click").on("click",
         function(){
@@ -18,7 +18,7 @@ var setup_metadata_disclosure = function(){
 
 };
 
-var setup_tree_data = function(){
+var setup_tree_data = function(){ // eslint-disable-line no-unused-vars
     $(".tree_holder").each(
         function(index, el){
             if($(el).find("ul.ui-fancytree").length == 0) {
@@ -83,7 +83,7 @@ var set_release_state_banners = function(release_states, selector){
             }
         }else{
             var pub_status_block = el.next(".publication_status_block");
-            el.find(".upload_url").attr({"href": "https://status.my.emsl.pnl.gov/pnnl/released_data/" + txn_id});
+            el.find(".upload_url").attr({"href": "https://status.my.emsl.pnnl.gov/pnnl/released_data/" + txn_id});
             if(release_info.release_doi_entries != null){
                 var lb = pub_status_block.find(".publication_left_block");
                 lb.empty();
