@@ -330,3 +330,15 @@ var setup_tree_data = function(){
         }
     );
 };
+
+var myemsl_size_format = function(bytes) {
+    var suffixes = ["B", "KB", "MB", "GB", "TB", "EB"];
+    if (bytes == 0) {
+        suffix = "B";
+    } else {
+        var order = Math.floor(Math.log(bytes) / Math.log(10) / 3);
+        bytes = (bytes / Math.pow(1024, order)).toFixed(1);
+        suffix = suffixes[order];
+    }
+    return bytes + " " + suffix;
+};
