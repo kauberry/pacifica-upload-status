@@ -83,8 +83,7 @@ var set_release_state_banners = function(release_states, selector){
             }
         }else{
             var pub_status_block = el.next(".publication_status_block");
-            // el.find(".upload_url").attr({"href": "https://status.my.emsl.pnnl.gov/pnnl/released_data/" + txn_id});
-            el.find(".upload_url").attr({"href": "https://statusdev.my.emsl.pnl.gov/released_data/" + txn_id});
+            el.find(".upload_url").attr({"href": external_release_base_url + "released_data/" + txn_id});
             if(release_info.release_doi_entries != null){
                 var lb = pub_status_block.find(".publication_left_block");
                 lb.empty();

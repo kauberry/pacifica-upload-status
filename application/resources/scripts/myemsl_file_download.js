@@ -319,7 +319,7 @@ var setup_tree_data = function(){
                         loadChildren: function(event, ctx) {
                             ctx.node.fixSelection3AfterClick();
                         },
-                        expand: function(event,data){
+                        expand: function(event, data){
                             setup_file_download_links($(el));
                         },
                         cookieId: "fancytree_tx_" + el_id,

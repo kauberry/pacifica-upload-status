@@ -51,6 +51,7 @@ class Status_api extends Baseline_user_api_controller
         $this->load->model('Myemsl_api_model', 'myemsl');
         $this->page_data['page_header'] = 'Status Reporting';
         $this->page_data['title'] = 'Status Overview';
+        $this->page_data['external_release_base_url'] = $this->config->item('external_release_base_url');
         $this->page_mode = 'cart';
         $this->page_data['view_mode'] = 'multiple';
         $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
@@ -144,18 +145,19 @@ class Status_api extends Baseline_user_api_controller
             ksort($this->page_data['proposal_list']);
         }
 
-        $js = "var initial_proposal_id = '{$proposal_id}';
-                var initial_instrument_id = '{$instrument_id}';
-                var initial_starting_date = '{$starting_date}';
-                var initial_ending_date = '{$ending_date}';
-                var email_address = '{$this->email}';
-                var lookup_type = 't';
+        $js = "var initial_proposal_id = \"{$proposal_id}\";
+                var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
+                var initial_instrument_id = \"{$instrument_id}\";
+                var initial_starting_date = \"{$starting_date}\";
+                var initial_ending_date = \"{$ending_date}\";
+                var email_address = \"{$this->email}\";
+                var lookup_type = \"t\";
                 var initial_instrument_list = [];
                 var ui_markup = {
-                    'instrument_selection_desc': '{$this->config->item('ui_instrument_desc')}',
-                    'proposal_selection_desc': '{$this->config->item('ui_proposal_desc')}'
+                    \"instrument_selection_desc\": \"{$this->config->item('ui_instrument_desc')}\",
+                    \"proposal_selection_desc\": \"{$this->config->item('ui_proposal_desc')}\"
                 };
-                var cart_access_url_base = '{$this->config->item('external_cart_url')}';
+                var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                 ";
 
         $this->page_data['selected_proposal'] = $proposal_id;

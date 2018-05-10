@@ -525,3 +525,5 @@ $config['rewrite_short_tags'] = false;
 | Array:        array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+$config['external_release_base_url'] = 'https://statusdev.my.emsl.pnl.gov/';
