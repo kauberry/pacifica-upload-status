@@ -1,7 +1,3 @@
-var cart_url_base = base_url + "cart_api";
-var cart_info_url = cart_url_base + "/listing/";
-var cart_create_url = cart_url_base + "/create/";
-var cart_delete_url = cart_url_base + "/delete/";
 var max_size = 1024 * 1024 * 1024 * 50; //50 GB (base 2)
 var friendly_max_size = "";
 var exceed_max_size_allow = false;
@@ -64,6 +60,17 @@ var setup_file_download_links = function(parent_item) {
 
 };
 
+var generate_cart_identifier = function(){
+    if(!localStorage.getItem("cart_identifier")){
+        localStorage.setItem("cart_identifier",
+            $().crypt({
+                method: "sha1",
+                source: moment().toISOString() + Math.random().toString()
+            })
+        );
+    }
+    return localStorage.getItem("cart_identifier");
+};
 
 var cart_download = function(transaction_container){
     var selected_files = get_selected_files(transaction_container);
@@ -307,7 +314,7 @@ var setup_tree_data = function(){
                         lazyLoad: function(event, data){
                             var node = data.node;
                             data.result = {
-                                url: base_url + "status_api/get_lazy_load_folder",
+                                url: base_url + "file_tree",
                                 data: {mode: "children", parent: node.key},
                                 method:"POST",
                                 cache: false,
@@ -342,3 +349,9 @@ var myemsl_size_format = function(bytes) {
     }
     return bytes + " " + suffix;
 };
+
+var cart_url_base = base_url;
+var cart_identifier = generate_cart_identifier();
+var cart_info_url = cart_url_base + "cart/listing/" + cart_identifier;
+var cart_create_url = cart_url_base + "cart/create/" + cart_identifier;
+var cart_delete_url = cart_url_base + "cart/delete/" + cart_identifier;

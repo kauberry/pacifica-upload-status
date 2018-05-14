@@ -53,10 +53,10 @@ class Cart_api extends Baseline_api_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function listing()
+    public function listing($cart_owner_identifier)
     {
         $accept = $this->input->get_request_header('Accept');
-        $cart_list = $this->cart->cart_status();
+        $cart_list = $this->cart->cart_status($cart_owner_identifier);
         if (stristr(strtolower($accept), 'json')) {
             //looks like a json request
             transmit_array_with_json_header($cart_list);
@@ -77,7 +77,7 @@ class Cart_api extends Baseline_api_controller
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function create()
+    public function create($cart_owner_identifier)
     {
         $req_method = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : "GET";
         if ($req_method != "POST") {
@@ -91,7 +91,7 @@ class Cart_api extends Baseline_api_controller
             echo "Hey! There's no real data here!";
         }
         // var_dump($this->input->request_headers());
-        $cart_uuid_info = $this->cart->cart_create($this->input->raw_input_stream);
+        $cart_uuid_info = $this->cart->cart_create($cart_owner_identifier, $this->input->raw_input_stream);
         transmit_array_with_json_header($cart_uuid_info);
     }
 
@@ -104,14 +104,14 @@ class Cart_api extends Baseline_api_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function delete($cart_uuid)
+    public function delete($cart_owner_identifier, $cart_uuid)
     {
         $req_method = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : "GET";
         if ($req_method != "DELETE") {
             echo "That's not how you use this function!!!";
             exit();
         }
-        $status_message = $this->cart->cart_delete($cart_uuid);
+        $status_message = $this->cart->cart_delete($cart_owner_identifier, $cart_uuid);
         $success = false;
         if ($status_message / 100 == 2) {
             //looks like it went through ok

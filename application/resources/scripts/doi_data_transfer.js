@@ -29,7 +29,7 @@ var setup_tree_data = function(){ // eslint-disable-line no-unused-vars
                         lazyLoad: function(event, data){
                             var node = data.node;
                             data.result = {
-                                url: base_url + "status_api/get_lazy_load_folder",
+                                url: base_url + "file_tree",
                                 data: {mode: "children", parent: node.key},
                                 method:"POST",
                                 cache: false

@@ -63,7 +63,7 @@ class Cart_api_model extends CI_Model
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function cart_create($cart_submission_json)
+    public function cart_create($cart_owner_identifier, $cart_submission_json)
     {
         $return_array = array(
             'cart_uuid' => null,
@@ -72,7 +72,7 @@ class Cart_api_model extends CI_Model
             'retrieval_url' => null
         );
         $local_cart_success = false;
-        $new_submission_info = $this->_clean_cart_submission($cart_submission_json);
+        $new_submission_info = $this->_clean_cart_submission($cart_owner_identifier, $cart_submission_json);
         if (!$new_submission_info) {
             $return_array['message'] = 'No files were located for this submission';
             $this->output->set_status_header(410);
@@ -152,9 +152,9 @@ class Cart_api_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _get_user_cart_list($filter = '')
+    private function _get_user_cart_list($cart_owner_identifier, $filter = '')
     {
-        $this->db->where('deleted is null')->where('owner', $this->user_id);
+        $this->db->where('deleted is null')->where('owner', $cart_owner_identifier);
         if (!empty($filter)) {
             $this->db->like('CONCAT(name, description)', $filter);
         }
@@ -179,10 +179,10 @@ class Cart_api_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function cart_status($cart_uuid_list = false)
+    public function cart_status($cart_owner_identifier, $cart_uuid_list = false)
     {
         if (!$cart_uuid_list) {
-            $cart_uuid_list = $this->_get_user_cart_list();
+            $cart_uuid_list = $this->_get_user_cart_list($cart_owner_identifier);
         }
 
         if (empty($cart_uuid_list)) {
@@ -276,7 +276,7 @@ class Cart_api_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function cart_delete($cart_uuid)
+    public function cart_delete($cart_owner_identifier, $cart_uuid)
     {
         $cart_url = "{$this->cart_url_base}/{$cart_uuid}";
         $query = Requests::delete($cart_url);
@@ -335,7 +335,7 @@ class Cart_api_model extends CI_Model
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _clean_cart_submission($cart_submission_json)
+    private function _clean_cart_submission($cart_owner_identifier, $cart_submission_json)
     {
         $submission_timestamp = new DateTime();
         $default_cart_name = "Cart for {$this->fullname}";
@@ -354,7 +354,7 @@ class Cart_api_model extends CI_Model
         $cleaned_object = array(
             'name' => "{$name} ({$submission_timestamp->format('d M Y g:ia')})",
             'files' => $file_info['postable'],
-            'submitter' => $this->user_id,
+            'submitter' => $cart_owner_identifier,
             'submission_timestamp' => $submission_timestamp->getTimestamp(),
         );
 

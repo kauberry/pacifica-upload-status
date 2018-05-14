@@ -329,7 +329,7 @@ var setup_tree_data = function(){
                         lazyLoad: function(event, data){
                             var node = data.node;
                             data.result = {
-                                url: "/status/get_lazy_load_folder",
+                                url: base_url + "file_tree",
                                 data: {mode: "children", parent: node.key},
                                 method:"POST",
                                 cache: false,

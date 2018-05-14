@@ -75,7 +75,9 @@ $route['data_transfer'] = "status_api/data_transfer";
 $route['data_transfer/(:any)'] = "status_api/data_transfer/$1";
 $route['data_release'] = "status_api/data_transfer";
 $route['data_release/(:any)'] = "status_api/data_transfer/$1";
-
+$route['file_tree'] = "status_api/get_lazy_load_folder";
+$route['cart/delete/(:any)/(:any)'] = "cart_api/delete/$1/$2";
+$route['cart/(:any)/(:any)'] = "cart_api/$1/$2";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

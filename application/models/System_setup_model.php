@@ -114,7 +114,8 @@ class System_setup_model extends CI_Model
                     'null' => true
                 ),
                 'owner' => array(
-                    'type' => 'INT'
+                    'type' => 'VARCHAR',
+                    'constraint' => '64'
                 ),
                 'json_submission' => array(
                     'type' => 'VARCHAR'
