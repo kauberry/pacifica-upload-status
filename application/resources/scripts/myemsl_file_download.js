@@ -20,7 +20,8 @@ $(function(){
                 }else{
                     //all req'd fields filled out
                     cart_create_dialog.dialog("close");
-                    create_cart(f.serializeFormJSON());
+                    var tree_container = $("#" + f.find("#current_transaction_container").val());
+                    create_cart(f.serializeFormJSON(), tree_container);
                 }
             },
             Cancel: function() {
@@ -77,10 +78,11 @@ var cart_download = function(transaction_container){
     //check for token
     var item_id_list = Object.keys(selected_files.sizes);
     $("#cart_file_list").val(JSON.stringify(item_id_list));
+    $("#current_transaction_container").val(transaction_container.prop("id"));
     cart_create_dialog.dialog("open");
 };
 
-var create_cart = function(submission_object){
+var create_cart = function(submission_object, transaction_container){
     submission_object["files"] = JSON.parse(submission_object["files"]);
     $.post(
         cart_create_url, JSON.stringify(submission_object)
@@ -97,6 +99,11 @@ var create_cart = function(submission_object){
         .fail(
             function(jqxhr, error, message){
                 alert("A problem occurred creating your cart.\n[" + message + "]");
+            }
+        )
+        .always(
+            function(){
+                unselect_nodes(transaction_container.fancytree("getTree"));
             }
         );
 };
@@ -186,6 +193,10 @@ var get_selected_files = function(tree_container){
         selFiles = get_file_sizes(tree_container);
         update_download_status(tree_container,selCount);
     }
+};
+
+var unselect_nodes = function(tree_container){
+    tree_container.visit(function(node){ node.setSelected(false); });
 };
 
 var get_file_sizes = function(tree_container){
