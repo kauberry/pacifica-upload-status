@@ -119,7 +119,7 @@ var cart_delete = function(cart_uuid){
     if (cart_uuid == null) {
         return;
     }
-    var url = cart_delete_url + cart_uuid;
+    var url = cart_delete_url + "/" + cart_uuid;
     $.ajax(
         {
             url : url,
