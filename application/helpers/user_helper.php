@@ -42,24 +42,23 @@ function get_user()
     $md_url = $CI->metadata_url_base;
     $remote_user = array_key_exists("REMOTE_USER", $_SERVER) ? $_SERVER["REMOTE_USER"] : false;
     $remote_user = !$remote_user && array_key_exists("PHP_AUTH_USER", $_SERVER) ? $_SERVER["PHP_AUTH_USER"] : $remote_user;
-
+    $results = false;
     if ($remote_user) {
         //check for email address as username
         $selector = filter_var($remote_user, FILTER_VALIDATE_EMAIL) ? 'email_address' : 'network_id';
         $url_args_array = array(
             $selector => strtolower($remote_user)
         );
+        $query_url = "{$md_url}/users?";
+        $query_url .= http_build_query($url_args_array, '', '&');
+        $query = Requests::get($query_url, array('Accept' => 'application/json'));
+        $results_body = $query->body;
+        $results_json = json_decode($results_body, true);
+        if ($query->status_code == 200 && !empty($results_json)) {
+            $results = strtolower($results_json[0]['_id']);
+        }
     }
-    $query_url = "{$md_url}/users?";
-    $query_url .= http_build_query($url_args_array, '', '&');
-    $query = Requests::get($query_url, array('Accept' => 'application/json'));
-    $results_body = $query->body;
-    $results_json = json_decode($results_body, true);
-    if ($query->status_code == 200 && !empty($results_json)) {
-        return strtolower($results_json[0]['_id']);
-    } else {
-        return false;
-    }
+    return $results;
 }
 
 /**

@@ -54,7 +54,17 @@ function get_user_details_simple($eus_id)
  */
 function get_user_details($eus_id)
 {
-    return get_details('user', $eus_id);
+    $results = get_details('user', $eus_id);
+    if (empty($results)) {
+        $results = [
+            'first_name' => 'Anonymous Stranger',
+            'last_name' => '',
+            'emsl_employee' => false,
+            'proposals' => [],
+            'email_address' => ''
+        ];
+    }
+    return $results;
 }
 
 /**
@@ -106,7 +116,6 @@ function get_details($object_type, $object_id, $option = false)
     $url = $object_map[$object_type]['url'];
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
-    // $md_url = $CI->config->item('metadata_url');
     $md_url = $CI->metadata_url_base;
     $url_object = array(
         $md_url, $url, $object_id
@@ -114,10 +123,12 @@ function get_details($object_type, $object_id, $option = false)
     if ($option) {
         $url_object[] = $option;
     }
+    $results_body = "{}";
     $query_url = implode('/', $url_object);
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
-    $results_body = $query->body;
-
+    if ($query->status_code == 200) {
+        $results_body = $query->body;
+    }
     return json_decode($results_body, true);
 }
 
