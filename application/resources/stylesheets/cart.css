@@ -19,7 +19,7 @@
 	padding:5px;
     background-color: #656565;
     color: #efefef;
-    text-align: left;    
+    text-align: left;
 }
 
 .cart_tree .cart_status_left {
@@ -50,4 +50,30 @@
     right: 1.5em;
     top: 4px;
     position: relative;
+}
+
+.file_format_message {
+    padding: 1em;
+    margin: 1em auto;
+    border: 2px solid #555;
+    border-radius: 6px;
+    width: 75%;
+    background-color: #fff;
+    height: 3.5em;
+    overflow-y: hidden;
+    transition: all 0.25s ease-in-out;
+}
+
+.file_format_message:hover {
+    height:20em;
+    overflow-y: scroll;
+}
+
+.file_format_message h4 {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.file_format_message .code {
+    font-family
 }

@@ -129,7 +129,6 @@ class Status_api_model extends CI_Model
 
         try {
             $query = Requests::get($proposals_url, array('Accept' => 'application/json'));
-            // var_dump($query);
             $results = json_decode($query->body, true);
         } catch (Exception $e) {
             $results = array();
