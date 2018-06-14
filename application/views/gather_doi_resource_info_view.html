@@ -1,0 +1,61 @@
+<div id="doi-resource-info-form" title="Tag your data resource" style="display:none;">
+    <form class="pure-form pure-form-aligned">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="doi_rsrc_name">Descriptive Name</label>
+                <input
+                    id="doi_rsrc_name"
+                    name="doi_rsrc_name"
+                    pattern=".{3,}"
+                    required
+                    type="text"
+                    style="width:70%;"
+                    placeholder="Descriptive Name",
+                    title="Descriptive name should have at least 3 characters"
+                >
+                <span class="pure-form-message-inline" style="display:none;font-weight:bold;color:red;">Required</span>
+            </div>
+
+            <div class="pure-control-group">
+                <label for="doi_rsrc_desc">In-depth Description</label>
+                <textarea
+                    id="doi_rsrc_desc"
+                    name="doi_rsrc_desc"
+                    placeholder="Description"
+                    style="width:70%;">
+                </textarea>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div id="doi-resource-edit-form" title="Edit this data resource" style="display:none;">
+    <form class="pure-form pure-form-aligned">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="doi_rsrc_name">Descriptive Name</label>
+                <input
+                    id="doi_rsrc_name"
+                    name="doi_rsrc_name"
+                    pattern=".{3,}"
+                    required
+                    type="text"
+                    style="width:65%;"
+                    placeholder="Descriptive Name",
+                    title="Descriptive name should have at least 3 characters"
+                >
+                <span class="pure-form-message-inline" style="display:none;font-weight:bold;color:red;">Required</span>
+            </div>
+
+            <div class="pure-control-group">
+                <label for="doi_rsrc_desc">In-depth Description</label>
+                <textarea
+                    id="doi_rsrc_desc"
+                    name="doi_rsrc_desc"
+                    placeholder="Description"
+                    style="width:65%;">
+                </textarea>
+            </div>
+        </fieldset>
+    </form>
+</div>

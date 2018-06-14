@@ -16,12 +16,14 @@
     <?php if($_SERVER['CI_ENV'] == 'development') : ?>
       <script src="/resources/scripts/jquery/jquery-3.2.1.js" type="text/javascript"></script>
       <script src="/resources/scripts/jquery-ui/jquery-ui.js" type="text/javascript"></script>
+      <script src="/project_resources/scripts/underscore.js" type="text/javascript"></script>
       <link rel="stylesheet" type="text/css" href="/resources/scripts/jquery-ui/jquery-ui.css" />
       <script src="/resources/scripts/moment.js" type="text/javascript"></script>
       <script src="/project_resources/scripts/moment-timezone-with-data-2012-2022.js" type="text/javascript"></script>
     <?php else: ?>
       <script src="/resources/scripts/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
       <script src="/resources/scripts/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+      <script src="/project_resources/scripts/underscore-min.js" type="text/javascript"></script>
       <link rel="stylesheet" type="text/css" href="/resources/scripts/jquery-ui/jquery-ui.min.css" />
       <script src="/resources/scripts/moment.min.js" type="text/javascript"></script>
       <script src="/project_resources/scripts/moment-timezone-with-data-2012-2022.min.js" type="text/javascript"></script>

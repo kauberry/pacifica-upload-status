@@ -122,17 +122,13 @@ class Ajax_api extends Baseline_api_controller
      */
     public function get_release_states()
     {
-        $md_url = "{$this->metadata_url_base}/transactioninfo/release_state";
+        $this->load->model('Data_transfer_api_model', 'release');
         $transaction_list = [];
         if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
             $http_raw_post_data = file_get_contents('php://input');
             $transaction_list = json_decode($http_raw_post_data, true);
         }
-        $query = Requests::post($md_url, array(
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
-        ), json_encode($transaction_list));
-        print $query->body;
+        transmit_array_with_json_header($this->release->get_release_states($transaction_list));
     }
 
     /**
@@ -165,6 +161,19 @@ class Ajax_api extends Baseline_api_controller
         print $check_query->body;
     }
 
+    public function publish_resource_to_doi($dataset_id)
+    {
+        $this->load->model('Data_transfer_api_model', 'release');
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $publication_data = json_decode($http_raw_post_data, true);
+        }
+        $new_resource_id_list = [];
+        foreach ($publication_data as $pub_item) {
+            $new_resource_id_list[] = $this->release->publish_doi_externally($pub_item, $dataset_id);
+        }
+    }
+
     /**
      * Grabs the last known transaction ID
      *
@@ -191,5 +200,16 @@ class Ajax_api extends Baseline_api_controller
     {
         $results_obj = $this->status->get_ingest_status($transaction_id);
         transmit_array_with_json_header($results_obj);
+    }
+
+    public function assign_doi_to_data_set()
+    {
+        $this->load->model('Data_transfer_api_model', 'release');
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $doi_info = json_decode($http_raw_post_data, true);
+            $success = $this->release->set_doi_info($doi_info);
+        }
+        transmit_array_with_json_header($this->release->get_release_states($transaction_list));
     }
 }

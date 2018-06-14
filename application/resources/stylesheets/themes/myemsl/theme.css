@@ -122,8 +122,8 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
 }
 
 .transfer_cart_headers {
-    background-color: rgb(83, 105, 43);
-    border: 2px solid rgb(83, 105, 43);
+    background-color: rgb(66, 121, 5);
+    border: 2px solid rgb(66, 121, 5);
 }
 
 .transfer_cart_action_buttons_container {
@@ -135,11 +135,11 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
     background-color: auto;
 }
 
-.transfer_cart:hover .transfer_cart_button {
+/* .transfer_cart:hover .transfer_cart_button {
     border-color: rgb(0, 69, 3);
     background-color: rgb(19, 110, 20);
     line-height: 130%
-}
+} */
 
 .transfer_cart_action_buttons_container .transfer_cart_button:hover {
     background-color: rgb(0, 69, 3);
@@ -148,7 +148,6 @@ button:hover, .buttons input[type="button"]:hover, .buttons a:hover{
 .transfer_cart_action_buttons_container .transfer_cart_button:active {
     background-color: rgb(19, 110, 20);
 }
-
 
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {

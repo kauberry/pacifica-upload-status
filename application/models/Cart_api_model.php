@@ -81,7 +81,27 @@ class Cart_api_model extends CI_Model
         $cart_submission_object = $new_submission_info['cleaned_submisson_object'];
         $cart_uuid = $this->_generate_cart_uuid($cart_submission_object);
 
-        $cart_submit_response = $this->_submit_to_cartd($cart_uuid, $cart_submission_object);
+        try {
+            $cart_submit_response = $this->_submit_to_cartd($cart_uuid, $cart_submission_object);
+        } catch (Requests_Exception $e) {
+            if ($e->getType() == 'curlerror') {
+                if (preg_match('/(\d+)/i', $e->getMessage(), $matches)) {
+                    $curl_error_num = intval($matches[1]);
+                    switch ($curl_error_num) {
+                        case 6:
+                            $message = "Cart subsystem unavailable. This usually means that there is a problem with the cart servicing process.";
+                            break;
+                        default:
+                            $message = $e->getMessage();
+                    }
+                } else {
+                    $message = $e->getMessage();
+                }
+            }
+            $return_array['message'] = $message;
+            $this->output->set_status_header(500);
+            return $return_array;
+        }
 
         if (intval($cart_submit_response->status_code / 100) == 2) {
             $local_cart_success = $this->_create_cart_entry(

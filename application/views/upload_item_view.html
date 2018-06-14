@@ -48,6 +48,29 @@
             class="submit_time_identifier"
             id="submit_time_<?= $transaction_id ?>", name="submit_time_<?= $transaction_id ?>",
             value="<?= $submit_time ?>" />
+        <input
+            type="hidden"
+            class="total_file_size_bytes"
+            id="total_file_size_bytes_<?= $transaction_id ?>", name="total_file_size_bytes_<?= $transaction_id ?>",
+            value="<?= $transaction_info['file_size_bytes'] ?>" />
+        <input
+            type="hidden"
+            class="total_file_count"
+            id="total_file_count_<?= $transaction_id ?>", name="total_file_count_<?= $transaction_id ?>",
+            value="<?= $transaction_info['file_count'] ?>" />
+        <?php if($page_mode == 'release' && $release_class == 'released'): ?>
+        <input
+            type="hidden"
+            class="release_identifier"
+            id="release_id_<?= $transaction_id ?>", name="release_id_<?= $transaction_id ?>",
+            value="" />
+        <input
+            type="hidden"
+            class="release_date"
+            id="release_date_<?= $transaction_id ?>", name="release_date_<?= $transaction_id ?>",
+            value="" />
+
+        <?php endif; ?>
         <legend>
           <?php if($view_mode == 'single'): ?>
               <span style="font-size: 0.9em;color: #3c4c1f">Upload ID <?= $transaction_id ?></span>

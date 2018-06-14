@@ -1,4 +1,20 @@
+<div id="data_set_info_from_drhub" class="data_set_info">
+    <div class="disclosure_circle">&nbsp;</div>
+    <h4>Info about the Selected Data Set from DRHub</h4>
+    <dl>
+        <dt>Title:</dt>
+        <dd><?= $drhub_data_set_info['title']?></dd>
+        <dt>Description:</dt>
+        <dd><?= $drhub_data_set_info['description'] ?></dd>
+    </dl>
+    <ul>
+        <?php foreach($drhub_data_set_info['linked_resources'] as $linked_resource): ?>
+        <li><a href="<?= $linked_resource['release_url'] ?>"><?= $linked_resource['title'] ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
 <div id="doi_transfer_cart" class="transfer_cart" style="display:none;">
+    <h3>Staged Datasets for Release</h3>
     <div id="doi_cart_content" class="transfer_cart_headers transfer_cart_container">
         <table>
             <thead>
@@ -10,31 +26,12 @@
                     <th style="width: 10%;">&nbsp;</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- <tr>
-                    <td>69</td>
-                    <td>45796</td>
-                    <td>NMR Space Monster</td>
-                    <td>2018-04-10 11:58:33 PDT</td>
-                    <td class="transfer_item_controls">
-                        <span class="fa fa-2x fa-minus-circle" aria-hidden="true"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>69</td>
-                    <td>45796</td>
-                    <td>NMR Space Monster</td>
-                    <td>2018-04-10 11:58:33 PDT</td>
-                    <td class="transfer_item_controls">
-                        <span class="fa fa-2x fa-minus-circle" aria-hidden="true"></span>
-                    </td>
-                </tr> -->
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
     <div class="transfer_cart_action_buttons_container">
         <div>
-            <input type="button" class="transfer_cart_button transfer_cart_headers submit" value="Submit" />
+            <input type="button" class="transfer_cart_button transfer_cart_headers submit" value="Release" />
             <input type="button" class="transfer_cart_button transfer_cart_headers cancel" value="Clear Selections" />
         </div>
     </div>

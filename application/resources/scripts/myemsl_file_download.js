@@ -6,7 +6,8 @@ var cart_create_dialog, cart_create_form;
 $(function(){
     cart_create_dialog = $("#cart-create-dialog-form").dialog({
         autoOpen: false,
-        width:"90%",
+        width:"40%",
+        dialogClass: "drop_shadow_dialog",
         modal:true,
         buttons: {
             "Create": function(){
@@ -97,8 +98,9 @@ var create_cart = function(submission_object, transaction_container){
             }
         )
         .fail(
-            function(jqxhr, error, message){
-                alert("A problem occurred creating your cart.\n[" + message + "]");
+            function(jqxhr){
+                var msg_string = jqxhr.responseJSON.message;
+                alert("A problem occurred creating your cart.\n[" + msg_string + "]");
             }
         )
         .always(

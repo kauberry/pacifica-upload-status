@@ -241,6 +241,9 @@ button:hover, .buttons input[type="button"]:hover {
     width: 49%;
 }
 
+.drop_shadow_dialog {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
 
 
 .disclosure_button {
@@ -682,7 +685,7 @@ div.form_container td {
     opacity: 1.0;
 }
 
-.minted span {
+.doi_pending span, .minted span {
     background:rgb(67, 110, 185);
     display:block;
     opacity: 1.0;

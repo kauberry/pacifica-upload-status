@@ -46,6 +46,7 @@ class Baseline_api_controller extends CI_Controller
         $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://127.0.0.1:8066');
         $this->file_url_base = $this->config->item('external_file_url');
         $this->cart_url_base = $this->config->item('external_cart_url');
+        $this->drhub_url_base = $this->config->item('drhub_url_base');
         $this->user_id = get_user();
         $this->ingester_messages = $this->config->item('ingest_status_messages');
         $this->git_hash = get_current_git_hash();

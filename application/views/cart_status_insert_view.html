@@ -99,6 +99,7 @@ $(function(){
         	var dialog_message = $('<div><p>Really delete this cart?</p></div>');
         	dialog_message.dialog({
 	          	modal:true,
+                dialogClass: "drop_shadow_dialog",
 	          	buttons: {
 	            	Delete: function(){
                 		cart_delete(cart_id);
