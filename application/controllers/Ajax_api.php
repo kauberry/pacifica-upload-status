@@ -120,7 +120,7 @@ class Ajax_api extends Baseline_api_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_release_states()
+    public function get_release_states($data_set_id = '')
     {
         $this->load->model('Data_transfer_api_model', 'release');
         $transaction_list = [];
@@ -128,7 +128,7 @@ class Ajax_api extends Baseline_api_controller
             $http_raw_post_data = file_get_contents('php://input');
             $transaction_list = json_decode($http_raw_post_data, true);
         }
-        transmit_array_with_json_header($this->release->get_release_states($transaction_list));
+        transmit_array_with_json_header($this->release->get_release_states($transaction_list, $data_set_id));
     }
 
     /**

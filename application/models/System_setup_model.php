@@ -134,10 +134,11 @@ class System_setup_model extends CI_Model
                 ),
                 'created' => array(
                     'type' => 'TIMESTAMP',
-                    'default' => 'now()'
+                    'default' => 'now'
                 ),
                 'updated' => array(
-                    'type' => 'TIMESTAMP'
+                    'type' => 'TIMESTAMP',
+                    'default' => 'now'
                 ),
                 'deleted' => array(
                     'type' => 'TIMESTAMP',
@@ -217,10 +218,11 @@ class System_setup_model extends CI_Model
                 ),
                 'created' => array(
                     'type' => 'TIMESTAMP',
-                    'default' => 'now()'
+                    'default' => 'now'
                 ),
                 'updated' => array(
-                    'type' => 'TIMESTAMP'
+                    'type' => 'TIMESTAMP',
+                    'default' => 'now'
                 ),
                 'deleted' => array(
                     'type' => 'TIMESTAMP',
@@ -255,10 +257,11 @@ class System_setup_model extends CI_Model
                 ),
                 'created' => array(
                     'type' => 'TIMESTAMP',
-                    'default' => 'now()'
+                    'default' => 'now'
                 ),
                 'updated' => array(
-                    'type' => 'TIMESTAMP'
+                    'type' => 'TIMESTAMP',
+                    'default' => 'now'
                 ),
                 'deleted' => array(
                     'type' => 'TIMESTAMP',

@@ -1,3 +1,4 @@
+<?php if($drhub_data_set_info && $data_identifier): ?>
 <div id="data_set_info_from_drhub" class="data_set_info">
     <div class="disclosure_circle">&nbsp;</div>
     <h4>Info about the Selected Data Set from DRHub</h4>
@@ -13,6 +14,12 @@
         <?php endforeach; ?>
     </ul>
 </div>
+<?php endif; ?>
+<?php if(!$drhub_data_set_info): ?>
+<div class="data_set_info">
+    <h4 style="text-align:center;">Data Set <?= $data_identifier ?> does not seem to exist</h4>
+</div>
+<?php endif; ?>
 <div id="doi_transfer_cart" class="transfer_cart" style="display:none;">
     <h3>Staged Datasets for Release</h3>
     <div id="doi_cart_content" class="transfer_cart_headers transfer_cart_container">

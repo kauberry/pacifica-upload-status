@@ -88,7 +88,7 @@ td.metadata_item {
     text-align: center;
 }
 
-.loading_status span {
+.loading_status span, .loading_status div {
     color: #216a38;
     font-size: 1.3em;
     font-weight: bold;
@@ -243,6 +243,43 @@ button:hover, .buttons input[type="button"]:hover {
 
 .drop_shadow_dialog {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.page_hider {
+    position: fixed;
+    top: 0;
+    z-index: 5;
+    height: 100vh;
+    width: 100%;
+    display:none;
+}
+
+.page_hider .page_hider_coverslip {
+    background-color: rgb(0, 0, 0);
+    opacity: 0.45;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left:0;
+    position: fixed;
+    z-index: 20;
+}
+
+.page_hider .loading_status {
+    top: 30%;
+    width: 40%;
+    margin: 0 auto;
+    height: 15em;
+    z-index: 25;
+    border-radius: 2em;
+    border: 5px solid #444;
+    background-color: #f5f5f5;
+}
+
+.page_hider .spinner_message_container {
+    font-size: 1.5em;
+    width: 90%;
+    margin-top: 2.5em;
 }
 
 

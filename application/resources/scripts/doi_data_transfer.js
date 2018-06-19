@@ -76,21 +76,31 @@ var submit_submission_selections = function(){
         });
     });
     sessionStorage.removeItem("items_to_publish");
-    $.post(
-        submit_url, JSON.stringify(submit_data)
-    )
-        .done(
-            function(data){
-                setup_staging_buttons();
-            }
+    var pg_hider = $("#page_hider_working");
+    var lb = $("#doi_loading_status_text");
+    pg_hider.fadeIn();
+    lb.text("Preparing DOI Submission...");
+    setTimeout(function(){
+        lb.text("Contacting DRHub Servers...");
+        $.post(
+            submit_url, JSON.stringify(submit_data)
         )
-        .fail(
-            function(jqxhr, error, message){
-                alert("A problem occurred creating your cart.\n[" + message + "]");
-            }
-        );
+            .done(
+                function(){
+                    lb.text("Receiving Updated State Information...");
+                    setTimeout(function(){
+                        setup_staging_buttons();
+                        update_publishing_view();
+                        pg_hider.fadeOut("slow");
+                    }, 2000);
+                }
+            )
+            .fail(
+                function(jqxhr, error, message){
+                    alert("A problem occurred creating your cart.\n[" + message + "]");
+                }
+            );}, 2000);
 
-    update_publishing_view();
 };
 
 var submit_release_selections = function(event){
@@ -170,7 +180,7 @@ var set_release_state_banners = function(release_states, selector){
             if(release_info.transient_info.node_id && release_info.transient_info.data_set_node_id == data_identifier){
                 release_info["release_state"] = "doi_pending";
                 release_info["display_state"] = "DOI Pending";
-                el.remove(".doi_staging_button");
+                el.find(".doi_staging_button").remove();
             }else{
                 setup_doi_staging_button(el, transaction_id);
             }
@@ -269,9 +279,9 @@ var update_staged_transactions_view = function(){
 /* doi staging setup code */
 var setup_doi_staging_button = function(el) {
     var current_session_contents = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    var release_id = el.find(".release_identifier").val();
+    var transaction_id = el.find(".transaction_identifier").val();
     var doi_staging_button = el.find(".doi_staging_button");
-    var should_be_disabled = _.keys(current_session_contents).includes(release_id);
+    var should_be_disabled = _.keys(current_session_contents).includes(transaction_id);
 
     if(!doi_staging_button.length){
         doi_staging_button = $("<input>", {
@@ -300,6 +310,9 @@ var format_doi_ref = function(doi_reference){
 
 var setup_staging_buttons = function(){
     var release_check_url = base_url + "ajax_api/get_release_states";
+    if(data_identifier.length > 0){
+        release_check_url += "/" + data_identifier;
+    }
     var my_transactions = $(".fieldset_container .transaction_identifier").map(function(){
         return $(this).val();
     }).toArray();
@@ -494,8 +507,8 @@ $(function(){
                 }else{
                     //all req'd fields filled out
                     var entry_button = $(this).data("entry_button");
-                    var resource_name = $(this).data("resource_name");
-                    var resource_desc = $(this).data("resource_desc");
+                    // var resource_name = $(this).data("resource_name");
+                    // var resource_desc = $(this).data("resource_desc");
                     publish_released_data(entry_button, f.serializeFormJSON());
                     doi_resource_info_dialog.dialog("close");
                 }
