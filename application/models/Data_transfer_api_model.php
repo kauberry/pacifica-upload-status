@@ -284,7 +284,7 @@ class Data_transfer_api_model extends CI_Model
             return true;
         }
         $ds_data = $this->get_drhub_node($dataset_id);
-        if (boolval($ds_data) && $ds_data['type'] == 'dataset') {
+        if (!!($ds_data) && $ds_data['type'] == 'dataset') {
             $insert_data = [
                 'node_id' => $dataset_id,
                 'title' => $ds_data['title']
@@ -293,7 +293,7 @@ class Data_transfer_api_model extends CI_Model
                 $insert_data['description'] = $ds_data['body']['und'][0]['value'];
             }
             $this->db->insert($this->ds_table, $insert_data);
-            $success = boolval($this->db->affected_rows());
+            $success = !!($this->db->affected_rows());
         }
         return $success;
     }
@@ -314,7 +314,7 @@ class Data_transfer_api_model extends CI_Model
             ];
             if (!$this->transient_record_exists($this->dr_table, $record_id)) {
                 $this->db->insert($this->dr_table, $insert_data);
-                $success = boolval($this->db->affected_rows());
+                $success = !!($this->db->affected_rows());
             } else {
                 $success = true;
             }
@@ -408,7 +408,7 @@ class Data_transfer_api_model extends CI_Model
     private function transient_record_exists($table_name, $record_id)
     {
         $check_query = $this->db->get_where($table_name, ['node_id' => $record_id]);
-        return boolval($check_query->num_rows());
+        return !!($check_query->num_rows());
     }
 
     public function get_drhub_node($node_id)
