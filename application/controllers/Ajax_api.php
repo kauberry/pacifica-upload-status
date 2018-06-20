@@ -202,6 +202,12 @@ class Ajax_api extends Baseline_api_controller
         transmit_array_with_json_header($results_obj);
     }
 
+    public function get_data_set_summary($data_set_id)
+    {
+        $this->load->model('Data_transfer_api_model', 'release');
+        transmit_array_with_json_header($this->release->get_data_set_summary($data_set_id));
+    }
+
     public function assign_doi_to_data_set()
     {
         $this->load->model('Data_transfer_api_model', 'release');

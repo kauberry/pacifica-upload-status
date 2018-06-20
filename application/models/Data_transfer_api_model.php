@@ -325,13 +325,15 @@ class Data_transfer_api_model extends CI_Model
     public function update_transient_data_records($data_set_id)
     {
         $data_set_info = $this->get_drhub_node($data_set_id);
-        $resource_id_list = [];
         $transient_data_records = $this->get_transient_records_for_data_set($data_set_id);
+        $drhub_resource_id_list = [];
+        $transient_resource_id_list = array_keys($transient_data_records['by_resource_id']);
         if (array_key_exists('field_resources', $data_set_info) && $data_set_info['field_resources']) {
             $linked_resources = $data_set_info['field_resources']['und'];
             $resource_info = [];
             foreach ($linked_resources as $resource_object) {
                 $resource_id = $resource_object['target_id'];
+                $drhub_resource_id_list[] = $resource_id;
                 $full_resource_info = $this->get_drhub_node($resource_id);
                 if (!array_key_exists($resource_id, $transient_data_records['by_resource_id'])) {
                     if (preg_match(
@@ -353,7 +355,27 @@ class Data_transfer_api_model extends CI_Model
                 ];
             }
         }
+        //clear out records from the transient table that no longer exist in drhub
+        $extra_resource_records = array_diff($transient_resource_id_list, $drhub_resource_id_list);
+        $this->remove_transient_data_records($extra_resource_records, $data_set_id);
+
+
         return $this->get_transient_records_for_data_set($data_set_id);
+    }
+
+    public function remove_transient_data_records($record_id_list, $data_set_id)
+    {
+        if ($record_id_list) {
+            $this->db->where('data_set_node_id', $data_set_id);
+            $this->db->where_in('node_id', $record_id_list);
+            $this->db->delete($this->dr_table);
+        }
+        //check for remaining records
+        $check_query = $this->db->get_where($this->dr_table, ['data_set_node_id' => $data_set_id]);
+        if ($check_query->num_rows() == 0) {
+            //no records left, so remove the data set entry too
+            $this->db->delete($this->ds_table, ['node_id' => $data_set_id]);
+        }
     }
 
     public function get_transient_record_for_transaction($transaction_id, $dataset_id = "")
