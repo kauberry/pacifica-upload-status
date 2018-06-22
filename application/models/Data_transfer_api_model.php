@@ -108,6 +108,7 @@ class Data_transfer_api_model extends CI_Model
         $publishing_data = array_merge($publishing_skeleton, $stored_release_info);
         $resource_id = $this->create_new_data_resource($publishing_data);
         $success = $this->link_resource_to_dataset($dataset_id, $resource_id, $transaction_id);
+        $this->update_resource_owner($resource_id, $dataset_id);
         return $success;
     }
 
@@ -230,6 +231,34 @@ class Data_transfer_api_model extends CI_Model
         return $success;
     }
 
+    private function update_resource_owner($resource_id, $data_set_id)
+    {
+        $ds_info = $this->get_drhub_node($data_set_id);
+        $update_object = [
+            'uid' => $ds_info['uid'],
+            'name' => $ds_info['name']
+        ];
+        return $this->update_resource($resource_id, $update_object);
+    }
+
+    private function update_resource($resource_id, $update_object)
+    {
+        $dh_url = "{$this->drhub_url_base}/dataset/node/{$resource_id}";
+        $success = false;
+        $query = $this->sess->put($dh_url, array(
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ), json_encode($update_object));
+        if ($query->status_code == 200) {
+            echo $query->body;
+            $results = json_decode($query->body);
+            if ($results->nid == strval($dataset_id)) {
+                $success = true;
+            }
+        }
+        return $success;
+    }
+
     private function link_resource_to_dataset($dataset_id, $resource_id, $transaction_id, $lang = "und")
     {
         $this->get_drhub_session();
@@ -259,20 +288,24 @@ class Data_transfer_api_model extends CI_Model
                 $lang => $field_resources
             ]
         ];
-        $dh_url = "{$this->drhub_url_base}/dataset/node/{$dataset_id}";
-        $success = false;
-        // echo $dh_url;
-        // echo json_encode($formatted_request);
-        $query = $this->sess->put($dh_url, array(
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
-        ), json_encode($formatted_request));
-        if ($query->status_code == 200) {
-            $results = json_decode($query->body);
-            if ($results->nid == strval($dataset_id)) {
-                $success = true;
-            }
-        }
+        $success = $this->update_resource($dataset_id, $formatted_request);
+
+        // $dh_url = "{$this->drhub_url_base}/dataset/node/{$dataset_id}";
+        // $success = false;
+        // // echo $dh_url;
+        // // echo json_encode($formatted_request);
+        // $query = $this->sess->put($dh_url, array(
+        //     'Accept' => 'application/json',
+        //     'Content-Type' => 'application/json'
+        // ), json_encode($formatted_request));
+        // if ($query->status_code == 200) {
+        //     $results = json_decode($query->body);
+        //     if ($results->nid == strval($dataset_id)) {
+        //         $success = true;
+        //     }
+        // }
+
+
         $this->update_transient_data_records($dataset_id);
         return $success;
     }
