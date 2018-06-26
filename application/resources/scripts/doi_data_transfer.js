@@ -91,6 +91,7 @@ var submit_submission_selections = function(){
                     setTimeout(function(){
                         setup_staging_buttons();
                         update_publishing_view();
+                        update_data_set_summary_block();
                         pg_hider.fadeOut("slow");
                     }, 2000);
                 }
@@ -429,6 +430,33 @@ var update_publishing_view = function(){
     }
 };
 
+var update_data_set_summary_block = function() {
+    if(data_identifier && $("#data_set_info_from_drhub")) {
+        var url = base_url + "ajax_api/get_data_set_summary/" + data_identifier;
+        $.get(url, function(data){
+            if(data.title){
+                $("#dh_data_set_title").text(data.title);
+                $("#dh_data_set_desc").text(data.description);
+                if(data.linked_resources){
+                    var ul_obj = $("<ul/>");
+                    $.each(data.linked_resources, function(index, item){
+                        ul_obj.append(
+                            $("<li/>").append(
+                                $("<a/>", {
+                                    "title": item.title,
+                                    "href": item.release_url
+                                })
+                            )
+                        );
+                    });
+                }
+            }
+            else{
+                $(".data_set_info > h4").text("Data Set " + data_identifier + " does not seem to exist");
+            }
+        });
+    }
+};
 
 var myemsl_size_format = function(bytes) {
     var suffixes = ["B", "KB", "MB", "GB", "TB", "EB"];

@@ -526,4 +526,4 @@ $config['rewrite_short_tags'] = false;
 */
 $config['proxy_ips'] = '';
 
-$config['external_release_base_url'] = 'https://statusdev.my.emsl.pnl.gov/';
+$config['external_release_base_url'] = 'http://status.local/';

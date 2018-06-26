@@ -1,22 +1,29 @@
-<?php if($drhub_data_set_info && $data_identifier): ?>
+<?php if(isset($drhub_data_set_info) && $drhub_data_set_info && $data_identifier): ?>
 <div id="data_set_info_from_drhub" class="data_set_info">
     <div class="disclosure_circle">&nbsp;</div>
     <h4>Info about the Selected Data Set from DRHub</h4>
     <dl>
         <dt>Title:</dt>
-        <dd><?= $drhub_data_set_info['title']?></dd>
+        <dd id="dh_data_set_title"><?= $drhub_data_set_info['title']?></dd>
         <dt>Description:</dt>
-        <dd><?= $drhub_data_set_info['description'] ?></dd>
+        <dd id="dh_data_set_desc"><?= $drhub_data_set_info['description'] ?></dd>
+        <dt>Attached Data Resources:</dt>
+        <dd id="dh_data_set_members">
+            <?php if(sizeof($drhub_data_set_info['linked_resources']) > 0): ?>
+            <ul>
+                <?php foreach($drhub_data_set_info['linked_resources'] as $linked_resource): ?>
+                    <li><a href="<?= $linked_resource['release_url'] ?>"><?= $linked_resource['title'] ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+            <?php else: ?>
+                <em>None</em>
+            <?php endif; ?>
+        </dd>
     </dl>
-    <ul>
-        <?php foreach($drhub_data_set_info['linked_resources'] as $linked_resource): ?>
-        <li><a href="<?= $linked_resource['release_url'] ?>"><?= $linked_resource['title'] ?></a></li>
-        <?php endforeach; ?>
-    </ul>
 </div>
 <?php endif; ?>
 <?php if(!$drhub_data_set_info): ?>
-<div class="data_set_info">
+<div class="data_set_info data_set_info_static">
     <h4 style="text-align:center;">Data Set <?= $data_identifier ?> does not seem to exist</h4>
 </div>
 <?php endif; ?>
