@@ -1,4 +1,0 @@
-docker stop `docker ps -q`;docker rm myemsl-status
-docker build -t ci-stack .
-docker run -v "/Users/d3k857/Documents/Aptana Studio 3 Workspace/MyEMSL Status Site - Production GH/application":/var/www/html/application --name myemsl-status -p80:80 -d ci-stack
-docker exec -i -t myemsl-status /bin/bash

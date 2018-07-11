@@ -55,7 +55,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_mode = 'cart';
         $this->page_data['view_mode'] = 'multiple';
         $this->page_data['js'] = "";
-        $this->overview_template = $this->config->item('main_overview_template') ?: "emsl_mgmt_view.html";
+        $this->overview_template = $this->config->item('main_overview_template') ?: "page_layouts/status_page_view.html";
     }
 
     /**
@@ -68,23 +68,83 @@ class Status_api extends Baseline_user_api_controller
         redirect('/overview');
     }
 
-    public function data_transfer($data_identifier = '')
+    public function data_release()
     {
-        $this->data_identifier = $data_identifier;
-        $this->page_mode = 'release';
-        set_cookie('page_mode', $this->page_mode, 64000, '', '/');
+        $this->overview_template = "page_layouts/data_release_page_view.html";
         $updated_page_info = [
             'page_header' => 'Data Release Interface',
             'title' => 'Data Release'
         ];
-        $this->load->model('Data_transfer_api_model', 'release');
-        $this->page_data['data_identifier'] = $data_identifier;
-        $this->page_data['drhub_data_set_info'] = $this->release->get_data_set_summary($data_identifier);
+        $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
+
+        $this->page_data = array_merge($this->page_data, $updated_page_info);
+        $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
+        $this->overview();
+    }
+
+    public function data_release_single_item($transaction_id)
+    {
+        $this->overview_template = "page_layouts/data_release_page_view.html";
+        $updated_page_info = [
+            'page_header' => 'Data Release Interface',
+            'title' => 'Data Release'
+        ];
+        // $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
+        $this->page_data = array_merge($this->page_data, $updated_page_info);
+        // $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
+        $this->page_data['transaction_data'] = $this->status->get_formatted_transaction($transaction_id);
+        $this->page_data['css_uris']
+        = load_stylesheets(
+            $this->page_data['css_uris'],
+            [
+                '/project_resources/stylesheets/doi_transfer_cart.css',
+                '/project_resources/stylesheets/selector.css'
+            ]
+        );
+        $extra_scripts_array = [
+            '/project_resources/scripts/single_item_view.js',
+            '/project_resources/scripts/data_release.js',
+            '/project_resources/scripts/myemsl_file_download.js'
+        ];
+
+        $js = "var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
+                var email_address = \"{$this->email}\";
+                var lookup_type = \"t\";
+                var initial_instrument_list = [];
+                var data_identifier = 0;
+                var ui_markup = {
+                    \"instrument_selection_desc\": \"{$this->config->item('ui_instrument_desc')}\",
+                    \"proposal_selection_desc\": \"{$this->config->item('ui_proposal_desc')}\"
+                };
+                var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
+                ";
+
+        $this->page_data['js'] = $js;
+        $this->page_mode = 'single';
+        $this->page_data['page_mode'] = $this->page_mode;
+        $this->page_data['script_uris']
+        = load_scripts(
+            $this->page_data['script_uris'],
+            $extra_scripts_array
+        );
+        $this->load->view('page_layouts/data_release_single_page_view.html', $this->page_data);
+    }
+
+    /**
+     * DOI minting
+     */
+    public function doi_minting()
+    {
+        $this->overview_template = "page_layouts/doi_minting_page_view.html";
+        $updated_page_info = [
+            'page_header' => 'DOI Minting Interface',
+            'title' => 'DOI Minting'
+        ];
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/forms.css';
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/pure-min.css';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
         $this->page_data = array_merge($this->page_data, $updated_page_info);
-        $this->page_data['js'] .= "var data_identifier = \"{$data_identifier}\";";
         $this->overview();
     }
 
@@ -110,7 +170,6 @@ class Status_api extends Baseline_user_api_controller
             'starting_date' => $starting_date,
             'ending_date' => $ending_date
         ];
-        set_cookie('page_mode', $this->page_mode, 64000, '', '/');
         $defaults = get_selection_defaults($defaults);
         extract($defaults);
         $view_name = $this->overview_template;
@@ -122,12 +181,10 @@ class Status_api extends Baseline_user_api_controller
                     '/project_resources/stylesheets/selector.css',
                 )
             );
-        $extra_scripts_array = ['/project_resources/scripts/overview.js'];
-        if ($this->page_mode == 'release') {
-            $extra_scripts_array[] = '/project_resources/scripts/doi_data_transfer.js';
-        } else {
-            $extra_scripts_array[] = '/project_resources/scripts/myemsl_file_download.js';
-        }
+        $extra_scripts_array = [
+            '/project_resources/scripts/overview.js',
+            '/project_resources/scripts/myemsl_file_download.js'
+        ];
 
         $this->page_data['script_uris']
             = load_scripts(
@@ -172,7 +229,6 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['ending_date'] = $ending_date;
         $this->page_data['instrument_id'] = $instrument_id;
         $this->page_data['js'] .= $js;
-        $this->page_data['cart_legend'] = "Download Queue";
         $this->page_data['page_mode'] = $this->page_mode;
 
         $this->overview_worker(

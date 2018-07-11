@@ -187,8 +187,8 @@ button:hover, .buttons input[type="button"]:hover {
 
 .staging_buttons {
     position: absolute;
-    right: 3em;
-    bottom: 0;
+    right: 5em;
+    top: 4em;
     z-index: 2;
 }
 
@@ -388,7 +388,7 @@ button:hover, .buttons input[type="button"]:hover {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10em;
-    width: 960px;
+    width: 95%;
 }
 
 .menu_separator {
@@ -834,6 +834,13 @@ div.form_container td {
     }
     .underline {
         font-size: 0.85em;
+    }
+    .staging_buttons {
+        right: 2em;
+    }
+    .staging_button {
+        height: 3em;
+        width: 125%;
     }
     #login_id_container {
         bottom: 1px !important;

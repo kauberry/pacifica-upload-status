@@ -1,6 +1,6 @@
 <?php
   $this->template_version = $this->config->item('template');
-  $this->load->view("{$this->template_version}_template/view_header");
+  $this->load->view("page_chrome/view_header");
   $js = isset($js) ?
 "<script type='text/javascript'>
 //<![CDATA[
@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <?php $this->load->view("{$this->template_version}_template/view_footer_short"); ?>
+    <?php $this->load->view("page_chrome/view_footer_short"); ?>
 <?= $js ?>
 </body>
 </html>

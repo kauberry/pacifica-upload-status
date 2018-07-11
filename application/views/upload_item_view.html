@@ -73,11 +73,7 @@
 
         <?php endif; ?>
         <legend>
-          <?php if($view_mode == 'single'): ?>
-              <span style="font-size: 0.9em;color: #3c4c1f">Upload ID <?= $transaction_id ?></span>
-          <?php else: ?>
-              <a id="upload_url_<?= $transaction_id ?>" class="upload_url" href="<?= $download_url ?>">Upload ID <?= $transaction_id ?></a>
-          <?php endif; ?>
+          <a id="upload_url_<?= $transaction_id ?>" class="upload_url" href="<?= $download_url ?>">Upload ID <?= $transaction_id ?></a>
           <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
         </legend>
         <h2 id="message_block_<?= $transaction_id ?>" style="text-align:center;font-size:1.5em;"><?= $informational_message ?></h2>
@@ -126,7 +122,6 @@
               </div>
             </div>
           </div>
-          <?php if($request_type == 't'): ?>
             <div class="full_width_block" style="width:95%;float:left;">
               <div class="disclosure_block">
                 <div id="tree_<?= $transaction_id ?>" class="tree_holder">
@@ -155,7 +150,6 @@
             </div>
           </div>
         </div>
-        <?php endif; ?>
         <div class="full_width_block" id="error_msg_container_<?= $transaction_id ?>" style="display:none;">
           <span class="error" id="error_msg_<?= $transaction_id ?>"></span>
         </div>

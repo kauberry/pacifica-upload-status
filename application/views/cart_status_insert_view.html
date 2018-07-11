@@ -1,93 +1,100 @@
 <?php
 	$cart_list = isset($cart_list) && !empty($cart_list) ? $cart_list : array();
-    $lookup = isset($lookup) && !empty($lookup) ? $lookup : array();
+  $lookup = isset($lookup) && !empty($lookup) ? $lookup : array();
+  $hide_cart_data = empty($cart_data['carts']) ? "display:none;" : "";
 ?>
-<div id="cart_item_container">
-	<?php foreach($lookup as $status => $friendly_status): ?>
-		<?php if(!array_key_exists($status, $categories)): ?>
-			<?php continue; ?>
-		<?php endif; ?>
-		<div id="<?= $status ?>_cart_container" class="cart_tree form_container">
-			<h2><?= $friendly_status ?></h2>
-			<table style="width:100%;">
-				<thead>
-					<tr>
-						<th>&nbsp;</th>
-						<th>Name</th>
-						<th>Size</th>
-						<th>File Count</th>
-						<th>&nbsp;</th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php foreach($categories[$status] as $cart_uuid): ?>
-					<?php $cart_entry = $cart_list[$cart_uuid]; ?>
-					<tr id="cart_line_<?= $cart_uuid ?>" class="cart_line">
-						<td class="cart_status_center">
-							<?php if($status == 'ready'): ?>
-							<a href="<?= $cart_entry['user_download_url'] ?>">Download</a>
-                            <span
-                                id="download_info_button_<?= $cart_uuid ?>"
-                                style="color:blue;"
-                                class="download_info_button fa fa-info-circle fa-lg"
-                            />
-							<?php else: ?>
-							&mdash;&mdash;&mdash;
-							<?php endif; ?>
-						</td>
-						<td class="cart_status_left">
-							<div>
-								<?= $cart_entry['name'] ?>
-							</div>
-							<?php if(!empty($cart_entry['description'])): ?>
-							<div style="font-size:0.85em;">
-								<?= $cart_entry['description'] ?>
-							</div>
-							<?php endif; ?>
-						</td>
-						<?php
-			              $display_size_text = $cart_entry['total_file_size_bytes'] ? $cart_entry['friendly_file_size'] : "Unknown";
-			            ?>
-						<td class="cart_status_left">
-							<?= $display_size_text ?>
-						</td>
-                        <td class="cart_status_left">
-							<?php $pluralizer = $cart_entry['total_file_count'] != 1 ? "s" : ""; ?>
-							<?= $cart_entry['total_file_count'] ?> file<?= $pluralizer ?>
-						</td>
-						<td>
-			              <div class="buttons">
-			                <input
-			                  type="button"
-			                  id="delete_button_<?= $cart_uuid ?>"
-			                  name="delete_button_<?= $cart_uuid ?>"
-			                  class="cart_delete_button state_<?= $status ?>"
-			                  title="Delete this queued download"
-			                  value="X" />
-			              </div>
-			            </td>
-					</tr>
-				<?php endforeach; ?>
-				</tbody>
-			</table>
-		</div>
-	<?php endforeach; ?>
+<div id="cart_listing_container" class="themed" style="<?= $hide_cart_data ?>margin-top:1em;">
+  <fieldset id="cart_listing_fieldset">
+    <legend>Download Queue</legend>
+    <div id="cart_item_container">
+    	<?php foreach($lookup as $status => $friendly_status): ?>
+    		<?php if(!array_key_exists($status, $categories)): ?>
+    			<?php continue; ?>
+    		<?php endif; ?>
+    		<div id="<?= $status ?>_cart_container" class="cart_tree form_container">
+    			<h2><?= $friendly_status ?></h2>
+    			<table style="width:100%;">
+    				<thead>
+    					<tr>
+    						<th>&nbsp;</th>
+    						<th>Name</th>
+    						<th>Size</th>
+    						<th>File Count</th>
+    						<th>&nbsp;</th>
+    					</tr>
+    				</thead>
+    				<tbody>
+    				<?php foreach($categories[$status] as $cart_uuid): ?>
+    					<?php $cart_entry = $cart_list[$cart_uuid]; ?>
+    					<tr id="cart_line_<?= $cart_uuid ?>" class="cart_line">
+    						<td class="cart_status_center">
+    							<?php if($status == 'ready'): ?>
+    							<a href="<?= $cart_entry['user_download_url'] ?>">Download</a>
+                                <span
+                                    id="download_info_button_<?= $cart_uuid ?>"
+                                    style="color:blue;"
+                                    class="download_info_button fa fa-info-circle fa-lg"
+                                />
+    							<?php else: ?>
+    							&mdash;&mdash;&mdash;
+    							<?php endif; ?>
+    						</td>
+    						<td class="cart_status_left">
+    							<div>
+    								<?= $cart_entry['name'] ?>
+    							</div>
+    							<?php if(!empty($cart_entry['description'])): ?>
+    							<div style="font-size:0.85em;">
+    								<?= $cart_entry['description'] ?>
+    							</div>
+    							<?php endif; ?>
+    						</td>
+    						<?php
+    			        $display_size_text = $cart_entry['total_file_size_bytes'] ? $cart_entry['friendly_file_size'] : "Unknown";
+    			      ?>
+    						<td class="cart_status_left">
+    							<?= $display_size_text ?>
+    						</td>
+                <td class="cart_status_left">
+    							<?php $pluralizer = $cart_entry['total_file_count'] != 1 ? "s" : ""; ?>
+    							<?= $cart_entry['total_file_count'] ?> file<?= $pluralizer ?>
+    						</td>
+    						<td>
+		              <div class="buttons">
+		                <input
+		                  type="button"
+		                  id="delete_button_<?= $cart_uuid ?>"
+		                  name="delete_button_<?= $cart_uuid ?>"
+		                  class="cart_delete_button state_<?= $status ?>"
+		                  title="Delete this queued download"
+		                  value="X" />
+		              </div>
+		            </td>
+    					</tr>
+    				<?php endforeach; ?>
+    				</tbody>
+    			</table>
+    		</div>
+    	<?php endforeach; ?>
+    </div>
+  </fieldset>
 </div>
+
 <div id="cart_list_messages" class="cart_list_message_container"></div>
 <div class="file_format_message">
-    <h4>Info Regarding Download File Formats</h4>
-    <p>
-        Clicking the <em>Download</em> link will retrieve your requested files as a <a href="https://en.wikipedia.org/wiki/Tar_(computing)">tarfile</a>.
-        Depending on your computing platform, you can extract this type of file by the following means...
-    </p>
-    <dl>
-        <dt>Macintosh</dt>
-        <dd>Double click on the downloaded file in the Finder.</dd>
-        <dt>Windows</dt>
-        <dd>Download <a href="https://www.7-zip.org">7-Zip</a> and install it on your machine. Right-click on the downloaded file and choose:<br />7-Zip &gt; Extract Here.</dd>
-        <dt>Linux</dt>
-        <dd>From a terminal window, type <code class="code">tar -xf <em>your_tar_file.tar</em></code></dd>
-    </dl>
+  <h4>Info Regarding Download File Formats</h4>
+  <p>
+    Clicking the <em>Download</em> link will retrieve your requested files as a <a href="https://en.wikipedia.org/wiki/Tar_(computing)">tarfile</a>.
+    Depending on your computing platform, you can extract this type of file by the following means...
+  </p>
+  <dl>
+    <dt>Macintosh</dt>
+    <dd>Double click on the downloaded file in the Finder.</dd>
+    <dt>Windows</dt>
+    <dd>Download <a href="https://www.7-zip.org">7-Zip</a> and install it on your machine. Right-click on the downloaded file and choose:<br />7-Zip &gt; Extract Here.</dd>
+    <dt>Linux</dt>
+    <dd>From a terminal window, type <code class="code">tar -xf <em>your_tar_file.tar</em></code></dd>
+  </dl>
 </div>
 <script type="application/javascript">
 $(function(){
