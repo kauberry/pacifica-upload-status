@@ -93,8 +93,10 @@
                   <tbody>
                     <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
                       <?php if(stripos($md_name, "file") === 0) continue; ?>
+                      <?php $style_info = $md_name == "release_state" ? " style=\"display: none\";" : ""; ?>
                       <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
-                    <tr class="metadata_description_list">
+                      <?php $cleaned_type_name = $cleaned_type_name == "Transaction ID" ? "Internal Transaction ID" : $cleaned_type_name; ?>
+                    <tr class="metadata_description_list"<?= $style_info ?>>
                       <td class="metadata_header <?= $md_name ?>"><?= $cleaned_type_name ?></td>
                       <td class="metadata_item"><?= $md_value ?></td>
                     </tr>

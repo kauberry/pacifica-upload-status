@@ -23,17 +23,31 @@ var build_staging_button = function(transaction_id){
 var submit_release_selections = function(event){
     var el = $(event.target);
     var table_rows = el.parents(".transfer_cart").find("table > tbody > tr");
-    table_rows.each(function(index, item){
-        var transaction_id = parseInt($(item).find(".upload_id").text(), 10);
-        var release_url = base_url + "ajax_api/set_release_state/" + transaction_id + "/released";
-        $.get(release_url, function(data){
-            var ribbon = $("#fieldset_container_" + transaction_id + " .ribbon");
-            ribbon.removeClass().addClass("ribbon").addClass(data.release_state);
-            ribbon.find("span").text(data.display_state);
-            set_staged_transaction_completed(transaction_id);
-            update_staged_transactions_view();
+    var pg_hider = $("#page_hider_working");
+    var lb = $("#doi_loading_status_text");
+    pg_hider.fadeIn();
+    lb.text("Preparing Release Submission...");
+    setTimeout(function(){
+        lb.text("Setting Release State...");
+        table_rows.each(function(index, item){
+            var transaction_id = parseInt($(item).find(".upload_id").text(), 10);
+            var release_url = base_url + "ajax_api/set_release_state/" + transaction_id + "/released";
+            $.get(release_url, function(data){
+                var fieldset_container = $("#fieldset_container_" + transaction_id);
+                var ribbon = fieldset_container.find(".ribbon");
+                ribbon.removeClass().addClass("ribbon").addClass(data.release_state);
+                ribbon.find("span").text(data.display_state);
+            });
         });
-    });
+        setTimeout(function(){
+            lb.text("Receiving Updated State Information...");
+            setTimeout(function(){
+                clear_release_selections();
+                setup_staging_buttons();
+            }, 1000);
+            pg_hider.fadeOut("slow");
+        }, 1000);
+    }, 1000);
 };
 
 var clear_release_selections = function(){
@@ -41,12 +55,11 @@ var clear_release_selections = function(){
     update_staged_transactions_view();
 };
 
-var set_staged_transaction_completed = function(upload_id){
-    var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
-    delete current_session_contents[upload_id];
-    sessionStorage.setItem("staged_releases", JSON.stringify(current_session_contents));
-    update_staged_transactions_view();
-};
+// var set_staged_transaction_completed = function(upload_id){
+//     var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
+//     delete current_session_contents[upload_id];
+//     sessionStorage.setItem("staged_releases", JSON.stringify(current_session_contents));
+// };
 
 var unstage_transaction = function(el){
     el = $(el);
@@ -116,6 +129,16 @@ var set_release_state_banners = function(release_states, selector){
         }
         el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
         el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
+        var release_date_line = $("<tr/>", {"class": "metadata_description_list"})
+            .append($("<td/>", {
+                "class": "metadata_header release_date",
+                "text": "Release Date"
+            }))
+            .append($("<td/>", {
+                "class": "metadata_item",
+                "text": moment(release_info.release_date).format("YYYY-MM-DDTHH:mm:ss")
+            }));
+        el.find(".release_state_display").parents("tr").after(release_date_line);
         ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
         ribbon_el.find("span").text(release_info.display_state);
 

@@ -316,6 +316,7 @@ class Status_api extends Baseline_user_api_controller
         if (get_cookie('myemsl_status_page_mode')) {
             $this->page_mode = get_cookie('myemsl_status_page_mode');
         }
+        $this->referring_page = str_replace(base_url(), '', $this->input->server('HTTP_REFERER'));
         $time_period_empty = true;
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
@@ -336,20 +337,29 @@ class Status_api extends Baseline_user_api_controller
                 $end_time
             );
             $transactions = $transaction_list;
+            if ($this->referring_page == 'doi_minting') {
+                foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
+                    if ($transaction_info['metadata']['release_state'] == 'not_released') {
+                        unset($transactions['transactions'][$transaction_id]);
+                        unset($transactions['times'][$transaction_id]);
+                    }
+                }
+            }
+
             foreach ($transactions['transactions'] as $transaction_id => $transaction_info) {
                 $transaction_list['transactions'][$transaction_id]['metadata']['transaction_id'] =
                     "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
             }
 
             $file_size_totals = array();
-            foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
+            foreach ($transactions['transactions'] as $transaction_id => $transaction_info) {
                 $file_size_totals[$transaction_id] = $transaction_info['file_size_bytes'];
                 $message = "";
                 $time_period_empty = false;
             }
-            $transaction_list['file_size_totals'] = $file_size_totals;
+            $transactions['file_size_totals'] = $file_size_totals;
             $results = array(
-                'transaction_list' => $transaction_list,
+                'transaction_list' => $transactions,
                 'time_period_empty' => $time_period_empty,
                 'message' => $message,
             );

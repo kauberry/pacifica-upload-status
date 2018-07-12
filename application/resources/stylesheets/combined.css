@@ -121,7 +121,7 @@ td.metadata_item {
     border-radius: 5px;
     padding: 1.25em;
     background-color: #efefef;
-    margin-bottom: 1em;
+    margin: 0 0 1em 0 !important;
     min-height:8em;
 }
 
@@ -838,7 +838,7 @@ div.form_container td {
     .staging_buttons {
         right: 2em;
     }
-    .staging_button {
+    .staging_button, .doi_staging_button {
         height: 3em;
         width: 125%;
     }

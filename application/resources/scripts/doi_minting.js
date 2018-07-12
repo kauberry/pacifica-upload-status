@@ -48,15 +48,22 @@ var setup_doi_staging_button = function(el) {
     var should_be_disabled = _.keys(current_session_contents).includes(transaction_id);
 
     if(!doi_staging_button.length){
-        doi_staging_button = $("<input>", {
-            "type": "button",
-            "value": "Add to Dataset",
-            "class": "transfer_cart_button transfer_cart_headers doi_staging_button",
-            "style": "display: none;z-index: 4;"
+        var doi_staging_button_container = $("<div/>", {
+            "class": "staging_buttons buttons"
         });
+        doi_staging_button = $("<input>", {
+            "value": "Submit DOI",
+            "class": "doi_staging_button",
+            "style": "display: none;z-index: 4;"
+        }).attr({
+            "type": "button"
+        });
+        doi_staging_button_container.append(doi_staging_button);
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
-        }).appendTo(el.find("fieldset"));
+        });
+        el.find("legend").after(doi_staging_button_container);
+        // doi_staging_button_container.appendTo(el.find("fieldset"));
     }
     if(should_be_disabled){
         doi_staging_button.attr("disabled", "disabled").addClass("disabled");
@@ -258,6 +265,17 @@ var set_release_state_banners = function(release_states, selector){
             }else{
                 setup_doi_staging_button(el, transaction_id);
             }
+            var release_date_line = $("<tr/>", {"class": "metadata_description_list"})
+                .append($("<td/>", {
+                    "class": "metadata_header release_date",
+                    "text": "Release Date"
+                }))
+                .append($("<td/>", {
+                    "class": "metadata_item",
+                    "text": moment(release_info.release_date).format("YYYY-MM-DDTHH:mm:ss")
+                }));
+            el.find(".release_state_display").parents("tr").after(release_date_line);
+
         }
         el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
         el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
