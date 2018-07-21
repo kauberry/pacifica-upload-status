@@ -44,7 +44,9 @@ class System_setup_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-
+        if (file_exists(APPPATH."db_create_completed.txt")) {
+            return;
+        }
         //quickly assess the current system status
         try {
             $this->setup_db_structure();
@@ -95,184 +97,185 @@ class System_setup_model extends CI_Model
         $this->load->database('default');
         $this->load->dbforge();
         $this->load->dbutil();
-
         $this->_check_and_create_database($this->db->database);
 
         //the database should already be in place. Let's make some tables
-        $this->generate_cart_table('cart');
-        $this->generate_cart_items_table('cart_items');
-        $this->generate_transient_dataset_table('drhub_data_sets');
-        $this->generate_transient_data_resource_table('drhub_data_records');
+        $table_list = ['cart', 'cart_items', 'drhub_data_sets', 'drhub_data_records'];
+        foreach ($table_list as $table_name) {
+            if (!$this->table_exists($table_name)) {
+                $call_fn = "generate_{$table_name}_table";
+                $this->$call_fn($table_name);
+            }
+        }
+        touch(APPPATH."db_create_completed.txt");
+    }
+
+    private function table_exists($table_name)
+    {
+        $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '{$table_name}';");
+        return $query->num_rows() == 1;
     }
 
     private function generate_cart_table($table_name)
     {
-        if (!$this->db->table_exists($table_name)) {
-            $cart_fields = array(
-                'cart_uuid' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => '64',
-                    'unique' => true
-                ),
-                'name' => array(
-                    'type' => 'VARCHAR'
-                ),
-                'description' => array(
-                    'type' => 'VARCHAR',
-                    'null' => true
-                ),
-                'owner' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => '64'
-                ),
-                'json_submission' => array(
-                    'type' => 'VARCHAR'
-                ),
-                'last_known_state' => array(
-                    'type' => 'VARCHAR',
-                    'default' => 'waiting'
-                ),
-                'created' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'updated' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'deleted' => array(
-                    'type' => 'TIMESTAMP',
-                    'null' => true
-                )
-            );
-            $this->dbforge->add_field($cart_fields);
-            $this->dbforge->add_key('cart_uuid', true);
-            if ($this->dbforge->create_table($table_name)) {
-                log_message("info", "Created '{$table_name}' table...");
-            };
-        }
+        $cart_fields = array(
+            'cart_uuid' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '64',
+                'unique' => true
+            ),
+            'name' => array(
+                'type' => 'VARCHAR'
+            ),
+            'description' => array(
+                'type' => 'VARCHAR',
+                'null' => true
+            ),
+            'owner' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '64'
+            ),
+            'json_submission' => array(
+                'type' => 'VARCHAR'
+            ),
+            'last_known_state' => array(
+                'type' => 'VARCHAR',
+                'default' => 'waiting'
+            ),
+            'created' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'updated' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'deleted' => array(
+                'type' => 'TIMESTAMP',
+                'null' => true
+            )
+        );
+        $this->dbforge->add_field($cart_fields);
+        $this->dbforge->add_key('cart_uuid', true);
+        if ($this->dbforge->create_table($table_name)) {
+            log_message("info", "Created '{$table_name}' table...");
+        };
     }
 
     private function generate_cart_items_table($table_name)
     {
-        if (!$this->db->table_exists($table_name)) {
-            $cart_items_fields = array(
-                'id' => array(
-                    'type' => 'INTEGER',
-                    'auto_increment' => true,
-                    'unsigned' => true
-                ),
-                'file_id' => array(
-                    'type' => 'BIGINT'
-                ),
-                'cart_uuid' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => 64
-                ),
-                'hashtype' => array(
-                    'type' => 'VARCHAR',
-                    'default' => 'sha1'
-                ),
-                'hashsum' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => 40
-                ),
-                'relative_local_path' => array(
-                    'type' => 'VARCHAR'
-                ),
-                'file_size_bytes' => array(
-                    'type' => 'BIGINT'
-                ),
-                'file_mime_type' => array(
-                    'type' => 'VARCHAR',
-                    'null' => true
-                )
-            );
-            $this->dbforge->add_field($cart_items_fields);
-            $this->dbforge->add_key(array('file_id', 'cart_uuid'), true);
-            if ($this->dbforge->create_table($table_name)) {
-                log_message("info", "Created '{$table_name}' table...");
-            };
-        }
+        $cart_items_fields = array(
+            'id' => array(
+                'type' => 'INTEGER',
+                'auto_increment' => true,
+                'unsigned' => true
+            ),
+            'file_id' => array(
+                'type' => 'BIGINT'
+            ),
+            'cart_uuid' => array(
+                'type' => 'VARCHAR',
+                'constraint' => 64
+            ),
+            'hashtype' => array(
+                'type' => 'VARCHAR',
+                'default' => 'sha1'
+            ),
+            'hashsum' => array(
+                'type' => 'VARCHAR',
+                'constraint' => 40
+            ),
+            'relative_local_path' => array(
+                'type' => 'VARCHAR'
+            ),
+            'file_size_bytes' => array(
+                'type' => 'BIGINT'
+            ),
+            'file_mime_type' => array(
+                'type' => 'VARCHAR',
+                'null' => true
+            )
+        );
+        $this->dbforge->add_field($cart_items_fields);
+        $this->dbforge->add_key(array('file_id', 'cart_uuid'), true);
+        if ($this->dbforge->create_table($table_name)) {
+            log_message("info", "Created '{$table_name}' table...");
+        };
     }
 
-    private function generate_transient_dataset_table($table_name)
+    private function generate_drhub_data_sets_table($table_name)
     {
-        if (!$this->db->table_exists($table_name)) {
-            $fields = array(
-                'node_id' => array(
-                    'type' => 'INTEGER',
-                    'unique' => true
-                ),
-                'doi_reference_string' => array(
-                    'type' => 'VARCHAR',
-                    'null' => true
-                ),
-                'title' => array(
-                    'type' => 'VARCHAR',
-                    'null' => true
-                ),
-                'description' => array(
-                    'type' => 'TEXT',
-                    'null' => true
-                ),
-                'created' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'updated' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'deleted' => array(
-                    'type' => 'TIMESTAMP',
-                    'null' => true
-                )
-            );
-            $this->dbforge->add_field($fields);
-            $this->dbforge->add_key(array('node_id'), true);
-            if ($this->dbforge->create_table($table_name)) {
-                log_message("info", "Created '{$table_name}' table...");
-            };
-        }
+        $fields = array(
+            'node_id' => array(
+                'type' => 'INTEGER',
+                'unique' => true
+            ),
+            'doi_reference_string' => array(
+                'type' => 'VARCHAR',
+                'null' => true
+            ),
+            'title' => array(
+                'type' => 'VARCHAR',
+                'null' => true
+            ),
+            'description' => array(
+                'type' => 'TEXT',
+                'null' => true
+            ),
+            'created' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'updated' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'deleted' => array(
+                'type' => 'TIMESTAMP',
+                'null' => true
+            )
+        );
+        $this->dbforge->add_field($fields);
+        $this->dbforge->add_key(array('node_id'), true);
+        if ($this->dbforge->create_table($table_name)) {
+            log_message("info", "Created '{$table_name}' table...");
+        };
     }
 
-    private function generate_transient_data_resource_table($table_name)
+    private function generate_drhub_data_records_table($table_name)
     {
-        if (!$this->db->table_exists($table_name)) {
-            $fields = array(
-                'node_id' => array(
-                    'type' => 'INTEGER',
-                    'unique' => true
-                ),
-                'data_set_node_id' => array(
-                    'type' => 'VARCHAR'
-                ),
-                'accessible_url' => array(
-                    'type' => 'VARCHAR',
-                    'null' => true
-                ),
-                'transaction_id' => array(
-                    'type' => 'INTEGER'
-                ),
-                'created' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'updated' => array(
-                    'type' => 'TIMESTAMP',
-                    'default' => 'now'
-                ),
-                'deleted' => array(
-                    'type' => 'TIMESTAMP',
-                    'null' => true
-                )
-            );
-            $this->dbforge->add_field($fields);
-            $this->dbforge->add_key(array('node_id', 'data_set_node_id'), true);
-            if ($this->dbforge->create_table($table_name)) {
-                log_message("info", "Created '{$table_name}' table...");
-            };
-        }
+        $fields = array(
+            'node_id' => array(
+                'type' => 'INTEGER',
+                'unique' => true
+            ),
+            'data_set_node_id' => array(
+                'type' => 'VARCHAR'
+            ),
+            'accessible_url' => array(
+                'type' => 'VARCHAR',
+                'null' => true
+            ),
+            'transaction_id' => array(
+                'type' => 'INTEGER'
+            ),
+            'created' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'updated' => array(
+                'type' => 'TIMESTAMP',
+                'default' => 'now'
+            ),
+            'deleted' => array(
+                'type' => 'TIMESTAMP',
+                'null' => true
+            )
+        );
+        $this->dbforge->add_field($fields);
+        $this->dbforge->add_key(array('node_id', 'data_set_node_id'), true);
+        if ($this->dbforge->create_table($table_name)) {
+            log_message("info", "Created '{$table_name}' table...");
+        };
     }
 }
