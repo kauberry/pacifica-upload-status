@@ -44,7 +44,8 @@ class System_setup_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        if (file_exists(APPPATH."db_create_completed.txt")) {
+        $this->phpfpm_log_dir = "/var/opt/rh/rh-php71/log/php-fpm";
+        if (file_exists($this->phpfpm_log_dir."/db_create_completed.txt")) {
             return;
         }
         //quickly assess the current system status
@@ -107,7 +108,9 @@ class System_setup_model extends CI_Model
                 $this->$call_fn($table_name);
             }
         }
-        touch(APPPATH."db_create_completed.txt");
+        if (file_exists($this->phpfpm_log_dir)) {
+            touch($this->phpfpm_log_dir."/db_create_completed.txt");
+        }
     }
 
     private function table_exists($table_name)
