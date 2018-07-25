@@ -447,10 +447,14 @@ class Status_api extends Baseline_user_api_controller
             $this->page_data['lookup_type'] = $lookup_type;
             $this->load->view('status_error_page.html', $this->page_data);
         }
+
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);
-        $release_state = $transaction_info['transactions'][$id]['metadata']['release_state'];
+
+        $release_state = array_key_exists($id, $transaction_info['transactions'])
+            ? $transaction_info['transactions'][$id]['metadata']['release_state']
+            : "not_released";
         if ($page_state == 'released_data' && $release_state != 'released') {
             $err_msg = 'This data resource has not been made publicly available.';
             $this->page_data['page_header'] = "Data Unavailable";
@@ -488,6 +492,8 @@ class Status_api extends Baseline_user_api_controller
 
                     $err_msg = "No transaction with an ID of {$id} could be found in the system";
                     $this->page_data['force_refresh'] = false;
+                    $this->page_data['error_message'] = $err_msg;
+                    $this->load->view('status_error_page.html', $this->page_data);
                 }
                 $transaction_info['transactions'][$id]['informational_message'] = $err_msg;
                 $this->page_data['js'] .= "
