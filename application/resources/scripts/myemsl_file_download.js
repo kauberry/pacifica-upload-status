@@ -182,18 +182,18 @@ var get_selected_files = function(tree_container){
                         dataNode.render(true,true);
                         selCount = tree.countSelected();
                         selFiles = get_file_sizes(tree_container);
-                        update_download_status(tree_container,selCount);
+                        update_download_status(tree_container, selCount);
                         return selFiles;
                     }
                 );
         }else{
             selFiles = get_file_sizes(tree_container);
-            update_download_status(tree_container,selCount);
+            update_download_status(tree_container, selCount);
             return selFiles;
         }
     }else{
         selFiles = get_file_sizes(tree_container);
-        update_download_status(tree_container,selCount);
+        update_download_status(tree_container, selCount);
     }
 };
 
@@ -268,7 +268,6 @@ var update_download_status = function(tree_container, selectCount){
         $("#status_block_" + el_id).html("&nbsp;");
         dl_button.slideUp("slow");
     }
-
 };
 
 

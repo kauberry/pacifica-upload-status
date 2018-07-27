@@ -42,6 +42,7 @@ class Data_transfer_api_model extends CI_Model
     {
         parent::__construct();
         $this->config->load('data_release');
+        $this->load->database('default');
         $this->dh_username = getenv('DRHUB_USERNAME') ?: $this->config->item('drhub_username');
         $this->dh_password = getenv('DRHUB_PASSWORD') ?: $this->config->item('drhub_password');
         $this->drhub_url_base = getenv('DRHUB_URL_BASE') ?: $this->config->item('drhub_url_base');

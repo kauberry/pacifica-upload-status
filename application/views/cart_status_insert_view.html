@@ -78,24 +78,24 @@
     	<?php endforeach; ?>
     </div>
   </fieldset>
+  <div id="cart_list_messages" class="cart_list_message_container"></div>
+  <div class="file_format_message">
+      <h4>Info Regarding Download File Formats</h4>
+      <p>
+          Clicking the <em>Download</em> link will retrieve your requested files as a <a href="https://en.wikipedia.org/wiki/Tar_(computing)">tarfile</a>.
+          Depending on your computing platform, you can extract this type of file by the following means...
+      </p>
+      <dl>
+          <dt>Macintosh</dt>
+          <dd>Double click on the downloaded file in the Finder.</dd>
+          <dt>Windows</dt>
+          <dd>Download <a href="https://www.7-zip.org">7-Zip</a> and install it on your machine. Right-click on the downloaded file and choose:<br />7-Zip &gt; Extract Here.</dd>
+          <dt>Linux</dt>
+          <dd>From a terminal window, type <code class="code">tar -xf <em>your_tar_file.tar</em></code></dd>
+      </dl>
+  </div>
 </div>
 
-<div id="cart_list_messages" class="cart_list_message_container"></div>
-<div class="file_format_message">
-  <h4>Info Regarding Download File Formats</h4>
-  <p>
-    Clicking the <em>Download</em> link will retrieve your requested files as a <a href="https://en.wikipedia.org/wiki/Tar_(computing)">tarfile</a>.
-    Depending on your computing platform, you can extract this type of file by the following means...
-  </p>
-  <dl>
-    <dt>Macintosh</dt>
-    <dd>Double click on the downloaded file in the Finder.</dd>
-    <dt>Windows</dt>
-    <dd>Download <a href="https://www.7-zip.org">7-Zip</a> and install it on your machine. Right-click on the downloaded file and choose:<br />7-Zip &gt; Extract Here.</dd>
-    <dt>Linux</dt>
-    <dd>From a terminal window, type <code class="code">tar -xf <em>your_tar_file.tar</em></code></dd>
-  </dl>
-</div>
 <script type="application/javascript">
 $(function(){
     var del_buttons = $('.cart_delete_button');
