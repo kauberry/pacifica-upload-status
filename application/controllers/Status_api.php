@@ -533,7 +533,7 @@ var refresh = function(){
                             var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                             ";
         $this->page_data['show_instrument_data'] = true;
-        $this->load->view('single_item_view.html', $this->page_data);
+        $this->load->view('page_layouts/single_item_view.html', $this->page_data);
     }
 
     /**

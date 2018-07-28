@@ -103,17 +103,22 @@ $(function(){
       	el = $(el);
 		el.on('click', function(){
         	var cart_id = el.prop('id').replace('delete_button_','');
-        	var dialog_message = $('<div><p>Really delete this cart?</p></div>');
-        	dialog_message.dialog({
+            var dialog_message = $("<div/>", {"title": "Really Delete?", "id": "delete_dialog"})
+                .append($("<p/>", {"text": "Are you sure that you want to delete this cart entry?"}));
+            if($("#delete_dialog").len > 0){
+                $("#delete_dialog").remove();
+            }
+            $("body").append(dialog_message);
+        	$("#delete_dialog").dialog({
 	          	modal:true,
                 dialogClass: "drop_shadow_dialog",
 	          	buttons: {
 	            	Delete: function(){
+                        $("#delete_dialog").dialog("close");
                 		cart_delete(cart_id);
-	              		$(this).dialog("close");
 	            	},
 	            	Cancel: function(){
-	              		$(this).dialog("close");
+	              		$("#delete_dialog").dialog("close");
 	              		return false;
 	            	}
 	          	}
