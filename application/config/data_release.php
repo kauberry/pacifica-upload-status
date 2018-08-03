@@ -19,3 +19,6 @@ $config['drhub_url_base'] = 'https://lampdev02.pnl.gov/drhub/drhub/api';
 $config['drhub_username'] = 'svcDataHubAdmin';
 $config['drhub_password'] = 'password';
 $config['drhub_default_repository_name'] = 'EMSL';
+
+$config['default_contract_title'] = "PNNL 1830 Contract";
+$config['default_contract_number'] = "DE-AC05-76RL01830";

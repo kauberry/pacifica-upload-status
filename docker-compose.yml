@@ -67,6 +67,10 @@ services:
             CARTDB_DBDRIVER: postgre
             CART_DOWNLOAD_PORT: tcp://cartng.emsl.pnl.gov:8443
             FILE_DOWNLOAD_PORT: tcp://filesng.emsl.pnl.gov:8443
+            XDEBUG_CONFIG: remote_host=docker.for.mac.localhost
+        ports:
+            - 9000:9000
+
 
     uploadstatusdb:
         container_name: status_uploadstatusdb

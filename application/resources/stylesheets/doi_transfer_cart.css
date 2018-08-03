@@ -23,6 +23,11 @@
     margin: 1.25rem auto 0 auto;
 }
 
+select.multi-select + span.select2 ul > li.select2-search,
+select.multi-select + span.select2 ul > li.select2-search > input {
+    width:100% !important;
+}
+
 .transfer_cart h3 {
     font-size: 1rem;
     font-weight: 600;
@@ -38,6 +43,14 @@
     padding-right: 1em;
     text-align: right;
 }
+
+.select-dropdown-label-internal {
+    font-size: 1.2em;
+    margin: 0.6em 0 3px 2px !important;
+    color: #555;
+    font-weight: 600;
+}
+
 
 /* .transfer_cart_action_buttons_container * {
     max-height: 0;
@@ -63,6 +76,18 @@ input.disabled {
     background-color: #bbb;
     border-color: #aaa;
 }
+
+.readonly-display-grouping {
+    margin-top: 1em;
+}
+
+.item_identifier {
+    font-weight:800;
+    font-size: 1.5em;
+    font-stretch: condensed;
+}
+
+
 
 
 /* .transfer_cart:hover .transfer_cart_button {

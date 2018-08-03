@@ -172,10 +172,10 @@ class Data_transfer_api_model extends CI_Model
         ), json_encode($transaction_list));
         $results = json_decode($query->body, true);
         $transient_info = [];
-        foreach ($results as $result_item) {
-            $transient_info = $this->get_transient_record_for_transaction($result_item['transaction'], $data_set_id);
-            $results[$result_item['transaction']]['transient_info'] = $transient_info;
-        }
+        // foreach ($results as $result_item) {
+        //     $transient_info = $this->get_transient_record_for_transaction($result_item['transaction'], $data_set_id);
+        //     $results[$result_item['transaction']]['transient_info'] = $transient_info;
+        // }
         return $results;
     }
 

@@ -1,0 +1,29 @@
+<div id="doi-resource-info-form" title="Describe this data resource" style="display:none;">
+  <form class="pure-form" onsubmit="return false;">
+    <div class="pure-control-group">
+      <label for="doi_dataset_title" class="select-dropdown-label-internal">Dataset Title</label><br>
+      <input
+        id="doi_dataset_title"
+        name="doi_dataset_title"
+        style="width:85%;"
+        placeholder="Enter a descriptive title for the data product itself"
+        required
+      />
+      <div class="pure-form-message-inline" style="margin-left: 0.5em;">Required</div>
+    </div>
+    <div class="pure-control-group">
+      <label for="doi_dataset_description" class="select-dropdown-label-internal">Description / Abstract</label><br>
+      <textarea
+        placeholder="Provide a clear, concise summary of the content of the dataset"
+        id="doi_dataset_description"
+        name="doi_dataset_description"
+        style="width:85%;"
+      ></textarea>
+    </div>
+    <div class="readonly-display-grouping">
+        <p class="select-dropdown-label-internal">Other Metadata</p>
+        <ul/>
+    </div>
+
+  </form>
+</div>

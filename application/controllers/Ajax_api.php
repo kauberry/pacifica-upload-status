@@ -122,13 +122,13 @@ class Ajax_api extends Baseline_api_controller
      */
     public function get_release_states($data_set_id = '')
     {
-        $this->load->model('Data_transfer_api_model', 'release');
+        $this->load->model('Doi_minting_model', 'doi');
         $transaction_list = [];
         if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
             $http_raw_post_data = file_get_contents('php://input');
             $transaction_list = json_decode($http_raw_post_data, true);
         }
-        transmit_array_with_json_header($this->release->get_release_states($transaction_list, $data_set_id));
+        transmit_array_with_json_header($this->doi->get_release_states($transaction_list, $data_set_id));
     }
 
     /**
@@ -161,7 +161,30 @@ class Ajax_api extends Baseline_api_controller
         print $check_query->body;
     }
 
-    public function publish_resource_to_doi($dataset_id)
+    public function save_transient_doi_details($registration_id)
+    {
+        $this->load->model('Doi_minting_model', 'doi');
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $publication_data = json_decode($http_raw_post_data, true);
+        }
+        $success = $this->doi->store_transient_details($publication_data);
+        if ($success) {
+            $results = "Updated Records Successfully...";
+        }
+        transmit_array_with_json_header($results);
+    }
+
+    /**
+     * [publish_resource_to_doi description]
+     *
+     * @param  int $registration_id [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function publish_resource_to_doi($registration_id)
     {
         $this->load->model('Data_transfer_api_model', 'release');
         if ($this->input->is_ajax_request() || file_get_contents('php://input')) {

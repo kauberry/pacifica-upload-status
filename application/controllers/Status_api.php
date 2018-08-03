@@ -56,6 +56,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['view_mode'] = 'multiple';
         $this->page_data['js'] = "";
         $this->overview_template = $this->config->item('main_overview_template') ?: "page_layouts/status_page_view.html";
+        $this->config->load('data_release');
     }
 
     /**
@@ -79,6 +80,7 @@ class Status_api extends Baseline_user_api_controller
 
         $this->page_data = array_merge($this->page_data, $updated_page_info);
         $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
         $this->overview();
     }
 
@@ -143,6 +145,8 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/forms.css';
         $this->page_data['css_uris'][] = '/project_resources/stylesheets/pure-min.css';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
+
         $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
         $this->page_data = array_merge($this->page_data, $updated_page_info);
         $this->overview();
@@ -337,7 +341,7 @@ class Status_api extends Baseline_user_api_controller
                 $end_time
             );
             $transactions = $transaction_list;
-            if ($this->referring_page == 'doi_minting') {
+            if (in_array($this->referring_page, ['doi_minting', 'released_data'])) {
                 foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
                     if ($transaction_info['metadata']['release_state'] == 'not_released') {
                         unset($transactions['transactions'][$transaction_id]);
@@ -407,10 +411,11 @@ class Status_api extends Baseline_user_api_controller
      */
     public function view($id)
     {
-        $path_splitter_regex = '/\/?([^\/]+)\/(\d+)$/';
-        if (preg_match($path_splitter_regex, $_SERVER['REQUEST_URI'], $matches)) {
-            $page_state = $matches[1];
-        }
+        $page_state = array_values(array_intersect(
+            ['released_data', 'view'],
+            $this->uri->segment_array()
+        ))[0] ?: false;
+
         $this->page_mode = 'cart';
         $lookup_type_description = 'Transaction';
         $lookup_type = 'transaction';

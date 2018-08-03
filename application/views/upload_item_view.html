@@ -29,7 +29,8 @@
         <?php $proposal_id = $transaction_info['metadata']['proposal_id']; ?>
         <?php $submit_time = $transaction_info['metadata']['submitted']; ?>
         <?php //$download_url = $page_mode == 'release' && $release_class == 'released'? "{$external_release_base_url}released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
-        <?php $download_url = $release_class == 'released'? "{$external_release_base_url}released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
+        <?php $download_url = $release_class == 'released' ? "{$external_release_base_url}released_data/{$transaction_id}" : base_url()."view/{$transaction_id}"; ?>
+        <?php $download_url_tag = $release_class == 'released' ? "Released Data Direct URL" : "Internal Access Direct URL"; ?>
         <input
             type="hidden"
             class="instrument_identifier"
@@ -59,7 +60,45 @@
             class="total_file_count"
             id="total_file_count_<?= $transaction_id ?>", name="total_file_count_<?= $transaction_id ?>",
             value="<?= $transaction_info['file_count'] ?>" />
-        <?php if($page_mode == 'release' && $release_class == 'released'): ?>
+        <input
+            type="hidden"
+            class="contact_first_name"
+            id="contact_first_name_<?= $transaction_id ?>",
+            name="contact_first_name_<?= $transaction_id ?>",
+            value="<?= $this->user_info["first_name"] ?>" />
+        <input
+            type="hidden"
+            class="contact_last_name"
+            id="contact_last_name_<?= $transaction_id ?>",
+            name="contact_last_name_<?= $transaction_id ?>",
+            value="<?= $this->user_info["last_name"] ?>" />
+        <input
+            type="hidden"
+            class="contact_email"
+            id="contact_email_<?= $transaction_id ?>",
+            name="contact_email_<?= $transaction_id ?>",
+            value="<?= $this->user_info["email_address"] ?>" />
+        <input
+            type="hidden"
+            class="contact_org"
+            id="contact_org_<?= $transaction_id ?>"
+            name="contact_org_<?= $transaction_id ?>"
+            value="EMSL" />
+        <input
+            type="hidden"
+            class="contract_numbers"
+            id="contract_numbers_<?= $transaction_id ?>"
+            name=contract_numbers_<?= $transaction_id ?>"
+            value="<?= str_replace('DE-', '', $this->config->item('default_contract_number')) ?>" />
+        <input
+            type="hidden"
+            class="site_url_identifier"
+            name="site_url_identifier"
+            id="site_url_identifier"
+            value="<?= $download_url ?>" />
+
+
+        <?php if($release_class == 'released'): ?>
         <input
             type="hidden"
             class="release_identifier"
@@ -86,6 +125,10 @@
               <span id="status_block_<?= $transaction_id ?>" class="download_status"></span>
             </h3>
             <div class="metadata_container" style="display:none;">
+              <div class="full_width_block" style="margin-bottom: 5px;">
+                <span class="metadata_header released_data_url" style="font-weight:bold;"><?= $download_url_tag ?>:&nbsp;&nbsp;&nbsp;</span>
+                <span class="metadata_item"><a href="<?= $download_url ?>"><?= $download_url ?></a></span>
+              </div>
               <div class="left">
                 <h4>Basic Metadata</h4>
                 <?php ksort($transaction_info['metadata']); ?>
@@ -93,6 +136,8 @@
                   <tbody>
                     <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
                       <?php if(stripos($md_name, "file") === 0) continue; ?>
+                      <?php if($md_name == 'release_date' && !$md_value) continue; ?>
+                      <?php if($md_name == 'released_data_url') continue; ?>
                       <?php $style_info = $md_name == "release_state" ? " style=\"display: none\";" : ""; ?>
                       <?php $cleaned_type_name = trim(str_ireplace("id","ID", ucwords(str_replace("_"," ",$md_name)))); ?>
                       <?php $cleaned_type_name = $cleaned_type_name == "Transaction ID" ? "Internal Transaction ID" : $cleaned_type_name; ?>

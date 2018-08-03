@@ -264,12 +264,14 @@ class Status_api_model extends CI_Model
      */
     public function get_common_path_prefix($first_path, $last_path, $delimiter = '/')
     {
-        $shortest_path = sizeof($first_path) < sizeof($last_path) ? $first_path : $last_path;
-        $longest_path = $shortest_path == $first_path ? $last_path : $first_path;
-        $short_path_array = explode($delimiter, dirname($shortest_path));
-        $longest_path_array = explode($delimiter, dirname($longest_path));
+        // $shortest_path = strlen($first_path) < strlen($last_path) ? $first_path : $last_path;
+        // $longest_path = $shortest_path == $first_path ? $last_path : $first_path;
+        $first_path_array = explode($delimiter, dirname($first_path));
+        $last_path_array = explode($delimiter, dirname($last_path));
+        $short_path_array = count($first_path_array) < count($last_path_array) ? $first_path_array : $last_path_array;
+        $longest_path_array = $short_path_array == $first_path_array ? $last_path_array : $first_path_array;
         $common_path_array = array();
-        for ($i=0; $i<sizeof($short_path_array); $i++) {
+        for ($i=0; $i<count($short_path_array); $i++) {
             if ($short_path_array[$i] == $longest_path_array[$i]) {
                 $common_path_array[] = $short_path_array[$i];
             } else {

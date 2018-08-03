@@ -1,51 +1,11 @@
-var data_identifier = 0;
-
-var submit_submission_selections = function(){
-    var submit_url = base_url + "ajax_api/publish_resource_to_doi/" + data_identifier;
-    var submit_data = [];
-    var session_data = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    $.each(session_data, function(index, item){
-        submit_data.push({
-            "transaction_id": item.upload_id,
-            "release_name": item.release_name,
-            "release_description": item.release_description
-        });
-    });
-    sessionStorage.removeItem("items_to_publish");
-    var pg_hider = $("#page_hider_working");
-    var lb = $("#doi_loading_status_text");
-    pg_hider.fadeIn();
-    lb.text("Preparing DOI Submission...");
-    setTimeout(function(){
-        lb.text("Contacting DRHub Servers...");
-        $.post(
-            submit_url, JSON.stringify(submit_data)
-        )
-            .done(
-                function(){
-                    lb.text("Receiving Updated State Information...");
-                    setTimeout(function(){
-                        setup_staging_buttons();
-                        update_publishing_view();
-                        update_data_set_summary_block();
-                        pg_hider.fadeOut("slow");
-                    }, 2000);
-                }
-            )
-            .fail(
-                function(jqxhr, error, message){
-                    alert("A problem occurred creating your cart.\n[" + message + "]");
-                }
-            );}, 2000);
-
-};
+var doi_ui_base = "https://data-doi.datahub.pnl.gov/";
+var doi_url_base = "https://demoext2.datahub.pnl.gov/";
+var doi_api_url_base = doi_url_base + "api/1.0/";
 
 /* doi staging setup code */
 var setup_doi_staging_button = function(el) {
-    var current_session_contents = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    var transaction_id = el.find(".transaction_identifier").val();
+    // var transaction_id = el.find(".transaction_identifier").val();
     var doi_staging_button = el.find(".doi_staging_button");
-    var should_be_disabled = _.keys(current_session_contents).includes(transaction_id);
 
     if(!doi_staging_button.length){
         var doi_staging_button_container = $("<div/>", {
@@ -54,7 +14,7 @@ var setup_doi_staging_button = function(el) {
         doi_staging_button = $("<input>", {
             "value": "Submit DOI",
             "class": "doi_staging_button",
-            "style": "display: none;z-index: 4;"
+            "style": "z-index: 4;"
         }).attr({
             "type": "button"
         });
@@ -63,12 +23,6 @@ var setup_doi_staging_button = function(el) {
             create_doi_data_resource($(event.target));
         });
         el.find("legend").after(doi_staging_button_container);
-        // doi_staging_button_container.appendTo(el.find("fieldset"));
-    }
-    if(should_be_disabled){
-        doi_staging_button.attr("disabled", "disabled").addClass("disabled");
-    }else{
-        doi_staging_button.removeAttr("disabled").removeClass("disabled");
     }
     if(!doi_staging_button.is(":visible")){
         doi_staging_button.fadeIn("slow");
@@ -79,284 +33,163 @@ var format_doi_ref = function(doi_reference){
     return "https://dx.doi.org/" + doi_reference;
 };
 
-var clear_submission_selections = function(){
-    sessionStorage.removeItem("items_to_publish");
-    update_publishing_view();
-};
-
 var create_doi_data_resource = function(el) {
     doi_resource_info_dialog
         .data("entry_button", $(el))
+        .data("upload_item", $(el).parents("fieldset"))
         .dialog("open");
 };
 
 var publish_released_data = function(el, form_data) {
     var container = el.parents(".transaction_container");
-    var current_session_contents = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    var upload_id = parseInt(container.find(".transaction_identifier").val(), 10);
+    // var upload_id = parseInt(container.find(".transaction_identifier").val(), 10);
+
     var new_info = {
-        "upload_id": container.find(".transaction_identifier").val(),
-        "release_name": form_data.doi_rsrc_name,
-        "release_date": moment(container.find(".release_date").val()).toISOString(),
-        "file_size": container.find(".total_file_size_bytes").val(),
-        "file_count": container.find(".total_file_count").val(),
-        "release_description": form_data.doi_rsrc_desc
+        "title": form_data.doi_dataset_title,
+        "description": form_data.doi_dataset_description,
+        "language": "EN",
+        "country": "US",
+        "originating_research_org": ["PNNL"],
+        "product_nos": [
+            "Proposal ID: " + container.find(".proposal_identifier").val(),
+            "Instrument ID: " + container.find(".instrument_identifier").val(),
+            "Upload ID: " + container.find(".transaction_identifier").val()
+        ],
+        "contact_org": "EMSL",
+        "contact_name": container.find(".contact_first_name").val() + " " + container.find(".contact_last_name").val(),
+        "contact_email": container.find(".contact_email").val(),
+        "contract_nos": [container.find(".contract_numbers").val()],
+        "set_reserved": false,
+        "publication_date": moment().format("YYYY-MM-DD"),
+        "site_url": container.find(".site_url_identifier").val()
     };
-    if(current_session_contents == null){
-        current_session_contents = {};
-    }
-    current_session_contents[upload_id] = new_info;
-    sessionStorage.setItem("items_to_publish", JSON.stringify(current_session_contents));
-    setup_doi_staging_button(container);
-    update_publishing_view();
-};
 
-var unstage_publish_data = function(el) {
-    el = $(el.target);
-    var txn_id = parseInt(el.parents("tr").find(".upload_id").text(), 10);
-    var current_session_contents = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    delete current_session_contents[txn_id];
-    sessionStorage.setItem("items_to_publish", JSON.stringify(current_session_contents));
-    var container = $("#fieldset_" + txn_id);
-    setup_doi_staging_button(container);
-    update_publishing_view();
-};
+    var file_size = myemsl_size_format(container.find(".total_file_size_bytes").val());
+    var file_count = container.find(".total_file_count").val();
+    var count_pluralizer = file_count == 1 ? "" : "s";
+    new_info["dataset_size"] = file_count + " file" + count_pluralizer + " (" + file_size + ")";
 
-var edit_published_data = function(event) {
-    var el = $(event.target);
-    var txn_id = parseInt(el.parents("tr").find(".upload_id").text(), 10);
-    var current_session_data = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    var item_data = current_session_data[release_id];
-    doi_resource_edit_dialog
-        .data("resource_name", item_data["release_name"])
-        .data("resource_desc", item_data["release_description"])
-        .data("transaction_id", txn_id)
-        .dialog("open");
-};
-
-var update_publishing_view = function(){
-    var tbody_el = $(".doi_cart_container table tbody");
-    var current_session_data = JSON.parse(sessionStorage.getItem("items_to_publish"));
-    tbody_el.empty();
-    $.each(current_session_data, function(index, el){
-        var row = $("<tr>", {"id": "publish_row_" + el.upload_id, "class": "publish_row"});
-        el.file_stats = el.file_count + " files (" + myemsl_size_format(el.file_size) + ")";
-        var desc = el["release_description"];
-        el.release_date = moment(el.release_date).fromNow() + " (" + moment(el.release_date).format("LL") + ")";
-        var header_el = $(".doi_cart_container table thead th").filter(function(){
-            return $(this).prop("id").length > 0;
-        });
-        $.each(header_el, function(index, item){
-            var val_name = $(item).prop("id").replace("th_", "");
-            row.append($("<td>", {"text": el[val_name], "class": val_name}));
-        });
-        row.attr("title", desc);
-        var control_element = $("<td>", {"class": "transfer_item_controls", "style": "padding-left: 1em;" });
-        $("<span>", {
-            "class": "fa fa-2x fa-pencil transfer_item_edit_button",
-            "aria-hidden": "true",
-            "title": "View/Edit Upload Metadata"
-        }).appendTo(control_element);
-        $("<span>", {
-            "class": "fa fa-2x fa-minus-circle transfer_item_delete_button",
-            "aria-hidden": "true",
-            "title": "Unstage this transaction"
-        }).appendTo(control_element);
-        row.append(control_element);
-        tbody_el.append(row);
-    });
-    if(_.size(current_session_data)){
-        tbody_el.find(".transfer_item_delete_button").off().on("click", unstage_publish_data);
-        tbody_el.find(".transfer_item_edit_button").off().on("click", edit_published_data);
-        $("#doi_submission_cart").show();
-    }else{
-        $("#doi_submission_cart").hide();
-    }
-    setup_staging_buttons();
-};
-
-var update_data_set_summary_block = function() {
-    if(data_identifier && $("#data_set_info_from_drhub")) {
-        var url = base_url + "ajax_api/get_data_set_summary/" + data_identifier;
-        $.get(url, function(data){
-            if(data.title){
-                $("#dh_data_set_title").text(data.title);
-                $("#dh_data_set_desc").text(data.description);
-                if(data.linked_resources){
-                    var ul_obj = $("<ul/>");
-                    $.each(data.linked_resources, function(index, item){
-                        ul_obj.append(
-                            $("<li/>").append(
-                                $("<a/>", {
-                                    "title": item.title,
-                                    "href": item.release_url
-                                })
+    var prefill_url = doi_api_url_base + "prefill-registration";
+    var pg_hider = $("#page_hider_working");
+    var lb = $("#doi_loading_status_text");
+    pg_hider.fadeIn();
+    lb.text("Preparing DOI Submission");
+    setTimeout(function() {
+        lb.text("Contacting DOI Minting Service...");
+        $.ajax({
+            type: "POST",
+            url: prefill_url,
+            data: JSON.stringify(new_info),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .done (
+                function(data){
+                    var regID = data.id;
+                    setTimeout(function () {
+                        lb.text("Retrieving Record ID...");
+                        var reg_info = {
+                            "transaction_id": container.find(".transaction_identifier").val(),
+                            "registration_id": regID,
+                            "title": new_info.title,
+                            "description": new_info.description,
+                            "access_url": new_info.site_url
+                        };
+                        var transient_update_url = base_url + "update_local_records/" + regID;
+                        $.ajax({
+                            type: "POST",
+                            url: transient_update_url,
+                            data: JSON.stringify(reg_info),
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        })
+                            .done (
+                                function(data){
+                                    setup_staging_buttons();
+                                    window.open(doi_ui_base + "registrations/" + regID);
+                                }
                             )
-                        );
-                    });
+                            .always (
+                                function() {
+                                    pg_hider.fadeOut("slow");
+                                }
+                            );
+                    }, 1000);
                 }
-            }
-            else{
-                $(".data_set_info > h4").text("Data Set " + data_identifier + " does not seem to exist");
-            }
-        });
-    }
+            );
+    }, 1000);
+
+
 };
 
-
-var set_release_state_banners = function(release_states, selector){
-    $(selector).each(function(index, el){
-        el = $(el);
-        var txn_id = el.find(".transaction_identifier").val();
-        var ribbon_el = el.find(".ribbon");
-        var release_info = release_states[txn_id];
-        var transaction_id = release_info.transaction;
-        // if(release_info.release_state == "not_released"){
-        //     var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
-        //     if(!$.isEmptyObject(current_session_contents) && txn_id in current_session_contents){
-        //         release_info.release_state = "staged";
-        //         release_info.display_state = "Staged";
-        //     }else{
-        //         release_info.release_state = "not_released";
-        //         release_info.display_state = "Not Released";
-        //         var content = build_staging_button(txn_id);
-        //         el.find("legend").after(content);
-        //         el.find(".staging_button").off().on("click", function(event){
-        //             stage_transaction($(event.target));
-        //         });
-        //     }
-        // }else{
-        if(release_info.release_state == "released"){
-            //add doi staging button
-            var pub_status_block = el.next(".publication_status_block");
-            el.find(".upload_url").attr({"href": external_release_base_url + "released_data/" + txn_id});
-            if(release_info.release_doi_entries != null){
-                var lb = pub_status_block.find(".publication_left_block");
-                lb.empty();
-                lb.append($("<div>", {"class": "reference_header", "text": "Published DOI References"}));
-                var list = $("<ul/>").appendTo(lb);
-                $.each(release_info.release_doi_entries, function(index, item){
-                    $("<li/>").appendTo(list).append($("<a/>", {
-                        "href": format_doi_ref(item.doi_reference),
-                        "text": item.doi_name,
-                        "title": "DOI Reference: " + item.doi_reference
-                    }));
-                });
-                // pub_status_block.show();
-            }
-            if(release_info.release_citations != null){
-                var rb = pub_status_block.find(".publication_right_block");
-                rb.empty();
-                rb.append($("<div>", {"class": "reference_header", "text": "Published Citations"}));
-                list = $("<ul/>").appendTo(rb);
-                $.each(release_info.release_citations, function(index, item){
-                    $("<li/>").appendTo(list).append($("<a/>", {
-                        "href": format_doi_ref(item.doi_reference),
-                        "text": item.title + " " + item.title + " " + item.title,
-                    }));
-                });
-                // pub_status_block.show();
-            }
-            el.find(".release_date").val(release_info.release_date);
-            if(release_info.transient_info.node_id && release_info.transient_info.data_set_node_id == data_identifier){
-                release_info["release_state"] = "doi_pending";
-                release_info["display_state"] = "DOI Pending";
-                el.find(".doi_staging_button").remove();
-            }else{
-                setup_doi_staging_button(el, transaction_id);
-            }
-            var release_date_line = $("<tr/>", {"class": "metadata_description_list"})
-                .append($("<td/>", {
-                    "class": "metadata_header release_date",
-                    "text": "Release Date"
-                }))
-                .append($("<td/>", {
-                    "class": "metadata_item",
-                    "text": moment(release_info.release_date).format("YYYY-MM-DDTHH:mm:ss")
-                }));
-            el.find(".release_state_display").parents("tr").after(release_date_line);
-
-        }
-        el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
-        el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
-        ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
-        ribbon_el.find("span").text(release_info.display_state);
-
+var build_metadata_for_display = function(el) {
+    el = $(el);
+    var display_elements = {};
+    var item_list = el.find("[title]");
+    item_list.each(function(index, item){
+        item = $(item);
+        display_elements[item.prop("class")] = {
+            "display_name": item.prop("class").replace(/_/g, " "),
+            "value": item.prop("title") + " (ID #" + item.val() + ")"
+        };
     });
+
+    item_list = el.find("input[class*='time']");
+    item_list.each(function(index, item){
+        item = $(item);
+        display_elements[item.prop("class")] = {
+            "display_name": item.prop("class").replace(/_/g, " "),
+            "value": moment(item.val()).format("MMMM Do YYYY, h:mm:ss a")
+        };
+    });
+
+    var file_size = myemsl_size_format(el.find(".total_file_size_bytes").val());
+    var file_count = el.find(".total_file_count").val();
+    var count_pluralizer = file_count == 1 ? "" : "s";
+    display_elements["file_size"] = {
+        "display_name": "Total File Size",
+        "value": file_count + " file" + count_pluralizer + " (" + file_size + ")"
+    };
+    var rd = el.find(".release_date").val();
+    display_elements["release_date"] = {
+        "display_name": "Release Date",
+        "value": moment(rd).format("MMMM Do YYYY")
+    };
+
+    var output_elements = [];
+    $.each(display_elements, function(index, item) {
+        var new_item = $("<li/>", {
+            "class": "doi_" + index,
+            "id": "doi_" + index
+        })
+            .append($("<span/>", {
+                "style": "text-transform: capitalize;font-weight: bold;",
+                "text": item.display_name.replace(" identifier", "") + ": "
+            }))
+            .append(item.value);
+        output_elements.push(new_item);
+    });
+    return output_elements;
 };
 
-var setup_staging_buttons = function(){
-    var release_check_url = base_url + "ajax_api/get_release_states";
-    if(data_identifier.length > 0){
-        release_check_url += "/" + data_identifier;
+var myemsl_size_format = function(bytes) {
+    var suffixes = ["B", "KB", "MB", "GB", "TB", "EB"];
+    if (bytes == 0) {
+        suffix = "B";
+    } else {
+        var order = Math.floor(Math.log(bytes) / Math.log(10) / 3);
+        bytes = (bytes / Math.pow(1024, order)).toFixed(1);
+        suffix = suffixes[order];
     }
-    var my_transactions = $(".fieldset_container .transaction_identifier").map(function(){
-        return $(this).val();
-    }).toArray();
-    $.post(
-        release_check_url, JSON.stringify(my_transactions)
-    )
-        .done(
-            function(data){
-                if(data){
-                    set_release_state_banners(data, ".fieldset_container");
-                }
-            }
-        )
-        .fail(
-            function(jqxhr, error, message){
-                alert("A problem occurred creating your cart.\n[" + message + "]");
-            }
-        );
-
+    return bytes + " " + suffix;
 };
-
 
 $(function(){
-    update_publishing_view();
-    $(".submission_cart_action_buttons_container input.cancel").off().on("click", function(){
-        clear_submission_selections();
-    });
-    $(".submission_cart_action_buttons_container input.submit").off().on("click", function(event){
-        submit_submission_selections(event);
-    });
-    doi_resource_edit_dialog = $("#doi-resource-edit-form").dialog({
-        autoOpen: false,
-        width: "40%",
-        dialogClass: "drop_shadow_dialog",
-        modal: true,
-        buttons: {
-            "OK": function() {
-                f = $(this).find("form");
-                var empty_req_fields = f.find("input:invalid, textarea:invalid");
-                if(empty_req_fields.length > 0){
-                    $.each(empty_req_fields, function(index, item){
-                        $(item).next(".pure-form-message-inline").fadeIn("fast");
-                    });
-                    return false;
-                }else{
-                    var current_session_data = JSON.parse(sessionStorage.getItem("items_to_publish"));
-                    var transaction_id = $(this).data("transaction_id");
-                    current_session_data[transaction_id]["release_name"] = $("#doi_rsrc_name").val();
-                    current_session_data[transaction_id]["release_description"] = $("#doi_rsrc_desc").val();
-                    sessionStorage.setItem("items_to_publish", JSON.stringify(current_session_data));
-                    $(this).dialog("close");
-                    update_publishing_view();
-                }
-            },
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
-        },
-        open: function() {
-            $("#doi_rsrc_name").val($(this).data("resource_name"));
-            $("#doi_rsrc_desc").val($(this).data("resource_desc"));
-        }
-    });
-
     doi_resource_info_dialog = $("#doi-resource-info-form").dialog({
         autoOpen: false,
-        width: "40%",
+        width: "640px",
         dialogClass: "drop_shadow_dialog",
         modal: true,
         buttons: {
@@ -384,19 +217,95 @@ $(function(){
             }
         },
         open: function() {
-            var req_fields = $(this).find("input:required, textarea:required");
-            req_fields.on("keyup", function(event){
-                var el = $(event.target);
-                var req_notifier = el.next(".pure-form-message-inline");
-                if(el.is(":invalid") && req_notifier.is(":hidden")){
-                    req_notifier.fadeIn("fast");
-                }else if(el.is(":valid") && req_notifier.is(":visible")) {
-                    req_notifier.fadeOut("fast");
-                }
+            var cf = $(this).data("upload_item");
+            var display_metadata = build_metadata_for_display(cf);
+            var display_element = $(this).find(".readonly-display-grouping ul");
+            $.each(display_metadata, function(index, item){
+                display_element.append(item);
             });
-        },
-        close: function() {
 
         }
     });
 });
+
+var set_release_state_banners = function(release_states, selector){
+    $(selector).each(function(index, el){
+        el = $(el);
+        var txn_id = el.find(".transaction_identifier").val();
+        var ribbon_el = el.find(".ribbon");
+        var release_info = release_states[txn_id];
+        var transaction_id = release_info.transaction;
+
+        if(release_info.release_state == "released"){
+            //add doi staging button
+            el.find(".upload_url").attr({"href": external_release_base_url + "released_data/" + txn_id});
+            el.find(".release_date").val(release_info.release_date);
+            var pub_status_block = el.next(".publication_status_block");
+            if(release_info.transient_info.length > 0){
+                var lb = pub_status_block.find(".publication_left_block");
+                var rb = pub_status_block.find(".publication_right_block");
+                lb.empty();
+                rb.empty();
+                lb.append($("<div>", {"class": "reference_header", "text": "Pending DOI Requests"}));
+                rb.append($("<div>", {"class": "reference_header", "text": "Published DOI Entries"}));
+                var pending_list = $("<ul/>").appendTo(lb);
+                var completed_list = $("<ul/>").appendTo(rb);
+                rb.hide();
+                lb.hide();
+
+                $.each(release_info.transient_info, function(index, item){
+                    if (item.doi_reference === null) {
+                        link_text = "pending";
+                        link = doi_ui_base + "registrations/" + item.registration_id;
+                        list_selection = pending_list;
+                    } else {
+                        link_text = item.doi_reference;
+                        link = format_doi_ref(item.doi_reference);
+                        list_selection = completed_list;
+                    }
+                    list_item = $("<li/>", {"title": item.description});
+                    list_item.append($("<span/>", {"text": item.title + " / "}));
+                    list_item.append($("<a/>", {"href": link, "text": link_text}));
+                    list_item.appendTo(list_selection);
+                });
+                pub_status_block.show();
+                if (lb.find("ul > li").length > 0) {
+                    lb.show();
+                }else{
+                    lb.hide();
+                }
+                if (rb.find("ul > li").length > 0) {
+                    rb.show();
+                    if (lb.find("ul > li").length == 0){
+                        rb.css("float", "left");
+                    }
+                }else{
+                    rb.hide();
+                }
+            }
+
+            if (typeof setup_doi_staging_button === "function") {
+                setup_doi_staging_button(el, transaction_id);
+            }
+        }else{
+            var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
+            if(!$.isEmptyObject(current_session_contents) && txn_id in current_session_contents){
+                release_info.release_state = "staged";
+                release_info.display_state = "Staged";
+            }else{
+                release_info.release_state = "not_released";
+                release_info.display_state = "Not Released";
+                var content = build_staging_button(txn_id);
+                el.find("legend").after(content);
+                el.find(".staging_button").off().on("click", function(event){
+                    stage_transaction($(event.target));
+                });
+            }
+        }
+        el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
+        el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
+        ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
+        ribbon_el.find("span").text(release_info.display_state);
+
+    });
+};

@@ -34,6 +34,8 @@
       <!-- jquery plugins -->
       <script src="/resources/scripts/jquery-cookie/jquery.cookie.js" type="text/javascript"></script>
 
+      <link rel="stylesheet" type="text/css" href="/resources/fonts/opensans/opensans.css" />
+
       <!--[if gte IE 5.5]>
       <link rel="stylesheet" type="text/css" href="/stylesheets/ie-specific.css" />
       <![endif]-->
