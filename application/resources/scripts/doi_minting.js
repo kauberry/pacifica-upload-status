@@ -80,6 +80,9 @@ var publish_released_data = function(el, form_data) {
             type: "POST",
             url: prefill_url,
             data: JSON.stringify(new_info),
+            xhrFields: {
+                withCredentials: true
+            },
             headers: {
                 "Content-Type": "application/json"
             }

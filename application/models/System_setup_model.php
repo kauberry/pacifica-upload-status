@@ -230,7 +230,7 @@ class System_setup_model extends CI_Model
     private function table_exists($table_name)
     {
         $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '{$table_name}';");
-        return $query->num_rows() == 1;
+        return $query && $query->num_rows() > 0;
     }
 
     private function generate_table($table_name, $field_collection, $key_collection = false)
