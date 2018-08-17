@@ -22,3 +22,6 @@ $config['drhub_default_repository_name'] = 'EMSL';
 
 $config['default_contract_title'] = "PNNL 1830 Contract";
 $config['default_contract_number'] = "DE-AC05-76RL01830";
+
+$config['doi_ui_base'] = "https://data-doi.datahub.pnl.gov/";
+$config['doi_url_base'] = "https://demoext2.datahub.pnl.gov/";

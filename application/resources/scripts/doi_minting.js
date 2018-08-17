@@ -1,6 +1,5 @@
-var doi_ui_base = "https://data-doi.datahub.pnl.gov/";
-var doi_url_base = "https://demoext2.datahub.pnl.gov/";
-var doi_api_url_base = doi_url_base + "api/1.0/";
+// var doi_ui_base = "https://data-doi.datahub.pnl.gov/";
+// var doi_url_base = "https://demoext2.datahub.pnl.gov/";
 
 /* doi staging setup code */
 var setup_doi_staging_button = function(el) {
@@ -69,11 +68,13 @@ var publish_released_data = function(el, form_data) {
     var count_pluralizer = file_count == 1 ? "" : "s";
     new_info["dataset_size"] = file_count + " file" + count_pluralizer + " (" + file_size + ")";
 
-    var prefill_url = doi_api_url_base + "prefill-registration";
+    var doi_api_url_base = doi_url_base + "api/1.0/";
+    var prefill_url = doi_api_url_base + "registrations";
     var pg_hider = $("#page_hider_working");
     var lb = $("#doi_loading_status_text");
     pg_hider.fadeIn();
     lb.text("Preparing DOI Submission");
+    new_info["prefill"] = true;
     setTimeout(function() {
         lb.text("Contacting DOI Minting Service...");
         $.ajax({

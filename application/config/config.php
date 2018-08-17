@@ -36,7 +36,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 |
 */
 // $config['base_url']    = 'http://dmlb2000.emsl.pnl.gov:8192';
-$config['base_url']    = 'http://status.local';
+$config['base_url']    = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['SERVER_NAME']}";
+// $config['base_url']    = 'http://status.local';
 $config['base_dir'] = '';
 
 /*

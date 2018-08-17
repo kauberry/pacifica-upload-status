@@ -81,6 +81,10 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data = array_merge($this->page_data, $updated_page_info);
         $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
         $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
+        $this->page_data['js'] = "
+        var doi_ui_base = \"{$this->config->item('doi_ui_base')}\";
+        var doi_url_base = \"{$this->config->item('doi_url_base')}\";
+        ";
         $this->overview();
     }
 
