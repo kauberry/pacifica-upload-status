@@ -48,13 +48,13 @@ var publish_released_data = function(el, form_data) {
         "description": form_data.doi_dataset_description,
         "language": "EN",
         "country": "US",
-        "originating_research_org": ["PNNL"],
+        "originating_research_org": originating_research_organization,
         "product_nos": [
             "Proposal ID: " + container.find(".proposal_identifier").val(),
             "Instrument ID: " + container.find(".instrument_identifier").val(),
             "Upload ID: " + container.find(".transaction_identifier").val()
         ],
-        "contact_org": "EMSL",
+        "contact_org": originating_research_organization[0],
         "contact_name": container.find(".contact_first_name").val() + " " + container.find(".contact_last_name").val(),
         "contact_email": container.find(".contact_email").val(),
         "contract_nos": [container.find(".contract_numbers").val()],

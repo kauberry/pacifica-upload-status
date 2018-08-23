@@ -71,6 +71,7 @@ class Status_api extends Baseline_user_api_controller
 
     public function data_release()
     {
+        $research_organization_list = json_encode($this->config->item('originating_research_organizations'));
         $this->overview_template = "page_layouts/data_release_page_view.html";
         $updated_page_info = [
             'page_header' => 'Data Release Interface',
@@ -84,6 +85,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['js'] = "
         var doi_ui_base = \"{$this->config->item('doi_ui_base')}\";
         var doi_url_base = \"{$this->config->item('doi_url_base')}\";
+        var originating_research_organization = {$research_organization_list};
         ";
         $this->overview();
     }
