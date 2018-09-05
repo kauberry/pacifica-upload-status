@@ -49,6 +49,7 @@ var publish_released_data = function(el, form_data) {
         "language": "EN",
         "country": "US",
         "originating_research_org": originating_research_organization,
+        "doi_infix": container.find(".doi_infix").val(),
         "product_nos": [
             "Proposal ID: " + container.find(".proposal_identifier").val(),
             "Instrument ID: " + container.find(".instrument_identifier").val(),

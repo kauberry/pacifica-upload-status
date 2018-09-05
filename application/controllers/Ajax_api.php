@@ -109,7 +109,7 @@ class Ajax_api extends Baseline_api_controller
         $policy_url = "{$this->policy_url_base}/status/instrument/by_proposal_id/{$proposal_id}";
         $query = Requests::get($policy_url, array('Accept' => 'application/json'));
         // $results_body = $query->body;
-
+        header("Content-Type: application/json");
         print($query->body);
     }
 

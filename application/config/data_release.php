@@ -18,4 +18,4 @@ $config['default_contract_number'] = "DE-AC05-76RL01830";
 
 $config['doi_ui_base'] = "https://data-doi.datahub.pnl.gov/";
 $config['doi_url_base'] = "https://demoext2.datahub.pnl.gov/";
-$config['originating_research_organizations'] = ["PNNL"];
+$config['originating_research_organizations'] = ["EMSL"];

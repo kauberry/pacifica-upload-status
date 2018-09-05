@@ -15,7 +15,7 @@
   $release_name = empty($release_class) ? "": $transaction_info['metadata']['release_state_display'];
   $download_url = "";
   ?>
-  <?php $informational_message = !empty($transaction_info['informational_message']) ? $transaction_info['informational_message'] : ""; ?>
+<?php $informational_message = !empty($transaction_info['informational_message']) ? $transaction_info['informational_message'] : ""; ?>
     <div id="fieldset_container_<?= $transaction_id ?>" class="fieldset_container">
       <div class="ribbon <?= $release_class ?>"><span><?= $release_name ?></span></div>
       <fieldset id="fieldset_<?= $transaction_id ?>" class="transaction_container">
@@ -25,12 +25,13 @@
             id="transaction_identifier_<?= $transaction_id ?>"
             name="transaction_identifier_<?= $transaction_id ?>"
             value="<?= $transaction_id ?>" />
-        <?php $instrument_id = $transaction_info['metadata']['instrument_id']; ?>
-        <?php $proposal_id = $transaction_info['metadata']['proposal_id']; ?>
-        <?php $submit_time = $transaction_info['metadata']['submitted']; ?>
-        <?php //$download_url = $page_mode == 'release' && $release_class == 'released'? "{$external_release_base_url}released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
-        <?php $download_url = $release_class == 'released' ? "{$external_release_base_url}released_data/{$transaction_id}" : base_url()."view/{$transaction_id}"; ?>
-        <?php $download_url_tag = $release_class == 'released' ? "Released Data Direct URL" : "Internal Access Direct URL"; ?>
+<?php $instrument_id = $transaction_info['metadata']['instrument_id']; ?>
+<?php $proposal_id = $transaction_info['metadata']['proposal_id']; ?>
+<?php $submit_time = $transaction_info['metadata']['submitted']; ?>
+<?php //$download_url = $page_mode == 'release' && $release_class == 'released'? "{$external_release_base_url}released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
+<?php $download_url = $release_class == 'released' ? "{$external_release_base_url}released_data/{$transaction_id}" : base_url()."view/{$transaction_id}"; ?>
+<?php $download_url_tag = $release_class == 'released' ? "Released Data Direct URL" : "Internal Access Direct URL"; ?>
+<?php $doi_infix = format_doi_infix($transaction_id, $submit_time, 'data'); ?>
         <input
             type="hidden"
             class="instrument_identifier"
@@ -93,12 +94,16 @@
         <input
             type="hidden"
             class="site_url_identifier"
-            name="site_url_identifier"
-            id="site_url_identifier"
+            name="site_url_identifier_<?= $transaction_id ?>"
+            id="site_url_identifier_<?= $transaction_id ?>"
             value="<?= $download_url ?>" />
-
-
-        <?php if($release_class == 'released'): ?>
+        <input
+            type="hidden"
+            class="doi_infix"
+            name="doi_infix_<?= $transaction_id ?>"
+            id="doi_infix_<?= $transaction_id ?>"
+            value="<?= $doi_infix ?>" />
+<?php if($release_class == 'released'): ?>
         <input
             type="hidden"
             class="release_identifier"
@@ -110,7 +115,7 @@
             id="release_date_<?= $transaction_id ?>", name="release_date_<?= $transaction_id ?>",
             value="" />
 
-        <?php endif; ?>
+<?php endif; ?>
         <legend>
           <a id="upload_url_<?= $transaction_id ?>" class="upload_url" href="<?= $download_url ?>">Upload ID <?= $transaction_id ?></a>
           <span class="friendly_upload_time"><?= $friendly_upload_time ?></span>
@@ -211,4 +216,5 @@
   <?php endif; ?>
     <script type="application/javascript">
         var hash_list = <?=  json_encode($hash_list); ?>;
+        var originating_research_organizations = <?= json_encode($this->config->item('originating_research_organizations')) ?>;
     </script>
