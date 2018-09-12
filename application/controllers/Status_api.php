@@ -54,6 +54,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['external_release_base_url'] = $this->config->item('external_release_base_url');
         $this->page_mode = 'cart';
         $this->page_data['view_mode'] = 'multiple';
+        $this->page_data['script_uris'][] = "/project_resources/scripts/clipboard.min.js";
         $this->page_data['js'] = "";
         $this->overview_template = $this->config->item('main_overview_template') ?: "page_layouts/status_page_view.html";
         $this->config->load('data_release');
@@ -417,10 +418,12 @@ class Status_api extends Baseline_user_api_controller
      */
     public function view($id)
     {
-        $page_state = array_values(array_intersect(
-            ['released_data', 'view'],
-            $this->uri->segment_array()
-        ))[0] ?: false;
+        $page_state = array_values(
+            array_intersect(
+                ['released_data', 'view'],
+                $this->uri->segment_array()
+            )
+        )[0] ?: false;
 
         $this->page_mode = 'cart';
         $lookup_type_description = 'Transaction';

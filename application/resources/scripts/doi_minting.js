@@ -3,21 +3,38 @@
 
 /* doi staging setup code */
 var setup_doi_staging_button = function(el) {
-    // var transaction_id = el.find(".transaction_identifier").val();
+    var transaction_id = el.find(".transaction_identifier").val();
     var doi_staging_button = el.find(".doi_staging_button");
-
+    var data_release_link = el.find(".upload_url");
     if(!doi_staging_button.length){
         var doi_staging_button_container = $("<div/>", {
             "class": "staging_buttons buttons"
         });
+
         doi_staging_button = $("<input>", {
             "value": "Submit DOI",
             "class": "doi_staging_button",
-            "style": "z-index: 4;"
+            "style": "z-index: 4;",
+            "id": "doi_staging_button_" + transaction_id,
+            "name": "doi_staging_button_" + transaction_id,
         }).attr({
             "type": "button"
         });
+        var doi_linking_button = el.find(".doi_linking_button");
+        if(!doi_linking_button.length){
+            doi_linking_button = $("<button>", {
+                "class": "doi_linking_button fa fa-clipboard",
+                "style": "z-index: 4; margin-right: 6px;padding-top: 4px; padding-bottom: 1px;",
+                "id": "doi_linking_button_" + transaction_id,
+                "alt": "Copy data release link to clipboard",
+                "title": "Copy data release link to clipboard",
+                "name": "doi_linking_button_" + transaction_id,
+                "data-clipboard-text": data_release_link.attr("href"),
+                "data-clipboard-action": "copy"
+            });
+        }
         doi_staging_button_container.append(doi_staging_button);
+        doi_staging_button_container.append(doi_linking_button);
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
         });
@@ -41,7 +58,6 @@ var create_doi_data_resource = function(el) {
 
 var publish_released_data = function(el, form_data) {
     var container = el.parents(".transaction_container");
-    // var upload_id = parseInt(container.find(".transaction_identifier").val(), 10);
 
     var new_info = {
         "title": form_data.doi_dataset_title,
@@ -209,15 +225,12 @@ $(function(){
                 }else{
                     //all req'd fields filled out
                     var entry_button = $(this).data("entry_button");
-                    // var resource_name = $(this).data("resource_name");
-                    // var resource_desc = $(this).data("resource_desc");
                     publish_released_data(entry_button, f.serializeFormJSON());
                     doi_resource_info_dialog.dialog("close");
                 }
 
             },
             Cancel: function() {
-                // doi_resource_info_dialog.reset();
                 doi_resource_info_dialog.dialog("close");
             }
         },
@@ -231,6 +244,16 @@ $(function(){
 
         }
     });
+    var clipboard = new ClipboardJS(".doi_linking_button");
+    // clipboard.on("success", function(e) {
+    //
+    // });
+    //
+    // clipboard.on("error", function(e) {
+    //
+    // });
+
+
 });
 
 var set_release_state_banners = function(release_states, selector){

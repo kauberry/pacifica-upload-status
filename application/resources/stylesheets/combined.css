@@ -160,7 +160,7 @@ td.metadata_item {
     font-size: 1em;
 }
 
-div.buttons input[type="button"] {
+div.buttons input[type="button"], div.buttons button {
     color: #fff;
     float: right;
     background-color: rgb(61, 101, 149);
@@ -174,7 +174,7 @@ div.buttons input[type="button"] {
     transition: all 0.25s;
 }
 
-button:hover, .buttons input[type="button"]:hover {
+button:hover, .buttons input[type="button"]:hover, .buttons button:hover {
     background-color: rgb(42, 70, 103);
     text-decoration: none;
 }
@@ -837,6 +837,12 @@ div.form_container td {
     }
     .staging_buttons {
         right: 2em;
+    }
+    .staging_buttons .doi_linking_button {
+        height: 3em;
+        position: absolute;
+        left: -5.5em;
+        width: 3em;
     }
     .staging_button, .doi_staging_button {
         height: 3em;
