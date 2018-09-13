@@ -24,7 +24,7 @@ var setup_doi_staging_button = function(el) {
         if(!doi_linking_button.length){
             doi_linking_button = $("<button>", {
                 "class": "doi_linking_button fa fa-clipboard",
-                "style": "z-index: 4; margin-right: 6px;padding-top: 4px; padding-bottom: 1px;",
+                "style": "z-index: 4; margin-right: 6px;padding: 4px 4px 1px 7px;",
                 "id": "doi_linking_button_" + transaction_id,
                 "alt": "Copy data release link to clipboard",
                 "title": "Copy data release link to clipboard",
@@ -33,8 +33,19 @@ var setup_doi_staging_button = function(el) {
                 "data-clipboard-action": "copy"
             });
         }
+        var copied_notification = el.find(".copied_notification");
+        if(!copied_notification.length){
+            copied_notification = $("<button>", {
+                "class": "copied_notification",
+                "id": "copied_notification_" + transaction_id,
+                "name": "copied_notification_" + transaction_id,
+                "text": "Link Copied!",
+                "style": "margin-right: 6px; display:none; transition: none;"
+            });
+        }
         doi_staging_button_container.append(doi_staging_button);
         doi_staging_button_container.append(doi_linking_button);
+        doi_staging_button_container.append(copied_notification);
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
         });
@@ -245,10 +256,11 @@ $(function(){
         }
     });
     var clipboard = new ClipboardJS(".doi_linking_button");
-    // clipboard.on("success", function(e) {
-    //
-    // });
-    //
+    clipboard.on("success", function(e) {
+        var notif = $(e.trigger).parent("div").find(".copied_notification");
+        notif.fadeIn().delay(500).fadeOut();
+    });
+
     // clipboard.on("error", function(e) {
     //
     // });
