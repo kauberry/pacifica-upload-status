@@ -159,7 +159,7 @@ var publish_released_data = function(el, form_data) {
 var build_metadata_for_display = function(el) {
     el = $(el);
     var display_elements = {};
-    var item_list = el.find("[title]");
+    var item_list = el.find("input[title]");
     item_list.each(function(index, item){
         item = $(item);
         display_elements[item.prop("class")] = {
