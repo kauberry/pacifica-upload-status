@@ -50,7 +50,6 @@ var setup_file_download_links = function(parent_item) {
         function(e) {
             var file_object_data = JSON.parse($(e.target).siblings(".item_data_json").html());
             file_object_data.name = escape(file_object_data.name);
-            download_myemsl_item(file_object_data);
         }
     );
     var dl_button = $("#dl_button_" + tx_id);

@@ -2,3 +2,4 @@ php_myemsl.ini
 .remote-sync.json
 .atomignore
 .gitignore
+*.local
