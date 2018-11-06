@@ -1,4 +1,4 @@
-var max_size = 1024 * 1024 * 1024 * 50; //50 GB (base 2)
+var max_size = 1024 * 1024 * 1024 * 1024 * 5; //5 TB (base 2)
 var friendly_max_size = "";
 var exceed_max_size_allow = false;
 var cart_create_dialog, cart_create_form;
