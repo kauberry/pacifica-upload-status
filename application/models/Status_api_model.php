@@ -36,7 +36,7 @@ class Status_api_model extends CI_Model
     /**
      *  Class constructor
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function __construct()
     {
@@ -56,15 +56,15 @@ class Status_api_model extends CI_Model
      *  Retrieves a set of transaction entries that correspond to the combination
      *  of instrument, proposal, and timeframe specified in the call
      *
-     *  @param int     $instrument_id [description]
-     *  @param string  $proposal_id   [description]
-     *  @param string  $start_time    [description]
-     *  @param string  $end_time      [description]
-     *  @param integer $submitter     [description]
+     * @param int     $instrument_id [description]
+     * @param string  $proposal_id   [description]
+     * @param string  $start_time    [description]
+     * @param string  $end_time      [description]
+     * @param integer $submitter     [description]
      *
-     *  @return array   transaction results from search
+     * @return array   transaction results from search
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_transactions($instrument_id, $proposal_id, $start_time, $end_time, $submitter = -1)
     {
@@ -87,11 +87,11 @@ class Status_api_model extends CI_Model
     /**
      *  Retrieves detailed info for a specified transaction id
      *
-     *  @param int $transaction_id The transaction id to grab
+     * @param int $transaction_id The transaction id to grab
      *
-     *  @return array transaction details
+     * @return array transaction details
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_formatted_transaction($transaction_id)
     {
@@ -111,13 +111,13 @@ class Status_api_model extends CI_Model
      *  Retrieves a set of proposal entries for a given set of search terms and
      *  a corresponding requester_id
      *
-     *  @param string $terms        search terms from the user
-     *  @param int    $requester_id the user requesting proposals
-     *  @param string $is_active    do we retrieve inactive proposals
+     * @param string $terms        search terms from the user
+     * @param int    $requester_id the user requesting proposals
+     * @param string $is_active    do we retrieve inactive proposals
      *
-     *  @return array   proposal details listing
+     * @return array   proposal details listing
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_proposals_by_name($terms, $requester_id, $is_active = 'active')
     {
@@ -126,7 +126,7 @@ class Status_api_model extends CI_Model
             'user' => $this->user_id
         );
         $proposals_url .= http_build_query($url_args_array, '', '&');
-
+        $results = [];
         try {
             $query = Requests::get($proposals_url, array('Accept' => 'application/json'));
             $results = json_decode($query->body, true);
@@ -139,11 +139,11 @@ class Status_api_model extends CI_Model
     /**
      *  More highly detailed transaction info with file lists, etc.
      *
-     *  @param int $transaction_id The transaction id to grab
+     * @param int $transaction_id The transaction id to grab
      *
-     *  @return array detailed transaction info
+     * @return array detailed transaction info
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_transaction_details($transaction_id)
     {
@@ -179,11 +179,11 @@ class Status_api_model extends CI_Model
     /**
      *  Add up the total size for files specified in a transaction
      *
-     *  @param int $transaction_id The transaction id to grab
+     * @param int $transaction_id The transaction id to grab
      *
-     *  @return int  total size of transaction files
+     * @return int  total size of transaction files
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_total_size_for_transaction($transaction_id)
     {
@@ -200,11 +200,11 @@ class Status_api_model extends CI_Model
      *  Return the list of files and their associated metadata
      *  for a given transaction id
      *
-     *  @param integer $transaction_id The transaction to pull
+     * @param integer $transaction_id The transaction to pull
      *
-     *  @return [type]   [description]
+     * @return [type]   [description]
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_files_for_transaction($transaction_id)
     {
@@ -254,9 +254,9 @@ class Status_api_model extends CI_Model
     /**
      * Get the common directory prefix for a set of paths so that we can remove it.
      *
-     * @param  string $first_path first path to compare
-     * @param  string $last_path second path to compare
-     * @param  string $delimiter path delimiter (defaults to '/')
+     * @param string $first_path first path to compare
+     * @param string $last_path  second path to compare
+     * @param string $delimiter  path delimiter (defaults to '/')
      *
      * @return array array of common path elements
      *

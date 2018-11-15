@@ -134,8 +134,8 @@ class Ajax_api extends Baseline_api_controller
     /**
      * [set_release_state description]
      *
-     * @param  [type] $transaction_id [description]
-     * @param  [type] $release_state [description]
+     * @param [type] $transaction_id [description]
+     * @param [type] $release_state  [description]
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -145,16 +145,24 @@ class Ajax_api extends Baseline_api_controller
         if (!in_array($release_state, array('released', 'not_released'))) {
             $release_state = 'not_released';
         }
+        $nowtime = new DateTime();
+        $nowstring = $nowtime->format('Y-m-d H:i:s');
         $content = [
             'authorized_person' => $this->user_id,
+            'created' => $nowstring,
+            'updated' => $nowstring,
             'transaction' => $transaction_id,
         ];
         $md_url = "{$this->metadata_url_base}/transaction_release";
         if ($release_state == 'released') {
-            $query = Requests::put($md_url, array(
+            $query = Requests::put(
+                $md_url,
+                array(
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json'
-            ), json_encode($content));
+                ),
+                json_encode($content)
+            );
         }
         $check_url = "{$this->metadata_url_base}/transactioninfo/release_state/{$transaction_id}";
         $check_query = Requests::get($check_url);
@@ -178,7 +186,7 @@ class Ajax_api extends Baseline_api_controller
     /**
      * [publish_resource_to_doi description]
      *
-     * @param  int $registration_id [description]
+     * @param int $registration_id [description]
      *
      * @return [type] [description]
      *

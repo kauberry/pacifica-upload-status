@@ -34,6 +34,27 @@
 <?php $doi_infix = format_doi_infix($transaction_id, $submit_time, 'data'); ?>
         <input
             type="hidden"
+            class="author_first_name"
+            id="author_first_name_<?= $transaction_id ?>"
+            name="author_first_name_<?= $transaction_id ?>"
+            value="<?= $this->user_info['first_name'] ?>"
+            title="<?= $this->user_info['first_name'] ?>" />
+        <input
+            type="hidden"
+            class="author_last_name"
+            id="author_last_name_<?= $transaction_id ?>"
+            name="author_last_name_<?= $transaction_id ?>"
+            value="<?= $this->user_info['last_name'] ?>"
+            title="<?= $this->user_info['last_name'] ?>" />
+        <input
+            type="hidden"
+            class="author_email"
+            id="author_email_<?= $transaction_id ?>"
+            name="author_email_<?= $transaction_id ?>"
+            value="<?= $this->user_info['email_address'] ?>"
+            title="<?= $this->user_info['email_address'] ?>" />
+        <input
+            type="hidden"
             class="instrument_identifier"
             id="instrument_identifier_<?= $transaction_id ?>"
             name="instrument_identifier_<?= $transaction_id ?>"

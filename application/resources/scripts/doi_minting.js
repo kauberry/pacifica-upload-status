@@ -73,6 +73,7 @@ var publish_released_data = function(el, form_data) {
     var new_info = {
         "title": form_data.doi_dataset_title,
         "description": form_data.doi_dataset_description,
+        "dataset_type": "SM",
         "language": "EN",
         "country": "US",
         "originating_research_org": originating_research_organization,
@@ -81,6 +82,13 @@ var publish_released_data = function(el, form_data) {
             "Proposal ID: " + container.find(".proposal_identifier").val(),
             "Instrument ID: " + container.find(".instrument_identifier").val(),
             "Upload ID: " + container.find(".transaction_identifier").val()
+        ],
+        "authors": [
+            {
+                "first_name": container.find(".author_first_name").val(),
+                "last_name": container.find(".author_last_name").val(),
+                "private_email": container.find(".author_email").val()
+            }
         ],
         "contact_org": originating_research_organization[0],
         "contact_name": container.find(".contact_first_name").val() + " " + container.find(".contact_last_name").val(),
@@ -167,6 +175,11 @@ var build_metadata_for_display = function(el) {
             "value": item.prop("title") + " (ID #" + item.val() + ")"
         };
     });
+    item_list = el.find("input[class*='author']");
+    item_list.each(function(index, item){
+        item = $(item);
+        display_elements[item.prop("class")]["value"] = item.prop("title");
+    });
 
     item_list = el.find("input[class*='time']");
     item_list.each(function(index, item){
@@ -249,6 +262,7 @@ $(function(){
             var cf = $(this).data("upload_item");
             var display_metadata = build_metadata_for_display(cf);
             var display_element = $(this).find(".readonly-display-grouping ul");
+            display_element.empty();
             $.each(display_metadata, function(index, item){
                 display_element.append(item);
             });
@@ -260,12 +274,6 @@ $(function(){
         var notif = $(e.trigger).parent("div").find(".copied_notification");
         notif.fadeIn().delay(500).fadeOut();
     });
-
-    // clipboard.on("error", function(e) {
-    //
-    // });
-
-
 });
 
 var set_release_state_banners = function(release_states, selector){
