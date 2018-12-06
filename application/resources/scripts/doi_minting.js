@@ -96,7 +96,7 @@ var publish_released_data = function(el, form_data) {
         "contract_nos": [container.find(".contract_numbers").val()],
         "set_reserved": false,
         "publication_date": moment().format("YYYY-MM-DD"),
-        "site_url": container.find(".site_url_identifier").val()
+        "site_url": external_release_base_url + "released_data/" + container.find(".transaction_identifier").val()
     };
 
     var file_size = myemsl_size_format(container.find(".total_file_size_bytes").val());
