@@ -83,6 +83,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data = array_merge($this->page_data, $updated_page_info);
         $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
         $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/doi_notation.js';
         $this->page_data['js'] = "
         var doi_ui_base = \"{$this->config->item('doi_ui_base')}\";
         var doi_url_base = \"{$this->config->item('doi_url_base')}\";
@@ -137,26 +138,6 @@ class Status_api extends Baseline_user_api_controller
             $extra_scripts_array
         );
         $this->load->view('page_layouts/data_release_single_page_view.html', $this->page_data);
-    }
-
-    /**
-     * DOI minting
-     */
-    public function doi_minting()
-    {
-        $this->overview_template = "page_layouts/doi_minting_page_view.html";
-        $updated_page_info = [
-            'page_header' => 'DOI Minting Interface',
-            'title' => 'DOI Minting'
-        ];
-        $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
-        $this->page_data['css_uris'][] = '/project_resources/stylesheets/forms.css';
-        $this->page_data['css_uris'][] = '/project_resources/stylesheets/pure-min.css';
-        $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
-
-        $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
-        $this->page_data = array_merge($this->page_data, $updated_page_info);
-        $this->overview();
     }
 
     /**
@@ -443,8 +424,8 @@ class Status_api extends Baseline_user_api_controller
                 array(
                     '/project_resources/scripts/single_item_view.js',
                     '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
-                    '/project_resources/scripts/myemsl_file_download.js'
-
+                    '/project_resources/scripts/myemsl_file_download.js',
+                    '/project_resources/scripts/doi_notation.js'
                 )
             );
         $this->page_data['view_mode'] = 'single';
@@ -463,6 +444,10 @@ class Status_api extends Baseline_user_api_controller
             $this->load->view('status_error_page.html', $this->page_data);
         }
 
+        $js = "var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
+var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
+
+        $this->page_data['js'] .= $js;
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
         $transaction_info = $this->status->get_formatted_transaction($id);

@@ -7,6 +7,7 @@ $(function() {
     tree.visit(function(node){
         node.setExpanded();
     });
+    get_doi_release_data();
 
     // tree.on("fancyonloadchildren", function(event, data){
     //     data.node.visit(function(subNode){

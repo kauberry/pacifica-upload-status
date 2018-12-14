@@ -110,7 +110,7 @@ var setup_selectors = function(initial_load) {
                     return myURL;
 
                 },
-                data: function(params) {
+                data: function() {
                     return "";
                 },
                 processResults: function(data, params) {
