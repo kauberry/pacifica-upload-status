@@ -1,11 +1,28 @@
-// var doi_ui_base = "https://data-doi.datahub.pnl.gov/";
-// var doi_url_base = "https://demoext2.datahub.pnl.gov/";
-
 /* doi staging setup code */
+var setup_doi_linking_button = function(el) {
+    var transaction_id = el.find(".transaction_identifier").val();
+    var data_release_link = el.find(".upload_url");
+    var doi_linking_button = el.find(".doi_linking_button");
+    if(!doi_linking_button.length){
+        var button_options = {
+            "class": "doi_linking_button fa fa-clipboard",
+            "style": "z-index: 4; margin-right: 6px;padding: 4px 4px 1px 7px;",
+            "id": "doi_linking_button_" + transaction_id,
+            "alt": "Copy data release link to clipboard",
+            "title": "Copy data release link to clipboard",
+            "name": "doi_linking_button_" + transaction_id,
+            "data-clipboard-text": data_release_link.attr("href"),
+            "data-clipboard-action": "copy"
+        };
+        doi_linking_button = $("<button>", button_options);
+    }
+    return doi_linking_button;
+};
+
 var setup_doi_staging_button = function(el) {
     var transaction_id = el.find(".transaction_identifier").val();
     var doi_staging_button = el.find(".doi_staging_button");
-    var data_release_link = el.find(".upload_url");
+    // var data_release_link = el.find(".upload_url");
     if(!doi_staging_button.length){
         var doi_staging_button_container = $("<div/>", {
             "class": "staging_buttons buttons"
@@ -20,32 +37,14 @@ var setup_doi_staging_button = function(el) {
         }).attr({
             "type": "button"
         });
-        var doi_linking_button = el.find(".doi_linking_button");
-        if(!doi_linking_button.length){
-            doi_linking_button = $("<button>", {
-                "class": "doi_linking_button fa fa-clipboard",
-                "style": "z-index: 4; margin-right: 6px;padding: 4px 4px 1px 7px;",
-                "id": "doi_linking_button_" + transaction_id,
-                "alt": "Copy data release link to clipboard",
-                "title": "Copy data release link to clipboard",
-                "name": "doi_linking_button_" + transaction_id,
-                "data-clipboard-text": data_release_link.attr("href"),
-                "data-clipboard-action": "copy"
-            });
-        }
-        var copied_notification = el.find(".copied_notification");
-        if(!copied_notification.length){
-            copied_notification = $("<button>", {
-                "class": "copied_notification",
-                "id": "copied_notification_" + transaction_id,
-                "name": "copied_notification_" + transaction_id,
-                "text": "Link Copied!",
-                "style": "margin-right: 6px; display:none; transition: none;"
-            });
-        }
+
         doi_staging_button_container.append(doi_staging_button);
-        doi_staging_button_container.append(doi_linking_button);
-        doi_staging_button_container.append(copied_notification);
+        doi_staging_button_container = add_link_copy_info(
+            el,
+            doi_staging_button_container,
+            setup_doi_linking_button,
+            el.find(".site_url_identifier")
+        );
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
         });
@@ -54,10 +53,6 @@ var setup_doi_staging_button = function(el) {
     if(!doi_staging_button.is(":visible")){
         doi_staging_button.fadeIn("slow");
     }
-};
-
-var format_doi_ref = function(doi_reference){
-    return "https://dx.doi.org/" + doi_reference;
 };
 
 var create_doi_data_resource = function(el) {
@@ -146,7 +141,7 @@ var publish_released_data = function(el, form_data) {
                             }
                         })
                             .done (
-                                function(data){
+                                function(){
                                     setup_staging_buttons();
                                     window.open(doi_ui_base + "registrations/" + regID);
                                 }
@@ -269,91 +264,4 @@ $(function(){
 
         }
     });
-    var clipboard = new ClipboardJS(".doi_linking_button");
-    clipboard.on("success", function(e) {
-        var notif = $(e.trigger).parent("div").find(".copied_notification");
-        notif.fadeIn().delay(500).fadeOut();
-    });
 });
-
-var set_release_state_banners = function(release_states, selector){
-    $(selector).each(function(index, el){
-        el = $(el);
-        var txn_id = el.find(".transaction_identifier").val();
-        var ribbon_el = el.find(".ribbon");
-        var release_info = release_states[txn_id];
-        var transaction_id = release_info.transaction;
-
-        if(release_info.release_state == "released"){
-            //add doi staging button
-            el.find(".upload_url").attr({"href": external_release_base_url + "released_data/" + txn_id});
-            el.find(".release_date").val(release_info.release_date);
-            var pub_status_block = el.next(".publication_status_block");
-            if(release_info.transient_info.length > 0){
-                var lb = pub_status_block.find(".publication_left_block");
-                var rb = pub_status_block.find(".publication_right_block");
-                lb.empty();
-                rb.empty();
-                lb.append($("<div>", {"class": "reference_header", "text": "Pending DOI Requests"}));
-                rb.append($("<div>", {"class": "reference_header", "text": "Published DOI Entries"}));
-                var pending_list = $("<ul/>").appendTo(lb);
-                var completed_list = $("<ul/>").appendTo(rb);
-                rb.hide();
-                lb.hide();
-
-                $.each(release_info.transient_info, function(index, item){
-                    if (item.doi_reference === null) {
-                        link_text = "pending";
-                        link = doi_ui_base + "registrations/" + item.registration_id;
-                        list_selection = pending_list;
-                    } else {
-                        link_text = item.doi_reference;
-                        link = format_doi_ref(item.doi_reference);
-                        list_selection = completed_list;
-                    }
-                    list_item = $("<li/>", {"title": item.description});
-                    list_item.append($("<span/>", {"text": item.title + " / "}));
-                    list_item.append($("<a/>", {"href": link, "text": link_text}));
-                    list_item.appendTo(list_selection);
-                });
-                pub_status_block.show();
-                if (lb.find("ul > li").length > 0) {
-                    lb.show();
-                }else{
-                    lb.hide();
-                }
-                if (rb.find("ul > li").length > 0) {
-                    rb.show();
-                    if (lb.find("ul > li").length == 0){
-                        rb.css("float", "left");
-                    }
-                }else{
-                    rb.hide();
-                }
-            }
-
-            if (typeof setup_doi_staging_button === "function") {
-                setup_doi_staging_button(el, transaction_id);
-            }
-        }else{
-            var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
-            if(!$.isEmptyObject(current_session_contents) && txn_id in current_session_contents){
-                release_info.release_state = "staged";
-                release_info.display_state = "Staged";
-            }else{
-                release_info.release_state = "not_released";
-                release_info.display_state = "Not Released";
-                var content = build_staging_button(txn_id);
-                el.find("legend").after(content);
-                el.find(".staging_button").off().on("click", function(event){
-                    stage_transaction($(event.target));
-                });
-            }
-        }
-        el.find(".release_state").next("td.metadata_item").text(release_info.release_state);
-        el.find(".release_state_display").next("td.metadata_item").text(release_info.display_state);
-        ribbon_el.removeClass().addClass("ribbon").addClass(release_info.release_state);
-        ribbon_el.find("span").text(release_info.display_state);
-
-    });
-};

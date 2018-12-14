@@ -844,6 +844,12 @@ div.form_container td {
         left: -5.5em;
         width: 3em;
     }
+
+    .staging_buttons span.doi_linking_button {
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: 2px 5px 2px 5px;
+    }
+
     .staging_button, .doi_staging_button {
         height: 3em;
         width: 125%;

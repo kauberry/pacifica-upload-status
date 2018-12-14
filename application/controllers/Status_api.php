@@ -194,7 +194,8 @@ class Status_api extends Baseline_user_api_controller
             );
         $extra_scripts_array = [
             '/project_resources/scripts/overview.js',
-            '/project_resources/scripts/myemsl_file_download.js'
+            '/project_resources/scripts/myemsl_file_download.js',
+            '/project_resources/scripts/doi_notation.js'
         ];
 
         $this->page_data['script_uris']

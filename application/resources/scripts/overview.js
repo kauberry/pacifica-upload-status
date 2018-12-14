@@ -340,6 +340,7 @@ var update_content = function(event) {
                                         function() {
                                             setup_tree_data();
                                             setup_metadata_disclosure();
+                                            get_doi_release_data();
                                             if(typeof setup_staging_buttons == "function"){
                                                 setup_staging_buttons();
                                             }
