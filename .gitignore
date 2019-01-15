@@ -3,3 +3,5 @@ php_myemsl.ini
 .atomignore
 .gitignore
 *.local
+application/config/production/*
+application/config/development/*
