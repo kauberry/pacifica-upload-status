@@ -82,7 +82,10 @@ var add_doi_notations = function(metadata_object) {
             var upload_item_container = $("#fieldset_container_" + index);
             var md_table = upload_item_container.find(".metadata_description_table > tbody");
             var doi_entry_new = md_table.find("tr:last-child").clone();
-            doi_entry_new.find(".metadata_header").addClass("doi_reference").text("DOI Reference");
+            doi_entry_new.find(".metadata_header")
+                .empty()
+                .addClass("doi_reference")
+                .text("DOI Reference");
             doi_entry_new.find(".metadata_item")
                 .empty()
                 .append($("<a>", {
