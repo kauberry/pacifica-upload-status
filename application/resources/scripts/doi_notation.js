@@ -38,7 +38,6 @@ var format_doi_ref = function(doi_reference){
 
 var setup_doi_reference_copy_button = function(el, doi_reference) {
     var transaction_id = el.find(".transaction_identifier").val();
-    var doi_link = format_doi_ref(doi_reference);
     var doi_reference_copy_button = el.find(".doi_reference_button");
     if(!doi_reference_copy_button.length){
         doi_reference_copy_button = $("<button>", {
@@ -48,7 +47,7 @@ var setup_doi_reference_copy_button = function(el, doi_reference) {
             "alt": "Copy DOI reference link to clipboard",
             "title": "Copy DOI reference link to clipboard",
             "name": "doi_reference_button_" + transaction_id,
-            "data-clipboard-text": doi_link,
+            "data-clipboard-text": doi_reference,
             "data-clipboard-action": "copy",
             "text": "Copy DOI Reference Link"
         });
