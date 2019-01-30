@@ -841,8 +841,12 @@ div.form_container td {
     .staging_buttons .doi_linking_button {
         height: 3em;
         position: absolute;
-        left: -5.5em;
+        right: 0;
+        width: 15em;
+    }
+    .staging_buttons .alt_linking_button {
         width: 3em;
+        right: 9em;
     }
 
     .staging_buttons span.doi_linking_button {

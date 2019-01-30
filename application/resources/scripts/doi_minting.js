@@ -5,7 +5,7 @@ var setup_doi_linking_button = function(el) {
     var doi_linking_button = el.find(".doi_linking_button");
     if(!doi_linking_button.length){
         var button_options = {
-            "class": "doi_linking_button fa fa-clipboard",
+            "class": "doi_linking_button alt_linking_button fa fa-clipboard",
             "style": "z-index: 4; margin-right: 6px;padding: 4px 4px 1px 7px;",
             "id": "doi_linking_button_" + transaction_id,
             "alt": "Copy data release link to clipboard",
