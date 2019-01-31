@@ -11,6 +11,39 @@ var set_clipboard_function = function() {
 
 };
 
+var release_state_presets = {
+    "saved": {
+        "span_class": "doi_reserved",
+        "display_text": "DOI Reserved",
+        "link_text": "DOI Reserved, but not Published"
+    },
+    "pending": {
+        "span_class": "doi_pending",
+        "display_text": "DOI Pending",
+        "link_text": "DOI Awaiting approval at Datacite"
+    },
+    "completed": {
+        "span_class": "doi_minted",
+        "display_text": "DOI Minted",
+        "link_text": "DOI Awaiting approval at Datacite"
+    },
+    "not_released": {
+        "span_class": "not_released",
+        "display_text": "Not Released",
+        "link_text": "Item awaiting release approval"
+    },
+    "released": {
+        "span_class": "released",
+        "display_text": "Released",
+        "link_text": "Item Released to Public"
+    },
+    "staged": {
+        "span_class": "staged",
+        "display_text": "Staged",
+        "link_text": "Staged for Release to Public"
+    }
+};
+
 
 var get_doi_release_data = function() {
     var release_check_url = base_url + "ajax_api/get_release_states";
@@ -76,13 +109,17 @@ var setup_doi_copied_notification = function(el) {
 
 
 var add_doi_notations = function(metadata_object) {
-    var doi_staging_button_container = $("<div/>", {
-        "class": "staging_buttons buttons"
-    });
     $.each(metadata_object, function(index, item) {
         if(item.release_doi_entries && item.release_doi_entries.length > 0) {
             var doi_object = item.release_doi_entries[0];
             var upload_item_container = $("#fieldset_container_" + index);
+            var doi_staging_button_container = upload_item_container.find(".staging_buttons");
+            if(!doi_staging_button_container.length){
+                doi_staging_button_container = $("<div/>", {
+                    "class": "staging_buttons buttons"
+                });
+                upload_item_container.find("legend").after(doi_staging_button_container);
+            }
             var md_table = upload_item_container.find(".metadata_description_table > tbody");
             var doi_entry_new = md_table.find("tr:last-child").clone();
             doi_entry_new.find(".metadata_header")
@@ -97,21 +134,17 @@ var add_doi_notations = function(metadata_object) {
                     "alt": "Link to DOI"
                 }));
             md_table.append(doi_entry_new);
-            if(upload_item_container.find(".staging_buttons").length == 0){
-                dsbc = doi_staging_button_container.clone();
-                dsbc = add_link_copy_info(
-                    upload_item_container,
-                    dsbc,
-                    setup_doi_reference_copy_button,
-                    format_doi_ref(doi_object.doi_reference)
-                );
-                upload_item_container.find("legend").after(dsbc);
-                set_clipboard_function();
-            }else{
-                dsbc = upload_item_container.find(".staging_buttons");
-            }
+            dsbc = doi_staging_button_container.clone().empty();
+            dsbc = add_link_copy_info(
+                upload_item_container,
+                dsbc,
+                setup_doi_reference_copy_button,
+                format_doi_ref(doi_object.doi_reference)
+            );
+            doi_staging_button_container.replaceWith(dsbc);
         }
     });
+    set_clipboard_function();
 };
 
 var add_link_copy_info = function(el, button_container, button_setup_function, copy_link) {
@@ -152,7 +185,7 @@ var set_release_state_banners = function(release_states, selector){
                 release_state = release_state_presets.staged;
             }else{
                 release_state = release_state_presets.not_released;
-                var content = build_staging_button(txn_id);
+                var content = build_staging_button(txn_id, el);
                 el.find("legend").after(content);
                 el.find(".staging_button").off().on("click", function(event){
                     stage_transaction($(event.target));
