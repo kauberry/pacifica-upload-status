@@ -24,10 +24,13 @@ var setup_doi_staging_button = function(el) {
     var doi_staging_button = el.find(".doi_staging_button");
     // var data_release_link = el.find(".upload_url");
     if(!doi_staging_button.length){
-        var doi_staging_button_container = $("<div/>", {
-            "class": "staging_buttons buttons"
-        });
-
+        var doi_staging_button_container = el.find(".staging_buttons");
+        if(!doi_staging_button_container.length){
+            doi_staging_button_container = $("<div/>", {
+                "class": "staging_buttons buttons"
+            });
+            el.find("legend").after(doi_staging_button_container);
+        }
         doi_staging_button = $("<input>", {
             "value": "Submit DOI",
             "class": "doi_staging_button",
@@ -38,7 +41,7 @@ var setup_doi_staging_button = function(el) {
             "type": "button"
         });
 
-        doi_staging_button_container.append(doi_staging_button);
+        doi_staging_button_container.empty().append(doi_staging_button);
         doi_staging_button_container = add_link_copy_info(
             el,
             doi_staging_button_container,
@@ -48,7 +51,6 @@ var setup_doi_staging_button = function(el) {
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
         });
-        el.find("legend").after(doi_staging_button_container);
     }
     if(!doi_staging_button.is(":visible")){
         doi_staging_button.fadeIn("slow");

@@ -722,13 +722,13 @@ div.form_container td {
     opacity: 1.0;
 }
 
-.doi_pending span, .minted span {
+.doi_pending span, .doi_reserved span {
     background:rgb(67, 110, 185);
     display:block;
     opacity: 1.0;
 }
 
-.published span {
+.doi_minted span {
     background: rgb(203, 137, 40);
     display:block;
     opacity: 1.0;

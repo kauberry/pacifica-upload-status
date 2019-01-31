@@ -3,11 +3,15 @@
  */
 var data_identifier = 0;
 
-var build_staging_button = function(transaction_id){
-    var content =
-        $("<div>", {
+var build_staging_button = function(transaction_id, el){
+    var content = el.find(".staging_buttons");
+    if(!content.length){
+        content = $("<div/>", {
             "class": "staging_buttons buttons"
         });
+        el.find("legend").after(content);
+    }
+
     var staging_button = $("<input>", {
         "value": "Stage for Release",
         "class": "staging_button"
@@ -16,7 +20,7 @@ var build_staging_button = function(transaction_id){
         "id" : "staging_" + transaction_id,
         "name": "staging_" + transaction_id
     });
-    content.append(staging_button);
+    content.empty().append(staging_button);
     return content;
 };
 
@@ -33,10 +37,13 @@ var submit_release_selections = function(event){
             var transaction_id = parseInt($(item).find(".upload_id").text(), 10);
             var release_url = base_url + "ajax_api/set_release_state/" + transaction_id + "/released";
             $.get(release_url, function(data){
-                var fieldset_container = $("#fieldset_container_" + transaction_id);
-                var ribbon = fieldset_container.find(".ribbon");
-                ribbon.removeClass().addClass("ribbon").addClass(data.release_state);
-                ribbon.find("span").text(data.display_state);
+                var ribbon = $("#fieldset_container_" + transaction_id).find(".ribbon");
+                var oldBannerClass = _.difference(ribbon.attr("class").split(" "), ["ribbon"])[0];
+                if(oldBannerClass != data.release_state){
+                    ribbon.removeClass(oldBannerClass).addClass(data.release_state);
+                    ribbon.find("span").remove();
+                    ribbon.append($("<span>", {"text": data.display_state}));
+                }
             });
         });
         setTimeout(function(){
@@ -57,12 +64,21 @@ var clear_release_selections = function(){
 
 var unstage_transaction = function(el){
     el = $(el);
-    var txn_id = parseInt($(el).parents("tr").find(".upload_id").text(),10);
-    remove_transaction_from_staging(txn_id);
+    var release_state = release_state_presets.not_released;
     var container = $("#fieldset_" + txn_id).parents(".fieldset_container");
+    var txn_id = parseInt($(el).parents("tr").find(".upload_id").text(),10);
     var banner = container.find(".ribbon");
-    banner.removeClass().addClass("ribbon").addClass("not_released");
-    banner.find("span").text("Not Released");
+    var oldBannerClass = _.difference(banner.attr("class").split(" "), ["ribbon"])[0];
+    if(oldBannerClass != release_state.span_class){
+        banner.removeClass(oldBannerClass).addClass(release_state.span_class);
+        banner.find("span").remove();
+        banner.append($("<span>", {
+            "text": release_state.display_text,
+            "title": release_state.link_text
+        }));
+    }
+    remove_transaction_from_staging(txn_id);
+    var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
     if(!_.size(current_session_contents)){
         clear_release_selections();
     }else{
@@ -72,6 +88,7 @@ var unstage_transaction = function(el){
 
 var stage_transaction = function(el){
     var container = el.parents(".transaction_container");
+    var release_state = release_state_presets.staged;
     var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
     var txn_id = container.find(".transaction_identifier").val();
     var new_info = {
@@ -89,8 +106,13 @@ var stage_transaction = function(el){
     sessionStorage.setItem("staged_releases", JSON.stringify(current_session_contents));
     update_staged_transactions_view();
     var banner = container.parents(".fieldset_container").find(".ribbon");
-    banner.removeClass().addClass("ribbon").addClass("staged");
-    banner.find("span").text("Staged");
+    var oldBannerClass = _.difference(banner.attr("class").split(" "), ["ribbon"])[0];
+    banner.find("span").remove();
+    banner.append($("<span>", {
+        "text": release_state.display_text,
+        "title": release_state.link_text
+    }));
+    banner.removeClass(oldBannerClass).addClass(release_state.span_class);
     container.find(".staging_button").remove();
 };
 

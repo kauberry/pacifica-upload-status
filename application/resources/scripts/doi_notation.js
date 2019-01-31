@@ -1,3 +1,7 @@
+$(function(){
+    window.setInterval(get_doi_release_data, 30000);
+});
+
 var set_clipboard_function = function() {
     var clipboard = new ClipboardJS(".doi_linking_button");
     clipboard.off().on("success", function(e) {
@@ -126,60 +130,45 @@ var set_release_state_banners = function(release_states, selector){
         var ribbon_el = el.find(".ribbon");
         var release_info = release_states[txn_id];
         var transaction_id = release_info.transaction;
-        var doi_release_state = "";
         if(release_info.release_state == "released"){
             //add doi staging button
-            doi_release_state = "released";
-            doi_display_state = "Released";
+            release_state = release_state_presets[release_info.release_state];
             el.find(".upload_url").attr({"href": external_release_base_url + "released_data/" + txn_id});
             el.find(".release_date").val(release_info.release_date);
-            // var pub_status_block = el.next(".publication_status_block");
             if(release_info.release_doi_entries && release_info.release_doi_entries.length > 0){
                 item = release_info.release_doi_entries[0];
-                doi_reference = item.doi_reference;
-                if (item.doi_status == "saved") {
-                    doi_release_state = "doi_pending";
-                    doi_display_state = "DOI Pending";
-                    link_text = "Submitted (Pending Release)";
-                    link = doi_ui_base + "registrations/" + item.metadata.minting_api_id;
-                } else if (item.doi_status == "pending") {
-                    doi_release_state = "doi_pending";
-                    doi_display_state = "DOI Pending";
-                    link_text = "Awaiting Approval at Datacite";
-                } else {
-                    doi_release_state = "minted";
-                    doi_display_state = "DOI Minted";
-                    link = format_doi_ref(item.doi_reference);
-                    link_text = item.doi_reference;
+                release_state = release_state_presets[item.doi_status];
+            }else{
+                if (typeof setup_doi_staging_button === "function") {
+                    if (release_info.release_state == "released"){
+                        setup_doi_staging_button(el, transaction_id);
+                    }
                 }
             }
 
-            if (typeof setup_doi_staging_button === "function") {
-                if (doi_release_state == "released"){
-                    setup_doi_staging_button(el, transaction_id);
-                }
-            }
         }else{
             var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
             if(!$.isEmptyObject(current_session_contents) && txn_id in current_session_contents){
-                release_info.release_state = "staged";
-                release_info.display_state = "Staged";
+                release_state = release_state_presets.staged;
             }else{
-                release_info.release_state = "not_released";
-                release_info.display_state = "Not Released";
+                release_state = release_state_presets.not_released;
                 var content = build_staging_button(txn_id);
                 el.find("legend").after(content);
                 el.find(".staging_button").off().on("click", function(event){
                     stage_transaction($(event.target));
                 });
             }
-            doi_release_state = release_info.release_state;
-            doi_display_state = release_info.display_state;
         }
-        el.find(".release_state").next("td.metadata_item").text(doi_release_state);
-        el.find(".release_state_display").next("td.metadata_item").text(doi_display_state);
-        ribbon_el.removeClass().addClass("ribbon").addClass(doi_release_state);
-        ribbon_el.find("span").text(doi_display_state);
-
+        el.find(".release_state").next("td.metadata_item").text(release_state.span_class);
+        el.find(".release_state_display").next("td.metadata_item").text(release_state.display_text);
+        var oldBannerClass = _.difference(ribbon_el.attr("class").split(" "), ["ribbon"])[0] || null;
+        if(oldBannerClass != release_state.span_class){
+            ribbon_el.removeClass(oldBannerClass).addClass(release_state.span_class);
+            ribbon_el.find("span").remove();
+            ribbon_el.append($("<span>", {
+                "text": release_state.display_text,
+                "title": release_state.link_text
+            }));
+        }
     });
 };
