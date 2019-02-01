@@ -217,10 +217,10 @@ class Status_api_model extends CI_Model
         if (intval($query->status_code / 100) == 2) {
             $results = json_decode($query->body, true);
         }
-
+        $dirs = array();
+        $file_list = array();
+        $common_path_prefix_array = array();
         if ($results && !empty($results) > 0) {
-            $dirs = array();
-            $file_list = array();
             foreach ($results as $item_id => $item_info) {
                 $subdir = trim($item_info['subdir'], '/');
                 $filename = $item_info['name'];
@@ -242,13 +242,12 @@ class Status_api_model extends CI_Model
                 $path_array = explode('/', $path);
                 build_folder_structure($dirs, $path_array, $item_info);
             }
-
-            return array(
-                'treelist' => $dirs,
-                'files' => $results,
-                'common_path_prefix_array' => $common_path_prefix_array
-            );
         }
+        return array(
+            'treelist' => $dirs,
+            'files' => $results,
+            'common_path_prefix_array' => $common_path_prefix_array
+        );
     }
 
     /**

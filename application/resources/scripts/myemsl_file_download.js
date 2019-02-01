@@ -329,7 +329,7 @@ var setup_tree_data = function(){
                                 data: {mode: "children", parent: node.key},
                                 method:"POST",
                                 cache: false,
-                                complete: function(xhrobject,status){
+                                complete: function(xhrobject, status){
                                     setup_file_download_links($(el));
                                 }
                             };
