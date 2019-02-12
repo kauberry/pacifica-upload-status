@@ -61,3 +61,8 @@ if ($site_theme_name == 'external') {
 }
 
 $config['application_version'] = "1.99.0";
+
+$config['cookie_encryption_key'] = "eus_rocks_2019!!!";
+$config['cookie_name'] = "EUS_ID";
+$config['enable_cookie_redirect'] = true;
+$config['cookie_redirect_url'] = "https://d-eusi.emsl.pnl.gov/Portal";

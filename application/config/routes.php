@@ -77,6 +77,7 @@ $route['data_release/(:num)'] = "status_api/data_release_single_item/$1";
 $route['doi_minting'] = "status_api/doi_minting";
 $route['update_local_records/(:num)'] = "ajax_api/save_transient_doi_details/$1";
 $route['file_tree'] = "status_api/get_lazy_load_folder";
+$route['cart/checkauth'] = "cart_api/check_download_authorization";
 $route['cart/delete/(:any)/(:any)'] = "cart_api/delete/$1/$2";
 $route['cart/(:any)/(:any)'] = "cart_api/$1/$2";
 

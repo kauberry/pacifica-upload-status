@@ -1,39 +1,75 @@
 var max_size = 1024 * 1024 * 1024 * 1024 * 5; //5 TB (base 2)
 var friendly_max_size = "";
 var exceed_max_size_allow = false;
-var cart_create_dialog, cart_create_form;
+var cart_create_dialog, cart_create_form, cart_auth_dialog;
 
 $(function(){
     cart_create_dialog = $("#cart-create-dialog-form").dialog({
         autoOpen: false,
         width:"40%",
-        dialogClass: "drop_shadow_dialog",
+        classes: {"ui-dialog": "drop_shadow_dialog"},
         modal:true,
-        buttons: {
-            "Create": function(){
-                f = $(this).find("form");
-                var req_fields = f.find(".required");
-                var empty_req_fields = req_fields.filter(function(){
-                    return ( $(this).val() == "" );
-                });
-                if(empty_req_fields.length > 0){
-                    return false;
-                }else{
-                    //all req'd fields filled out
-                    cart_create_dialog.dialog("close");
-                    var tree_container = $("#" + f.find("#current_transaction_container").val());
-                    create_cart(f.serializeFormJSON(), tree_container);
+        buttons: [
+            {
+                "text": "Create",
+                "click": function(){
+                    f = $(this).find("form");
+                    var req_fields = f.find(".required");
+                    var empty_req_fields = req_fields.filter(function(){
+                        return ( $(this).val() == "" );
+                    });
+                    if(empty_req_fields.length > 0){
+                        return false;
+                    }else{
+                        //all req'd fields filled out
+                        cart_create_dialog.dialog("close");
+                        var tree_container = $("#" + f.find("#current_transaction_container").val());
+                        create_cart(f.serializeFormJSON(), tree_container);
+                    }
                 }
             },
-            Cancel: function() {
-                cart_create_form[0].reset();
-                cart_create_dialog.dialog("close");
+            {
+                "text": "Cancel",
+                "click": function() {
+                    cart_create_form[0].reset();
+                    cart_create_dialog.dialog("close");
+                }
             }
-        },
+        ],
         close: function() {
         }
 
     });
+    cart_auth_dialog = $("#cart-download-auth-dialog").dialog({
+        autoOpen: false,
+        width:"25%",
+        classes: {"ui-dialog": "drop_shadow_dialog"},
+        modal:true,
+        buttons: [
+            {
+                "text": "Ok",
+                "click": function(){
+                    var redir_url = $(this).data("redirect_url");
+                    var this_page = window.location.href;
+                    window.location.href = redir_url + "?redirectUrl=" + this_page;
+                }
+            },
+            {
+                "text": "Cancel",
+                "click": function(){
+                    var tree_name = $(this).data("tree_obj");
+                    var treeObj = $("#" + tree_name).fancyTree("getTree").visit(function(node){
+                        node.setSelected(false);
+                    });
+                    cart_auth_dialog.dialog("close");
+                }
+            }
+        ],
+        close: function() {
+        }
+
+    });
+
     window.setInterval(cart_status, 30000);
 
     cart_create_form = cart_create_dialog.find("form").on("submit", function(event){
@@ -59,6 +95,20 @@ var setup_file_download_links = function(parent_item) {
         }
     );
 
+};
+
+var check_download_authorization = function(event){
+    var getter = $.get(cart_download_auth_url);
+    getter.done(function(data){
+        proxied_user_id = data.eus_id;
+    });
+    getter.fail(function(jqxhr, status, error){
+        var response_obj = JSON.parse(jqxhr.responseText);
+        $("#cart-download-auth-dialog")
+            .data("redirect_url", response_obj.redirect_url)
+            .data("tree_obj", $(event.target).prop("id"))
+            .dialog("open");
+    });
 };
 
 var generate_cart_identifier = function(){
@@ -269,8 +319,6 @@ var update_download_status = function(tree_container, selectCount){
     }
 };
 
-
-
 var setup_metadata_disclosure = function(){
     $("ul.metadata_container").hide();
     $(".disclosure_button").off("click").on("click",
@@ -304,6 +352,7 @@ var setup_tree_data = function(){
 
                         },
                         select: function(event, data){
+                            var user_id_string = check_download_authorization(event);
                             var dl_button = $(event.target).parent().find("#dl_button_container_" + el_id);
                             var tree = $(el).fancytree("getTree");
                             // var fileSizes = get_file_sizes($(el));
@@ -366,3 +415,5 @@ var cart_identifier = generate_cart_identifier();
 var cart_info_url = cart_url_base + "cart/listing/" + cart_identifier;
 var cart_create_url = cart_url_base + "cart/create/" + cart_identifier;
 var cart_delete_url = cart_url_base + "cart/delete/" + cart_identifier;
+var cart_download_auth_url = cart_url_base + "cart/checkauth";
+var proxied_user_id = null;

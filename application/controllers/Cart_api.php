@@ -43,7 +43,11 @@ class Cart_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Cart_api_model', 'cart');
-        $this->load->helper(array('url', 'network', 'item'));
+        $this->load->helper(array('url', 'network', 'item', 'user_id_cookie'));
+        $this->eus_cookie_name = $this->config->item('cookie_name');
+        $this->eus_login_redirect_url = $this->config->item('cookie_redirect_url');
+        $this->eus_cookie_encryption_key = $this->config->item('cookie_encryption_key');
+        $this->enable_cookie_redirect = $this->config->item('enable_cookie_redirect');
     }
 
     /**
@@ -73,9 +77,9 @@ class Cart_api extends Baseline_api_controller
     /**
      *  Create a new download cart
      *
-     *  @return void
+     * @return void
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function create($cart_owner_identifier)
     {
@@ -93,6 +97,36 @@ class Cart_api extends Baseline_api_controller
         // var_dump($this->input->request_headers());
         $cart_uuid_info = $this->cart->cart_create($cart_owner_identifier, $this->input->raw_input_stream);
         transmit_array_with_json_header($cart_uuid_info);
+    }
+
+    /**
+     * Checks for pre-existing identity cookie token from a recent EUS login
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function check_download_authorization()
+    {
+        $this->user_id = "";
+        if (!$this->input->cookie($this->eus_cookie_name)) {
+            //no id token cookie found, so let's call the redirect
+            $this->output->set_status_header(401, "EUS Login Required");
+            $this->output->set_content_type('application/json');
+            print(json_encode(
+                [
+                    "eus_id" => null,
+                    "redirect_url" => $this->eus_login_redirect_url
+                ]
+            ));
+        } else {
+            $proxied_user_id = eus_decrypt($this->input->cookie($this->eus_cookie_name));
+            transmit_array_with_json_header(
+                [
+                    "eus_id" => $proxied_user_id,
+                ]
+            );
+        }
     }
 
     /**

@@ -55,6 +55,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_mode = 'cart';
         $this->page_data['view_mode'] = 'multiple';
         $this->page_data['script_uris'][] = "/project_resources/scripts/clipboard.min.js";
+        $this->page_data['script_uris'][] = "/project_resources/scripts/js.cookie.js";
         $this->page_data['js'] = "";
         $this->overview_template = $this->config->item('main_overview_template') ?: "page_layouts/status_page_view.html";
         $this->config->load('data_release');
