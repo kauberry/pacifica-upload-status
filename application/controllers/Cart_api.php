@@ -43,7 +43,7 @@ class Cart_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Cart_api_model', 'cart');
-        $this->load->helper(array('url', 'network', 'item', 'user_id_cookie'));
+        $this->load->helper(array('url', 'network', 'item', 'user_id_cookie', 'myemsl_api'));
         $this->eus_cookie_name = $this->config->item('cookie_name');
         $this->eus_login_redirect_url = $this->config->item('cookie_redirect_url');
         $this->eus_cookie_encryption_key = $this->config->item('cookie_encryption_key');
@@ -89,6 +89,17 @@ class Cart_api extends Baseline_api_controller
             echo "That's not how you use this function!!!";
             exit();
         }
+        // Check to make sure the auth cookie is set, and make sure that the encoded value is opcache_invalidate
+        // How are we making use of this information? Does it go somewhere in the database?
+        $user_block = $this->check_download_authorization(false);
+        $user_id = $user_block['eus_id'];
+        if ($user_id) {
+            $user_info = get_user_details_simple($user_id);
+        } else {
+            $this->output->set_status_header(401, "Unknown EUS User");
+            return;
+        }
+
         $submit_block = json_decode($this->input->raw_input_stream, true);
         if (empty($submit_block)) {
             //bad json-block or empty post body
@@ -106,27 +117,27 @@ class Cart_api extends Baseline_api_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function check_download_authorization()
+    public function check_download_authorization($show_output = true)
     {
         $this->user_id = "";
         if (!$this->input->cookie($this->eus_cookie_name)) {
             //no id token cookie found, so let's call the redirect
-            $this->output->set_status_header(401, "EUS Login Required");
-            $this->output->set_content_type('application/json');
-            print(json_encode(
-                [
-                    "eus_id" => null,
-                    "redirect_url" => $this->eus_login_redirect_url
-                ]
-            ));
+            if ($show_output) {
+                $this->output->set_status_header(401, "EUS Login Required");
+            }
+            $eus_id = null;
         } else {
-            $proxied_user_id = eus_decrypt($this->input->cookie($this->eus_cookie_name));
-            transmit_array_with_json_header(
-                [
-                    "eus_id" => $proxied_user_id,
-                ]
-            );
+            $eus_id = eus_decrypt($this->input->cookie($this->eus_cookie_name));
         }
+        $retval = [
+            "eus_id" => $eus_id,
+            "redirect_url" => $this->eus_login_redirect_url
+        ];
+        if ($show_output) {
+            $this->output->set_content_type('application/json');
+            print(json_encode($retval));
+        }
+        return $retval;
     }
 
     /**

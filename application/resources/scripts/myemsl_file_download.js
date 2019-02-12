@@ -58,7 +58,7 @@ $(function(){
                 "text": "Cancel",
                 "click": function(){
                     var tree_name = $(this).data("tree_obj");
-                    var treeObj = $("#" + tree_name).fancyTree("getTree").visit(function(node){
+                    $("#" + tree_name).fancyTree("getTree").visit(function(node){
                         node.setSelected(false);
                     });
                     cart_auth_dialog.dialog("close");
