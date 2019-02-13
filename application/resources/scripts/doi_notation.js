@@ -185,11 +185,14 @@ var set_release_state_banners = function(release_states, selector){
                 release_state = release_state_presets.staged;
             }else{
                 release_state = release_state_presets.not_released;
-                var content = build_staging_button(txn_id, el);
-                el.find("legend").after(content);
-                el.find(".staging_button").off().on("click", function(event){
-                    stage_transaction($(event.target));
-                });
+                if (typeof build_staging_button === "function") {
+                    var content = build_staging_button(txn_id, el);
+                    el.find("legend").after(content);
+                    el.find(".staging_button").off().on("click", function(event){
+                        stage_transaction($(event.target));
+                    });
+                }
+
             }
         }
         el.find(".release_state").next("td.metadata_item").text(release_state.span_class);
