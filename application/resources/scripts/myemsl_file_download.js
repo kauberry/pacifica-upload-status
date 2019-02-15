@@ -58,7 +58,8 @@ $(function(){
                 "text": "Cancel",
                 "click": function(){
                     var tree_name = $(this).data("tree_obj");
-                    $("#" + tree_name).fancyTree("getTree").visit(function(node){
+                    var tree = $("#" + tree_name).fancytree("getTree");
+                    tree.visit(function(node){
                         node.setSelected(false);
                     });
                     cart_auth_dialog.dialog("close");
@@ -101,8 +102,9 @@ var check_download_authorization = function(event){
     var getter = $.get(cart_download_auth_url);
     getter.done(function(data){
         proxied_user_id = data.eus_id;
+        setup_download_cart_button(event, data);
     });
-    getter.fail(function(jqxhr, status, error){
+    getter.fail(function(jqxhr){
         var response_obj = JSON.parse(jqxhr.responseText);
         $("#cart-download-auth-dialog")
             .data("redirect_url", response_obj.redirect_url)
@@ -312,10 +314,10 @@ var update_download_status = function(tree_container, selectCount){
         var totalSizeText = myemsl_size_format(fileSizes.total_size);
         var pluralizer = Object.keys(fileSizes.sizes).length != 1 ? "s" : "";
         $("#status_block_" + el_id).html(Object.keys(fileSizes.sizes).length + " file" + pluralizer + " selected [" + totalSizeText + "]");
-        dl_button.slideDown("slow");
+        dl_button.slideDown();
     }else{
         $("#status_block_" + el_id).html("&nbsp;");
-        dl_button.slideUp("slow");
+        dl_button.slideUp();
     }
 };
 
@@ -339,6 +341,20 @@ var setup_metadata_disclosure = function(){
 
 };
 
+var setup_download_cart_button = function(event){
+    var el = $(event.target);
+    var dl_button = el.parent().find(".dl_button_container");
+    var tree = el.fancytree("getTree");
+    // var fileSizes = get_file_sizes($(el));
+    var topNode = tree.getRootNode();
+    var dataNode = topNode.children[0];
+    var fileSizes = get_selected_files($(el));
+    if(fileSizes != null) {
+        var totalSizeText = myemsl_size_format(fileSizes.total_size);
+        var selectCount = Object.keys(fileSizes.sizes).length;
+    }
+};
+
 var setup_tree_data = function(){
     $(".tree_holder").each(
         function(index, el){
@@ -352,18 +368,14 @@ var setup_tree_data = function(){
 
                         },
                         select: function(event, data){
-                            var user_id_string = check_download_authorization(event);
-                            var dl_button = $(event.target).parent().find("#dl_button_container_" + el_id);
-                            var tree = $(el).fancytree("getTree");
-                            // var fileSizes = get_file_sizes($(el));
-                            var topNode = tree.getRootNode();
-                            var dataNode = topNode.children[0];
-                            var fileSizes = get_selected_files($(el));
-                            if(fileSizes != null) {
-                                var totalSizeText = myemsl_size_format(fileSizes.total_size);
-                                var selectCount = Object.keys(fileSizes.sizes).length;
+                            if(data.node.selected){
+                                var user_id_string = check_download_authorization(event);
+                                if(!user_id_string){
+                                    return false;
+                                }
+                            }else{
+                                setup_download_cart_button(event);
                             }
-
                         },
                         keydown: function(event, data){
                             if(event.which === 32) {
