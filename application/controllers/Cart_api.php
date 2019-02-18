@@ -122,7 +122,8 @@ class Cart_api extends Baseline_api_controller
     {
         if (!$this->config->item('enable_cookie_redirect')) {
             $eus_id = $this->user_id;
-        } else if (!$this->input->cookie($this->eus_cookie_name) && !$this->user_id) {
+            // } else if (!$this->input->cookie($this->eus_cookie_name) && !$this->user_id) {
+        } else if (!$this->input->cookie($this->eus_cookie_name)) {
             //no id token cookie found, so let's call the redirect
             if ($show_output) {
                 $this->output->set_status_header(302, "EUS Login Required");
