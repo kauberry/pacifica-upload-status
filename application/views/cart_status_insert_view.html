@@ -36,7 +36,8 @@
                                     class="download_info_button fa fa-info-circle fa-lg"
                                 />
     							<?php else: ?>
-    							&mdash;&mdash;&mdash;
+    							<div class="lds-ellipsis blue" style="height:40px;"><div></div><div></div><div></div><div></div></div>
+                  <div class="cart_status_subtext"><?= $friendly_status ?></div>
     							<?php endif; ?>
     						</td>
     						<td class="cart_status_left">
