@@ -43,7 +43,7 @@ class Cart_api extends Baseline_api_controller
     {
         parent::__construct();
         $this->load->model('Cart_api_model', 'cart');
-        $this->load->helper(array('url', 'network', 'item', 'user_id_cookie', 'myemsl_api'));
+        $this->load->helper(array('url', 'network', 'item', 'myemsl_api'));
         $this->eus_cookie_name = $this->config->item('cookie_name');
         $this->eus_login_redirect_url = $this->config->item('cookie_redirect_url');
         $this->eus_cookie_encryption_key = $this->config->item('cookie_encryption_key');
@@ -120,17 +120,18 @@ class Cart_api extends Baseline_api_controller
      */
     public function check_download_authorization($show_output = true)
     {
+        $this->user_id = false;
         if (!$this->config->item('enable_cookie_redirect')) {
             $eus_id = $this->user_id;
-            // } else if (!$this->input->cookie($this->eus_cookie_name) && !$this->user_id) {
-        } else if (!$this->input->cookie($this->eus_cookie_name)) {
+        } else if (!get_user_from_cookie()) {
             //no id token cookie found, so let's call the redirect
             if ($show_output) {
                 $this->output->set_status_header(302, "EUS Login Required");
             }
             $eus_id = null;
         } else {
-            $eus_id = eus_decrypt($this->input->cookie($this->eus_cookie_name));
+            $eus_user_info = get_user_from_cookie();
+            $this->user_info = $eus_user_info;
         }
         $retval = [
             "eus_id" => $eus_id,

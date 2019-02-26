@@ -31,11 +31,11 @@ if (!defined('BASEPATH')) {
  *  Directly retrieves simplified user info from the MyEMSL EUS
  *  database clone
  *
- *  @param integer $eus_id user id of the person in question
+ * @param integer $eus_id user id of the person in question
  *
- *  @return array
+ * @return array
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function get_user_details_simple($eus_id)
 {
@@ -54,15 +54,24 @@ function get_user_details_simple($eus_id)
  */
 function get_user_details($eus_id)
 {
-    $results = get_details('user', $eus_id);
+    // $results = get_details('user', $eus_id);
     if (empty($results)) {
-        $results = [
-            'first_name' => 'Anonymous Stranger',
-            'last_name' => '',
-            'emsl_employee' => false,
-            'proposals' => [],
-            'email_address' => ''
-        ];
+        if(get_user_from_cookie()) {
+            $results = get_user_from_cookie();
+            $results['emsl_employee'] = false;
+            $results['proposals'] = [];
+            $results['email_address'] = $results['email'];
+            $results['person_id'] = $results['eus_id'];
+            $results['network_id'] = $results['eus_id'];
+        }else{
+            $results = [
+                'first_name' => 'Anonymous Stranger',
+                'last_name' => '',
+                'emsl_employee' => false,
+                'proposals' => [],
+                'email_address' => ''
+            ];
+        }
     }
     return $results;
 }
@@ -117,6 +126,7 @@ function get_details($object_type, $object_id, $option = false)
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
+    var_dump($object_id);
     $url_object = array(
         $md_url, $url, $object_id
     );
@@ -164,12 +174,12 @@ function get_proposal_abstract($proposal_id)
  *  Read and parse the '*general.ini*' file to retrieve things
  *  like the database connection strings, etc.
  *
- *  @param string $file_specifier the name of the file to be read
- *                                from the default folder location
+ * @param string $file_specifier the name of the file to be read
+ *                               from the default folder location
  *
- *  @return array an array of ini file items
+ * @return array an array of ini file items
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function read_myemsl_config_file($file_specifier = 'general')
 {
@@ -184,13 +194,13 @@ function read_myemsl_config_file($file_specifier = 'general')
  *  from a given cart object. This was needed to overcome the
  *  'single call for each cart item' limitation
  *
- *  @param array   $item_list     the item identifiers for the cart items to be processed cart items to be processed
- *                                cart items to be processed
- *  @param integer $eus_person_id cart owner user id
+ * @param array   $item_list     the item identifiers for the cart items to be processed cart items to be processed
+ *                               cart items to be processed
+ * @param integer $eus_person_id cart owner user id
  *
- *  @return string Base64 encoded token to use for the submission
+ * @return string Base64 encoded token to use for the submission
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function generate_cart_token($item_list, $eus_person_id)
 {
@@ -231,12 +241,12 @@ function generate_cart_token($item_list, $eus_person_id)
  *  same format as the status XML returned by the
  *  previous MyEMSL backend
  *
- *  @param [type] $data     [description]
- *  @param [type] $xml_data [description]
+ * @param [type] $data     [description]
+ * @param [type] $xml_data [description]
  *
- *  @return [type]   [description]
+ * @return [type]   [description]
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function array_to_xml($data, &$xml_data)
 {

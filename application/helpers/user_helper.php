@@ -31,9 +31,9 @@ if (!defined('BASEPATH')) {
  *  Properly formats the user returned in the ['REMOTE_USER']
  *  variable from Apache
  *
- *  @return array
+ * @return array
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function get_user()
 {
@@ -43,12 +43,20 @@ function get_user()
     $remote_user = array_key_exists("REMOTE_USER", $_SERVER) ? $_SERVER["REMOTE_USER"] : false;
     $remote_user = !$remote_user && array_key_exists("PHP_AUTH_USER", $_SERVER) ? $_SERVER["PHP_AUTH_USER"] : $remote_user;
     $results = false;
-    if ($remote_user) {
+    if ($remote_user || get_user_from_cookie()) {
         //check for email address as username
-        $selector = filter_var($remote_user, FILTER_VALIDATE_EMAIL) ? 'email_address' : 'network_id';
-        $url_args_array = array(
-            $selector => strtolower($remote_user)
-        );
+        if (get_user_from_cookie()) {
+            $results = get_user_from_cookie();
+            $url_args_array = [
+                "_id" => $results['eus_id']
+            ];
+        }
+        elseif($remote_user) {
+            $selector = filter_var($remote_user, FILTER_VALIDATE_EMAIL) ? 'email_address' : 'network_id';
+            $url_args_array = [
+                $selector => strtolower($remote_user)
+            ];
+        }
         $query_url = "{$md_url}/users?";
         $query_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($query_url, array('Accept' => 'application/json'));
@@ -65,11 +73,11 @@ function get_user()
  *  Properly formats the user returned in the ['REMOTE_USER']
  *  variable from Apache
  *
- *  @param integer $user_id The user_id to format
+ * @param integer $user_id The user_id to format
  *
- *  @return array
+ * @return array
  *
- *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
 function get_user_details_server_vars($user_id)
 {
@@ -81,4 +89,64 @@ function get_user_details_server_vars($user_id)
     'email' => strtolower($_SERVER['LDAP_MAIL'])
     );
     return $user_info;
+}
+
+/**
+ * Utility function to get user from cookie
+ *
+ * @return string EUS ID of the user from EUS cookie
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_user_from_cookie()
+{
+    $CI =& get_instance();
+    $cookie_name = $CI->config->item('cookie_name');
+    $eus_id_string = $CI->input->cookie($cookie_name) ? eus_decrypt($CI->input->cookie($cookie_name)) : false;
+    $eus_user_info = $eus_id_string ? json_decode($eus_id_string, true) : false;
+    return $eus_user_info;
+}
+
+/**
+ * Entry function to encrypt string text
+ *
+ * @param string $src source text to encipher
+ *
+ * @return string encrypted text
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function eus_encrypt($src)
+{
+    $key = _getkey();
+    return base64_encode(openssl_encrypt($src, "aes-128-ecb", $key, OPENSSL_RAW_DATA));
+}
+
+/**
+ * Entry function to decrypt string text
+ *
+ * @param string $src encrypted text to decipher
+ *
+ * @return string decrypted text
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function eus_decrypt($src)
+{
+    $key = _getkey();
+    $src = str_replace(" ", "+", $src);
+    return openssl_decrypt(base64_decode($src), "aes-128-ecb", $key, OPENSSL_RAW_DATA);
+}
+
+/**
+ * Get the shared key string from configuration
+ *
+ * @return string key value retrieved from configuration
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function _getkey()
+{
+    $CI =& get_instance();
+    return $CI->config->item('cookie_encryption_key');
 }
