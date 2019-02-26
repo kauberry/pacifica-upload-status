@@ -56,14 +56,14 @@ function get_user_details($eus_id)
 {
     // $results = get_details('user', $eus_id);
     if (empty($results)) {
-        if(get_user_from_cookie()) {
+        if (get_user_from_cookie()) {
             $results = get_user_from_cookie();
             $results['emsl_employee'] = false;
             $results['proposals'] = [];
             $results['email_address'] = $results['email'];
             $results['person_id'] = $results['eus_id'];
             $results['network_id'] = $results['eus_id'];
-        }else{
+        } else {
             $results = [
                 'first_name' => 'Anonymous Stranger',
                 'last_name' => '',
