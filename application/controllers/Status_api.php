@@ -202,7 +202,6 @@ class Status_api extends Baseline_user_api_controller
             }
             ksort($this->page_data['proposal_list']);
         }
-
         $js = "var initial_proposal_id = \"{$proposal_id}\";
                 var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
                 var initial_instrument_id = \"{$instrument_id}\";

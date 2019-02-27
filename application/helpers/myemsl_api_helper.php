@@ -54,7 +54,8 @@ function get_user_details_simple($eus_id)
  */
 function get_user_details($eus_id)
 {
-    $results = get_details('user', $eus_id);
+    $results = [];
+    // $results = get_details('user', $eus_id);
     if (empty($results)) {
         if (get_user_from_cookie()) {
             $results = get_user_from_cookie();
