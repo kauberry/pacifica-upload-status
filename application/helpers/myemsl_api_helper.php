@@ -54,7 +54,7 @@ function get_user_details_simple($eus_id)
  */
 function get_user_details($eus_id)
 {
-    // $results = get_details('user', $eus_id);
+    $results = get_details('user', $eus_id);
     if (empty($results)) {
         if (get_user_from_cookie()) {
             $results = get_user_from_cookie();
@@ -126,7 +126,6 @@ function get_details($object_type, $object_id, $option = false)
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
-    var_dump($object_id);
     $url_object = array(
         $md_url, $url, $object_id
     );

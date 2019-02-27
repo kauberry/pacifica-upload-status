@@ -120,7 +120,7 @@ class Cart_api extends Baseline_api_controller
      */
     public function check_download_authorization($show_output = true)
     {
-        $this->user_id = false;
+        // $this->user_id = false;
         if (!$this->config->item('enable_cookie_redirect')) {
             $eus_id = $this->user_id;
         } else if (!get_user_from_cookie()) {
