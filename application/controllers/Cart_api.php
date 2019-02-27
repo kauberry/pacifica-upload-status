@@ -120,10 +120,15 @@ class Cart_api extends Baseline_api_controller
      */
     public function check_download_authorization($show_output = true)
     {
+        $retval = [
+            "redirect_url" => $this->eus_login_redirect_url,
+            "eus_id" => null
+        ];
         // $this->user_id = false;
         if (!$this->config->item('enable_cookie_redirect')) {
             $eus_id = $this->user_id;
-        } else if (!get_user_from_cookie()) {
+            $retval['eus_id'] = $eus_id;
+        } else if (empty(get_user_from_cookie())) {
             //no id token cookie found, so let's call the redirect
             if ($show_output) {
                 $this->output->set_status_header(302, "EUS Login Required");
@@ -132,11 +137,8 @@ class Cart_api extends Baseline_api_controller
         } else {
             $eus_user_info = get_user_from_cookie();
             $this->user_info = $eus_user_info;
+            array_merge($retval, $eus_user_info);
         }
-        $retval = [
-            "eus_id" => $eus_id,
-            "redirect_url" => $this->eus_login_redirect_url
-        ];
         if ($show_output) {
             $this->output->set_content_type('application/json');
             print(json_encode($retval));
