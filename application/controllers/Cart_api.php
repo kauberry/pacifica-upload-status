@@ -128,6 +128,7 @@ class Cart_api extends Baseline_api_controller
         if (!$this->config->item('enable_cookie_redirect')) {
             $eus_id = $this->user_id;
             $retval['eus_id'] = $eus_id;
+            $retval = array_merge($retval, $this->user_info);
         } else if (empty(get_user_from_cookie())) {
             //no id token cookie found, so let's call the redirect
             if ($show_output) {
@@ -137,11 +138,11 @@ class Cart_api extends Baseline_api_controller
         } else {
             $eus_user_info = get_user_from_cookie();
             $this->user_info = $eus_user_info;
-            array_merge($retval, $eus_user_info);
+            $retval = array_merge($retval, $eus_user_info);
         }
         if ($show_output) {
             $this->output->set_content_type('application/json');
-            print(json_encode($retval));
+            $this->output->set_output(json_encode($retval));
         }
         return $retval;
     }
