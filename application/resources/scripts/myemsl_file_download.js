@@ -98,11 +98,24 @@ var setup_file_download_links = function(parent_item) {
 
 };
 
+var update_header_user_info = function(user_info){
+    var new_user_string = "<em>" + user_info.full_name + " (" + user_info.eus_id + ")</em>";
+    $("#login_id_container").text(new_user_string);
+};
+
 var check_download_authorization = function(event){
     var getter = $.get(cart_download_auth_url);
     getter.done(function(data){
         proxied_user_id = data.eus_id;
-        setup_download_cart_button(event, data);
+        if(proxied_user_id){
+            update_header_user_info(data);
+            setup_download_cart_button(event, data);
+        }else{
+            $("#cart-download-auth-dialog")
+                .data("redirect_url", data.redirect_url)
+                .data("tree_obj", $(event.target).prop("id"))
+                .dialog("open");
+        }
     });
     getter.fail(function(jqxhr){
         var response_obj = JSON.parse(jqxhr.responseText);
