@@ -48,10 +48,10 @@ function get_user()
         $cookie_results = get_user_from_cookie();
         if ($cookie_results) {
             $cookie_results['id'] = $cookie_results['eus_id'];
+            $url_args_array = [
+                "_id" => $cookie_results['eus_id']
+            ];
         }
-        $url_args_array = [
-            "_id" => $results['eus_id']
-        ];
     } elseif ($remote_user) {
         //check for email address as username
         $selector = filter_var($remote_user, FILTER_VALIDATE_EMAIL) ? 'email_address' : 'network_id';
