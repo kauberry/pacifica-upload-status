@@ -61,6 +61,9 @@ function get_user()
     } else {
         return $results;
     }
+    if (empty($url_args_array)) {
+        return $results;
+    }
     $query_url = "{$md_url}/users?";
     $query_url .= http_build_query($url_args_array, '', '&');
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
