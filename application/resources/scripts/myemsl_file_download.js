@@ -100,7 +100,7 @@ var setup_file_download_links = function(parent_item) {
 
 var update_header_user_info = function(user_info){
     var new_user_string = "<em>" + user_info.full_name + " (" + user_info.eus_id + ")</em>";
-    $("#login_id_container").text(new_user_string);
+    $("#login_id_container").html(new_user_string);
 };
 
 var check_download_authorization = function(event){
