@@ -46,11 +46,13 @@ function get_user()
     $cookie_results = false;
     if ($CI->config->item('enable_cookie_redirect')) {
         $cookie_results = get_user_from_cookie();
-        if ($cookie_results) {
+        if ($cookie_results && is_array($cookie_results) && array_key_exists('eus_id', $cookie_results)) {
             $cookie_results['id'] = $cookie_results['eus_id'];
             $url_args_array = [
                 "_id" => $cookie_results['eus_id']
             ];
+        } else {
+            return $results;
         }
     } elseif ($remote_user) {
         //check for email address as username
@@ -64,6 +66,7 @@ function get_user()
     if (empty($url_args_array)) {
         return $results;
     }
+
     $query_url = "{$md_url}/users?";
     $query_url .= http_build_query($url_args_array, '', '&');
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
