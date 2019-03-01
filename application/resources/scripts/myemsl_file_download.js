@@ -106,15 +106,19 @@ var update_header_user_info = function(user_info){
 var check_download_authorization = function(event){
     var getter = $.get(cart_download_auth_url);
     getter.done(function(data){
-        proxied_user_id = data.eus_id;
-        if(proxied_user_id){
-            update_header_user_info(data);
-            setup_download_cart_button(event, data);
-        }else{
-            $("#cart-download-auth-dialog")
-                .data("redirect_url", data.redirect_url)
-                .data("tree_obj", $(event.target).prop("id"))
-                .dialog("open");
+        if (data) {
+            proxied_user_id = data.eus_id;
+            if(proxied_user_id){
+                update_header_user_info(data);
+                setup_download_cart_button(event, data);
+            }else{
+                $("#cart-download-auth-dialog")
+                    .data("redirect_url", data.redirect_url)
+                    .data("tree_obj", $(event.target).prop("id"))
+                    .dialog("open");
+            }
+        } else {
+            alert("Looks like there was a problem with your EUS authentication check. Try again in a few minutes.");
         }
     });
     getter.fail(function(jqxhr){
