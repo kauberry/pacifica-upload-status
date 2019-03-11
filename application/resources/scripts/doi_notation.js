@@ -1,7 +1,3 @@
-$(function(){
-    window.setInterval(get_doi_release_data, 30000);
-});
-
 var set_clipboard_function = function() {
     var clipboard = new ClipboardJS(".doi_linking_button");
     clipboard.off().on("success", function(e) {
@@ -120,20 +116,33 @@ var add_doi_notations = function(metadata_object) {
                 });
                 upload_item_container.find("legend").after(doi_staging_button_container);
             }
-            var md_table = upload_item_container.find(".metadata_description_table > tbody");
-            var doi_entry_new = md_table.find("tr:last-child").clone();
-            doi_entry_new.find(".metadata_header")
-                .empty()
-                .addClass("doi_reference")
-                .text("DOI Reference");
-            doi_entry_new.find(".metadata_item")
-                .empty()
-                .append($("<a>", {
-                    "href": format_doi_ref(doi_object.doi_reference),
-                    "text": doi_object.doi_reference,
-                    "alt": "Link to DOI"
-                }));
-            md_table.append(doi_entry_new);
+
+            var md_table = upload_item_container.find(".basic_metadata > tbody");
+
+            var doi_entry_new = $("<tr>", {
+                "class": "metadata_description_list"
+            })
+                .append($("<td>", {
+                    "class": "metadata_header doi_reference",
+                    "text": "DOI Reference"
+                }))
+                .append($("<td>", {
+                    "class": "metadata_item"
+                })
+                    .append($("<a>", {
+                        "href": format_doi_ref(doi_object.doi_reference),
+                        "text": doi_object.doi_reference,
+                        "alt": "Link to DOI"
+                    }))
+                );
+
+            md_table
+                .find(".doi_reference")
+                .parents("tr")
+                .remove();
+            md_table
+                .append(doi_entry_new);
+
             dsbc = doi_staging_button_container.clone().empty();
             dsbc = add_link_copy_info(
                 upload_item_container,
