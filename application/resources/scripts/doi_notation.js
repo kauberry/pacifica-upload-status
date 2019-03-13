@@ -1,3 +1,7 @@
+$(function(){
+    window.setInterval(get_doi_release_data, 30000);
+});
+
 var set_clipboard_function = function() {
     var clipboard = new ClipboardJS(".doi_linking_button");
     clipboard.off().on("success", function(e) {
