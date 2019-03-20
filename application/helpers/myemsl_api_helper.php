@@ -60,7 +60,7 @@ function get_user_details($eus_id)
         if (get_user_from_cookie()) {
             $results = get_user_from_cookie();
             $results['emsl_employee'] = false;
-            $results['proposals'] = [];
+            $results['projects'] = [];
             $results['email_address'] = $results['email'];
             $results['person_id'] = $results['eus_id'];
             $results['network_id'] = $results['eus_id'];
@@ -69,7 +69,7 @@ function get_user_details($eus_id)
                 'first_name' => 'Anonymous Stranger',
                 'last_name' => '',
                 'emsl_employee' => false,
-                'proposals' => [],
+                'projects' => [],
                 'email_address' => ''
             ];
         }
@@ -92,17 +92,17 @@ function get_instrument_details($instrument_id)
 }
 
 /**
- *  Directly retrieves proposal info from md server
+ *  Directly retrieves project info from md server
  *
- * @param integer $proposal_id proposal id of the item in question
+ * @param integer $project_id project id of the item in question
  *
  * @return array
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function get_proposal_details($proposal_id)
+function get_project_details($project_id)
 {
-    return get_details('proposal', $proposal_id);
+    return get_details('project', $project_id);
 }
 
 /**
@@ -120,7 +120,7 @@ function get_details($object_type, $object_id, $option = false)
 {
     $object_map = array(
         'instrument' => array('url' => 'instrumentinfo/by_instrument_id'),
-        'proposal' => array('url' => 'proposalinfo/by_proposal_id'),
+        'project' => array('url' => 'projectinfo/by_project_id'),
         'user' => array('url' => 'userinfo/by_id')
     );
     $url = $object_map[$object_type]['url'];
@@ -143,17 +143,17 @@ function get_details($object_type, $object_id, $option = false)
 }
 
 /**
- * [get_proposal_abstract description]
+ * [get_project_abstract description]
  *
- * @param string $proposal_id [description]
+ * @param string $project_id [description]
  *
  * @return string [description]
  *
  * @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
-function get_proposal_abstract($proposal_id)
+function get_project_abstract($project_id)
 {
-    $url = "proposals?_id={$proposal_id}";
+    $url = "projects?_id={$project_id}";
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
@@ -265,11 +265,11 @@ function array_to_xml($data, &$xml_data)
 
 function get_selection_defaults($incoming)
 {
-    $proposal_id = $incoming['proposal_id'] ?: get_cookie('last_proposal_selector');
+    $project_id = $incoming['project_id'] ?: get_cookie('last_project_selector');
     $instrument_id = $incoming['instrument_id'] ?: get_cookie('last_instrument_selector');
     $starting_date = $incoming['starting_date'] ?: get_cookie('last_starting_date_selector');
     $ending_date = $incoming['ending_date'] ?: get_cookie('last_ending_date_selector');
-    $proposal_id = $proposal_id != 'null' ? $proposal_id : 0;
+    $project_id = $project_id != 'null' ? $project_id : 0;
     $instrument_id = $instrument_id != 'null' ? $instrument_id : 0;
 
     if (!$starting_date || !$ending_date) {
@@ -284,7 +284,7 @@ function get_selection_defaults($incoming)
     }
 
     $outgoing = [
-        'proposal_id' => $proposal_id,
+        'project_id' => $project_id,
         'instrument_id' => $instrument_id,
         'starting_date' => $starting_date,
         'ending_date' => $ending_date

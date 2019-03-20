@@ -62,7 +62,7 @@ class Baseline_api_controller extends CI_Controller
         $user_info = get_user_details($this->user_id);
         $this->username = $user_info['first_name'] ?: 'Anonymous Stranger';
         $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;
-        $this->proposal_list = $user_info['proposals'];
+        $this->project_list = $user_info['projects'];
         $this->email = $user_info['email_address'];
         $this->fullname = "{$this->username} {$user_info['last_name']}";
         $user_info['full_name'] = $this->fullname;

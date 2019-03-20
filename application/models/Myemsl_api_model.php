@@ -23,7 +23,7 @@
  *  MyEMSL model
  *
  *  The **Myemsl_model** class queries the EUS database clone
- *  for information on proposals, instruments and users
+ *  for information on projects, instruments and users
  *
  * @category CI_Model
  * @package  Pacifica-upload-status

@@ -54,10 +54,10 @@ class Status_api_model extends CI_Model
 
     /**
      *  Retrieves a set of transaction entries that correspond to the combination
-     *  of instrument, proposal, and timeframe specified in the call
+     *  of instrument, project, and timeframe specified in the call
      *
      * @param int     $instrument_id [description]
-     * @param string  $proposal_id   [description]
+     * @param string  $project_id    [description]
      * @param string  $start_time    [description]
      * @param string  $end_time      [description]
      * @param integer $submitter     [description]
@@ -66,12 +66,12 @@ class Status_api_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_transactions($instrument_id, $proposal_id, $start_time, $end_time, $submitter = -1)
+    public function get_transactions($instrument_id, $project_id, $start_time, $end_time, $submitter = -1)
     {
         $transactions_url = "{$this->policy_url_base}/status/transactions/search/details?";
         $url_args_array = array(
             'instrument' => isset($instrument_id) ? $instrument_id : -1,
-            'proposal' => isset($proposal_id) ? $proposal_id : -1,
+            'project' => isset($project_id) ? $project_id : -1,
             'start' => local_time_to_utc($start_time, 'Y-m-d H:i:s'),
             'end' => local_time_to_utc($end_time, 'Y-m-d H:i:s'),
             'submitter' => isset($submitter) ? $submitter : -1,
@@ -108,27 +108,27 @@ class Status_api_model extends CI_Model
     }
 
     /**
-     *  Retrieves a set of proposal entries for a given set of search terms and
+     *  Retrieves a set of project entries for a given set of search terms and
      *  a corresponding requester_id
      *
      * @param string $terms        search terms from the user
-     * @param int    $requester_id the user requesting proposals
-     * @param string $is_active    do we retrieve inactive proposals
+     * @param int    $requester_id the user requesting projects
+     * @param string $is_active    do we retrieve inactive projects
      *
-     * @return array   proposal details listing
+     * @return array   project details listing
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_proposals_by_name($terms, $requester_id, $is_active = 'active')
+    public function get_projects_by_name($terms, $requester_id, $is_active = 'active')
     {
-        $proposals_url = "{$this->policy_url_base}/status/proposals/search/{$terms}?";
+        $projects_url = "{$this->policy_url_base}/status/projects/search/{$terms}?";
         $url_args_array = array(
             'user' => $this->user_id
         );
-        $proposals_url .= http_build_query($url_args_array, '', '&');
+        $projects_url .= http_build_query($url_args_array, '', '&');
         $results = [];
         try {
-            $query = Requests::get($proposals_url, array('Accept' => 'application/json'));
+            $query = Requests::get($projects_url, array('Accept' => 'application/json'));
             $results = json_decode($query->body, true);
         } catch (Exception $e) {
             $results = array();

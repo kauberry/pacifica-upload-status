@@ -1,14 +1,14 @@
 <form id="instrument_selection" class="themed">
   <fieldset id="inst_select_container">
     <legend>Transaction Search</legend>
-    <div class="full_width_block" id="proposal_selector_container">
-      <select id="proposal_selector" class="criterion_selector" name="proposal_selector" style="width:100%;">
+    <div class="full_width_block" id="project_selector_container">
+      <select id="project_selector" class="criterion_selector" name="project_selector" style="width:100%;">
         <?php
           $this->load->view(
-              'proposal_selector_insert.html',
+              'project_selector_insert.html',
               array(
-                  'proposal_list' => $proposal_list,
-                  'selected_proposal' => $selected_proposal
+                  'project_list' => $project_list,
+                  'selected_project' => $selected_project
               )
           );
         ?>

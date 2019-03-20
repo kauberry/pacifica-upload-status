@@ -125,7 +125,7 @@ class Status_api extends Baseline_user_api_controller
                 var data_identifier = 0;
                 var ui_markup = {
                     \"instrument_selection_desc\": \"{$this->config->item('ui_instrument_desc')}\",
-                    \"proposal_selection_desc\": \"{$this->config->item('ui_proposal_desc')}\"
+                    \"project_selection_desc\": \"{$this->config->item('ui_project_desc')}\"
                 };
                 var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                 ";
@@ -144,7 +144,7 @@ class Status_api extends Baseline_user_api_controller
     /**
      * Full page generating version of overview
      *
-     * @param string $proposal_id   id of the proposal to display
+     * @param string $project_id   id of the project to display
      * @param string $instrument_id id of the instrument to display
      * @param string $starting_date starting time period
      * @param string $ending_date   ending time period
@@ -152,13 +152,13 @@ class Status_api extends Baseline_user_api_controller
      * @return void
      */
     public function overview(
-        $proposal_id = '',
+        $project_id = '',
         $instrument_id = '',
         $starting_date = '',
         $ending_date = ''
     ) {
         $defaults = [
-            'proposal_id' => $proposal_id,
+            'project_id' => $project_id,
             'instrument_id' => $instrument_id,
             'starting_date' => $starting_date,
             'ending_date' => $ending_date
@@ -188,21 +188,21 @@ class Status_api extends Baseline_user_api_controller
 
         $full_user_info = $this->user_info;
 
-        $proposal_list = array();
-        if (array_key_exists('proposals', $full_user_info)) {
-            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+        $project_list = array();
+        if (array_key_exists('projects', $full_user_info)) {
+            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
                 if (array_key_exists('title', $prop_info)) {
-                    $proposal_list[$prop_id] = $prop_info['title'];
+                    $project_list[$prop_id] = $prop_info['title'];
                 }
             }
-            if (array_key_exists('proposal_list', $this->page_data)) {
-                $this->page_data['proposal_list'] = $this->page_data['proposal_list'] + $proposal_list;
+            if (array_key_exists('project_list', $this->page_data)) {
+                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
             } else {
-                $this->page_data['proposal_list'] = $proposal_list;
+                $this->page_data['project_list'] = $project_list;
             }
-            ksort($this->page_data['proposal_list']);
+            ksort($this->page_data['project_list']);
         }
-        $js = "var initial_proposal_id = \"{$proposal_id}\";
+        $js = "var initial_project_id = \"{$project_id}\";
                 var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
                 var initial_instrument_id = \"{$instrument_id}\";
                 var initial_starting_date = \"{$starting_date}\";
@@ -212,12 +212,12 @@ class Status_api extends Baseline_user_api_controller
                 var initial_instrument_list = [];
                 var ui_markup = {
                     \"instrument_selection_desc\": \"{$this->config->item('ui_instrument_desc')}\",
-                    \"proposal_selection_desc\": \"{$this->config->item('ui_proposal_desc')}\"
+                    \"project_selection_desc\": \"{$this->config->item('ui_project_desc')}\"
                 };
                 var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                 ";
 
-        $this->page_data['selected_proposal'] = $proposal_id;
+        $this->page_data['selected_project'] = $project_id;
         $this->page_data['starting_date'] = $starting_date;
         $this->page_data['ending_date'] = $ending_date;
         $this->page_data['instrument_id'] = $instrument_id;
@@ -225,7 +225,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['page_mode'] = $this->page_mode;
 
         $this->overview_worker(
-            $proposal_id,
+            $project_id,
             $instrument_id,
             $starting_date,
             $ending_date,
@@ -236,7 +236,7 @@ class Status_api extends Baseline_user_api_controller
     /**
      * Full page generating version of overview for external consumption
      *
-     * @param string $proposal_id   id of the proposal to display
+     * @param string $project_id   id of the project to display
      * @param string $instrument_id id of the instrument to display
      * @param string $starting_date starting time period
      * @param string $ending_date   ending time period
@@ -244,17 +244,17 @@ class Status_api extends Baseline_user_api_controller
      * @return void
      */
     public function overview_insert(
-        $proposal_id = false,
+        $project_id = false,
         $instrument_id = false,
         $starting_date = false,
         $ending_date = false
     ) {
 
-        if (!$proposal_id || !$instrument_id) {
+        if (!$project_id || !$instrument_id) {
             $message = "Some parameters missing. Please supply values for: ";
             $criteria_array = array();
-            if (!$proposal_id) {
-                $criteria_array[] = "proposal";
+            if (!$project_id) {
+                $criteria_array[] = "project";
             }
             if (!$instrument_id) {
                 $criteria_array[] = "instrument";
@@ -277,21 +277,21 @@ class Status_api extends Baseline_user_api_controller
         }
 
 
-        $this->page_data['proposal_info'] = get_proposal_abstract($proposal_id);
+        $this->page_data['project_info'] = get_project_abstract($project_id);
         $this->page_data['instrument_info'] = get_instrument_details($instrument_id);
-        $this->page_data['proposal_list'][$proposal_id] = $this->page_data['proposal_info']['title'];
+        $this->page_data['project_list'][$project_id] = $this->page_data['project_info']['title'];
 
 
         $this->page_data['script_uris'][] = '/project_resources/scripts/external.js';
 
-        $this->overview($proposal_id, $instrument_id, $starting_date, $ending_date);
+        $this->overview($project_id, $instrument_id, $starting_date, $ending_date);
     }
 
 
     /**
      * Primary index page shows overview of status for that user.
      *
-     * @param string $proposal_id   id of the proposal to display
+     * @param string $project_id   id of the project to display
      * @param string $instrument_id id of the instrument to display
      * @param string $starting_date starting time period
      * @param string $ending_date   ending time period
@@ -300,7 +300,7 @@ class Status_api extends Baseline_user_api_controller
      * @return void
      */
     public function overview_worker(
-        $proposal_id = '',
+        $project_id = '',
         $instrument_id = '',
         $starting_date = '',
         $ending_date = '',
@@ -312,9 +312,9 @@ class Status_api extends Baseline_user_api_controller
         $this->referring_page = str_replace(base_url(), '', $this->input->server('HTTP_REFERER'));
         $time_period_empty = true;
         if (isset($instrument_id) && intval($instrument_id) != 0
-            && isset($proposal_id) && intval($proposal_id) != 0
+            && isset($project_id) && intval($project_id) != 0
         ) {
-            $message = "No data available for this instrument and proposal in the specified time period";
+            $message = "No data available for this instrument and project in the specified time period";
             //all criteria set, proceed with load
             $now = new DateTime();
             $end = strtotime($ending_date) ? new DateTime($ending_date) : new DateTime();
@@ -325,7 +325,7 @@ class Status_api extends Baseline_user_api_controller
             $start_time = $start->format('Y-m-d');
             $transaction_list = $this->status->get_transactions(
                 $instrument_id,
-                $proposal_id,
+                $project_id,
                 $start_time,
                 $end_time
             );
@@ -360,7 +360,7 @@ class Status_api extends Baseline_user_api_controller
             $results = array(
                 'transaction_list' => array(),
                 'time_period_empty' => true,
-                'message' => 'No data available for this instrument and proposal',
+                'message' => 'No data available for this instrument and project',
             );
         }
         $this->page_data['cart_data'] = array('carts' => array());
@@ -372,7 +372,7 @@ class Status_api extends Baseline_user_api_controller
                 krsort($results['transaction_list']['times']);
             }
         }
-        $this->page_data['selected_proposal_id'] = $proposal_id;
+        $this->page_data['selected_project_id'] = $project_id;
         $this->page_data['selected_instrument_id'] = $instrument_id;
         $this->page_data['enable_breadcrumbs'] = false;
         $this->page_data['page_mode'] = $this->page_mode;

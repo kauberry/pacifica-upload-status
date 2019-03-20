@@ -12,13 +12,13 @@ particular instrument(s) in their charge.
 These views will likely include...
 
 #### Site-level overviews for EMSL Management
-* 30,000 ft view aggregated over classes like instrument type, facilities, researchers, proposals, etc.
+* 30,000 ft view aggregated over classes like instrument type, facilities, researchers, projects, etc.
 * Fewer details immediately visible, but still available
 
 
 #### Facility-level views for individual program managers and capability leads
 * Collections of instruments that can be personalized by user id or client-side cookie
-* More details available immediately, with breakdowns within a given instrument at the proposal and operator level
+* More details available immediately, with breakdowns within a given instrument at the project and operator level
 
 
 #### Instrument-level views for custodians and operators

@@ -78,7 +78,6 @@ function get_user()
     if ($query->status_code == 200 && !empty($results_json)) {
         $results = strtolower($results_json[0]['_id']);
     }
-
     return $results;
 }
 

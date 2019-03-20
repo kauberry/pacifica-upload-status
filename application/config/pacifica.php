@@ -44,25 +44,25 @@ if ($site_theme_name == 'external') {
     $config['site_identifier'] = "MyEMSL";
     $config['site_slogan'] = 'EMSL User Portal Data Retrieval';
     $config['ui_instrument_desc'] = 'Select an Instrument';
-    $config['ui_proposal_desc'] = 'Select a Proposal';
+    $config['ui_project_desc'] = 'Select a Project';
     // $config['main_overview_template'] = "external_view.html";
 } elseif ($site_theme_name == 'myemsl') {
     $config['theme_name'] = 'myemsl';
     $config['site_identifier'] = "MyEMSL";
     $config['site_slogan'] = 'Data Management for Science';
     $config['ui_instrument_desc'] = 'Select an Instrument';
-    $config['ui_proposal_desc'] = 'Select an EUS Proposal';
+    $config['ui_project_desc'] = 'Select an EUS Project';
 } else {
     $config['theme_name'] = 'datahub';
     $config['site_identifier'] = 'DataHub';
     $config['site_slogan'] = 'Data Management for Science';
     $config['ui_instrument_desc'] = 'Select an Instrument';
-    $config['ui_proposal_desc'] = 'Select a Proposal';
+    $config['ui_project_desc'] = 'Select a Project';
 }
 
 $config['application_version'] = "2.3.0";
 
 $config['cookie_encryption_key'] = "eus_rocks_2019!!!";
 $config['cookie_name'] = "EUS_ID";
-$config['enable_cookie_redirect'] = true;
+$config['enable_cookie_redirect'] = false;
 $config['cookie_redirect_url'] = "https://d-eusi.emsl.pnl.gov/Portal";

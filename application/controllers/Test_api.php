@@ -67,17 +67,17 @@ class Test_api extends Baseline_api_controller
     }
 
     /**
-     * Test Get Proposal Info json.
+     * Test Get Project Info json.
      *
-     * @param string $search_terms search terms to use in searching for proposals
+     * @param string $search_terms search terms to use in searching for projects
      *
      * @return void
      */
-    public function get_proposals($search_terms)
+    public function get_projects($search_terms)
     {
         echo "<pre>";
-        $proposals = $this->status->get_proposals_by_name($search_terms, $this->user_id, false);
-        send_json_array($proposals);
+        $projects = $this->status->get_projects_by_name($search_terms, $this->user_id, false);
+        send_json_array($projects);
         echo "</pre>";
     }
 
@@ -107,8 +107,8 @@ class Test_api extends Baseline_api_controller
     public function get_files_for_transaction($transaction)
     {
         echo "<pre>";
-        $proposals = $this->status->get_files_for_transaction($transaction);
-        send_json_array($proposals);
+        $projects = $this->status->get_files_for_transaction($transaction);
+        send_json_array($projects);
         echo "</pre>";
     }
 }

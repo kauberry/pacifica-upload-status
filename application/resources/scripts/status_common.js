@@ -93,7 +93,7 @@ var update_breadcrumbs = function(){
 var get_latest_transactions = function(){
     if(initial_instrument_id && latest_tx_id) {
         var ts = moment().format("YYYYMMDDHHmmss");
-        var new_tx_url = "/status/get_latest_transactions/" + initial_instrument_id + "/" + initial_proposal_id + "/" + latest_tx_id + "/glt_" + ts;
+        var new_tx_url = "/status/get_latest_transactions/" + initial_instrument_id + "/" + initial_project_id + "/" + latest_tx_id + "/glt_" + ts;
         $.get(
             new_tx_url, function(data){
                 if(data.length > 0) {
@@ -108,12 +108,12 @@ var get_latest_transactions = function(){
 
 var update_content = function(event){
     // debugger;
-    var proposal_id = $("#proposal_selector").val() != null ? $("#proposal_selector").val() : initial_proposal_id;
+    var project_id = $("#project_selector").val() != null ? $("#project_selector").val() : initial_project_id;
     var instrument_id = $("#instrument_selector").val() != null ? $("#instrument_selector").val() : initial_instrument_id;
     var time_frame = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : 0;
-    if($("#proposal_selector").val() == null){
-        if(initial_proposal_id != null){
-            $("#proposal_selector").val(initial_proposal_id).trigger("change");
+    if($("#project_selector").val() == null){
+        if(initial_project_id != null){
+            $("#project_selector").val(initial_project_id).trigger("change");
         }else{
             $("#instrument_selector").val("").trigger("change");
         }
@@ -126,7 +126,7 @@ var update_content = function(event){
             if(el.prop("id") == "instrument_selector" && el.val() == initial_instrument_id) {
                 return false;
             }
-            if(["proposal_selector","instrument_selector","timeframe_selector"].indexOf(el.prop("id")) >= 0) {
+            if(["project_selector","instrument_selector","timeframe_selector"].indexOf(el.prop("id")) >= 0) {
                 $.cookie("myemsl_status_last_" + el.prop("id"), el.val(),{ expires: 30, path: "/" });
             }
         }else{
@@ -137,8 +137,8 @@ var update_content = function(event){
     }
     initial_load = false;
     var ts = moment().format("YYYYMMDDHHmmss");
-    if(proposal_id && instrument_id && time_frame) {
-        var url = base_url + "status_api/overview/" + proposal_id + "/" + instrument_id + "/" + time_frame + "/ovr_" + ts;
+    if(project_id && instrument_id && time_frame) {
+        var url = base_url + "status_api/overview/" + project_id + "/" + instrument_id + "/" + time_frame + "/ovr_" + ts;
         initial_load = false;
         $("#item_info_container").hide();
         $("#loading_status").fadeIn(
@@ -183,12 +183,12 @@ var update_content = function(event){
             }
         );
     }
-    if(el && el.prop("id") == "proposal_selector") {
+    if(el && el.prop("id") == "project_selector") {
         // debugger;
         //check to see if instrument list is current
-        // if(el.val() != initial_proposal_id) {
+        // if(el.val() != initial_project_id) {
         get_instrument_list(el.val());
-        initial_proposal_id = el.val();
+        initial_project_id = el.val();
         // }
     }
     if(el) {
@@ -202,8 +202,8 @@ var update_content = function(event){
     }
 };
 
-var get_instrument_list = function(proposal_id){
-    var inst_url = base_url + "ajax_api/get_instruments_for_proposal/" + proposal_id;
+var get_instrument_list = function(project_id){
+    var inst_url = base_url + "ajax_api/get_instruments_for_project/" + project_id;
     var target = document.getElementById("instrument_selector_spinner");
     var spinner = new Spinner(spinner_opts).spin(target);
     $("#instrument_selector").empty();
@@ -244,7 +244,7 @@ var get_instrument_list = function(proposal_id){
 var formatInstrument = function(item){
     if (item.loading) return item.text;
     var markup = false;
-    var current_proposal_id = $("#proposal_selector").val();
+    var current_project_id = $("#project_selector").val();
     var active = item.active == "Y" ? "active" : "inactive";
     if(item.id) {
         if(item.id > 0) {
@@ -256,7 +256,7 @@ var formatInstrument = function(item){
             markup += "</div>";
         }else if (item.id == -1) {
             markup = "<div id=\"inst_info_" + item.id + "\" class=\"inst_info\">";
-            markup += "<strong>All Instruments for Proposal " + current_proposal_id + "</strong>";
+            markup += "<strong>All Instruments for Project " + current_project_id + "</strong>";
             markup += "</div>";
         }
     }
@@ -266,11 +266,11 @@ var formatInstrument = function(item){
 
 var formatInstrumentSelection = function(item){
     var markup = "Select an Instrument...";
-    var current_proposal_id = $("#proposal_selector").val();
+    var current_project_id = $("#project_selector").val();
     if(item.id > 0) {
         markup = item.text;
     }else if(item.id < 0) {
-        markup = "All Instruments for Proposal " + current_proposal_id;
+        markup = "All Instruments for Project " + current_project_id;
     }
     return markup;
 };

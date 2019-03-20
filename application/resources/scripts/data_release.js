@@ -93,8 +93,8 @@ var stage_transaction = function(el){
     var txn_id = container.find(".transaction_identifier").val();
     var new_info = {
         "upload_id": txn_id,
-        "proposal_id": container.find(".proposal_identifier").val(),
-        "proposal_name": container.find(".proposal_identifier").prop("title"),
+        "project_id": container.find(".project_identifier").val(),
+        "project_name": container.find(".project_identifier").prop("title"),
         "instrument_id": container.find(".instrument_identifier").val(),
         "instrument_name": container.find(".instrument_identifier").prop("title"),
         "date_uploaded": moment(container.find(".submit_time_identifier").val()).toISOString()
@@ -134,10 +134,10 @@ var update_staged_transactions_view = function(){
     $.each(current_session_data, function(index, el){
         var row = $("<tr>", {"id": "upload_row_" + el.upload_id, "class": "upload_row"});
         row.append($("<td>", {"text": el.upload_id, "class": "upload_id"}));
-        row.append($("<td>", {"text": el.proposal_id + " ", "class": "proposal_name", "title": el.proposal_name})
+        row.append($("<td>", {"text": el.project_id + " ", "class": "project_name", "title": el.project_name})
             .append($("<span>", {
                 "class": "fa fa-lg fa-info-circle info_icon",
-                "title": el.proposal_name,
+                "title": el.project_name,
                 "aria-hidden": "true"
             }))
         );

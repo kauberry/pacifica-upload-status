@@ -100,11 +100,11 @@ class Data_transfer_api_model extends CI_Model
             'field_format' => '',  //data format
             'field_ceii' => 1,  //holdover from DRPower, set to '1'
             'field_repository_name' => $this->config->item('drhub_default_repository_name'),
-            'field_science_theme' => '',  //pull from proposal info
+            'field_science_theme' => '',  //pull from project info
             'field_instrument_id' => '',  //pull from transaction info
             'field_instrument_name' => '',  //pull from instruments table
             'field_project_id' => '',  //pull from transaction info
-            'field_project_name' => '',  //pull from proposals list
+            'field_project_name' => '',  //pull from projects list
             'field_data_creator_name' => '',  //pull from user record
             'field_dataset_ref' => $dataset_id
         ];
@@ -124,25 +124,25 @@ class Data_transfer_api_model extends CI_Model
         $transaction_info = $this->status->get_formatted_transaction($transaction_id);
         $transaction_info = $transaction_info['transactions'][$transaction_id];
         $release_info = [
-            'field_project_id' => $transaction_info['metadata']['proposal_id'],
+            'field_project_id' => $transaction_info['metadata']['project_id'],
             'field_instrument_id' => $transaction_info['metadata']['instrument_id'],
             'field_data_creator_name' => $this->user_info['display_name'],
             'transaction_id' => $transaction_id
         ];
 
-        //get proposal_info
-        $proposal_info = $this->lookup_external_info(
-            $transaction_info['metadata']['proposal_id'],
+        //get project_info
+        $project_info = $this->lookup_external_info(
+            $transaction_info['metadata']['project_id'],
             $transaction_info['metadata']['instrument_id']
         );
 
-        $release_info = array_merge($release_info, $proposal_info);
+        $release_info = array_merge($release_info, $project_info);
         return $release_info;
     }
 
-    private function lookup_external_info($proposal_id, $instrument_id)
+    private function lookup_external_info($project_id, $instrument_id)
     {
-        $md_url = "{$this->metadata_url_base}/proposalinfo/by_proposal_id/{$proposal_id}";
+        $md_url = "{$this->metadata_url_base}/projectinfo/by_project_id/{$project_id}";
         $query = Requests::get($md_url, ['Accept' => 'application/json']);
         $result = json_decode($query->body);
 

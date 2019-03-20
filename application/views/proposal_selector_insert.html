@@ -1,8 +1,0 @@
-  <option></option>
-  <?php foreach($proposal_list as $prop_id => $prop_title): ?>
-    <?php $selected_state = $prop_id == $selected_proposal ? ' selected="selected"' : ''; ?>
-    <?php $trunc_prop_title = truncate_text($prop_title, 110); ?>
-  <option value="<?= $prop_id ?>"<?= $selected_state ?> title="<?= trim($prop_title,'"') ?>">Proposal <?= $prop_id ?>: <?= $trunc_prop_title ?></option>
-  <?php endforeach; ?><br />
-  <?php $prop_list_object = "var initial_proposal_list = ['".implode("','",array_keys($proposal_list))."'];"; ?>
-  <?php $js .= "\n".$prop_list_object; ?>

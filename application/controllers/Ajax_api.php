@@ -47,7 +47,7 @@ class Ajax_api extends Baseline_api_controller
     /**
      * Given a list of search terms, generates a list
      * of HTML-formatted <span> entities, each containing a
-     * shortened version of the proposal title in the
+     * shortened version of the project title in the
      * body and the full length version in the *title*
      * element. Sends to browser as a JSON block.
      *
@@ -55,9 +55,9 @@ class Ajax_api extends Baseline_api_controller
      *
      * @return void
      */
-    public function get_proposals_by_name($terms = false)
+    public function get_projects_by_name($terms = false)
     {
-        $prop_list = $this->status->get_proposals_by_name(
+        $prop_list = $this->status->get_projects_by_name(
             $terms,
             $this->user_id,
             false
@@ -87,26 +87,26 @@ class Ajax_api extends Baseline_api_controller
 
     /**
      * Retrieves the full set of instruments that are
-     * associated with a given proposal, and formats
+     * associated with a given project, and formats
      * it to be compatible with the Select2 JSON array
      * loading interface.
      *
-     * @param string $proposal_id proposal ID string
-     * @param string $terms       space separated list of search terms against
-     *                            instruments metadata
+     * @param string $project_id project ID string
+     * @param string $terms      space separated list of search terms against
+     *                           instruments metadata
      *
      * @return void
      */
-    public function get_instruments_for_proposal(
-        $proposal_id = false,
+    public function get_instruments_for_project(
+        $project_id = false,
         $terms = false
     ) {
 
-        if (!$proposal_id || empty($proposal_id)) {
+        if (!$project_id || empty($project_id)) {
             //some kind of error callback
             return array();
         }
-        $policy_url = "{$this->policy_url_base}/status/instrument/by_proposal_id/{$proposal_id}";
+        $policy_url = "{$this->policy_url_base}/status/instrument/by_project_id/{$project_id}";
         $query = Requests::get($policy_url, array('Accept' => 'application/json'));
         // $results_body = $query->body;
         header("Content-Type: application/json");

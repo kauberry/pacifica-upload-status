@@ -1,6 +1,6 @@
 $(
     function() {
-        $("#proposal_selector").select2(
+        $("#project_selector").select2(
             {
                 // data: initials,
                 ajax: {
@@ -8,7 +8,7 @@ $(
                     delay: 250,
                     cache: true,
                     url: function(params) {
-                        var myURL = base_url + "ajax_api/get_proposals_by_name/";
+                        var myURL = base_url + "ajax_api/get_projects_by_name/";
                         if (params.term != undefined) {
                             myURL += params.term;
                         }
@@ -31,24 +31,24 @@ $(
                 escapeMarkup: function(markup) {
                     return markup;
                 },
-                templateResult: formatProposal,
-                templateSelection: formatProposalSelection
+                templateResult: formatProject,
+                templateSelection: formatProjectSelection
             }
         );
-        // $("#proposal_selector").select2("search","nmr");
+        // $("#project_selector").select2("search","nmr");
 
         $("#instrument_selector").select2(
             {
                 placeholder: "Select an Instrument..."
             }
         );
-        if (initial_proposal_id.length > 0) {
-            var current_prop_val = $("#proposal_selector").val();
-            $("#proposal_selector").val(initial_proposal_id);
-            if($("#proposal_selector").val() != null){
-                get_instrument_list(initial_proposal_id);
+        if (initial_project_id.length > 0) {
+            var current_prop_val = $("#project_selector").val();
+            $("#project_selector").val(initial_project_id);
+            if($("#project_selector").val() != null){
+                get_instrument_list(initial_project_id);
             }else{
-                $("#proposal_selector").val(current_prop_val);
+                $("#project_selector").val(current_prop_val);
             }
         }
 
@@ -65,7 +65,7 @@ $(
         //window.setInterval(update_breadcrumbs,30000);
         // window.setInterval(get_latest_transactions, 60000);
 
-        function formatProposal(item) {
+        function formatProject(item) {
             var markup = false;
             var start_date = moment(item.start_date);
             var end_date = moment(item.end_date);
@@ -77,7 +77,7 @@ $(
                 markup = "<div id=\"prop_info_" + item.id + "\" class=\"prop_info\">";
                 markup += "   <div class=\"";
                 markup += item.currently_active == "yes" ? "active" : "inactive";
-                markup += "_proposal\"><strong>Proposal " + item.id + "</strong>";
+                markup += "_project\"><strong>Project " + item.id + "</strong>";
                 markup += "   </div>";
                 markup += "   <div style=\"float:right;\">";
                 markup += "     <span class=\"active_dates\">";
@@ -102,10 +102,10 @@ $(
             return markup;
         }
 
-        function formatProposalSelection(item) {
-            var markup = "Please Select a Proposal/Project...";
+        function formatProjectSelection(item) {
+            var markup = "Please Select a Project...";
             if (item.id.length > 0) {
-                markup = "<span title=\"" + item.title + "\">Proposal " + item.id + ": " + item.text + "</span>";
+                markup = "<span title=\"" + item.title + "\">Project " + item.id + ": " + item.text + "</span>";
             }
             return markup;
         }

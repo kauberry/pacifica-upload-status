@@ -47,7 +47,7 @@ $config['ingest_status_messages'] = array(
     'policy_validation' => array(
         'percent_complete' => 35,
         'success_message' => 'Checking file metadata for consistency and validity',
-        'failure_message' => 'Uploaded file metadata is invalid. This may be due to an invalid combination of user/proposal/instrument'
+        'failure_message' => 'Uploaded file metadata is invalid. This may be due to an invalid combination of user/project/instrument'
     ),
     'ingest_files' => array(
         'percent_complete' => 40,

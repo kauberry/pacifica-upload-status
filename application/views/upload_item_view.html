@@ -26,7 +26,7 @@
             name="transaction_identifier_<?= $transaction_id ?>"
             value="<?= $transaction_id ?>" />
 <?php $instrument_id = $transaction_info['metadata']['instrument_id']; ?>
-<?php $proposal_id = $transaction_info['metadata']['proposal_id']; ?>
+<?php $project_id = $transaction_info['metadata']['project_id']; ?>
 <?php $submit_time = $transaction_info['metadata']['submitted']; ?>
 <?php //$download_url = $page_mode == 'release' && $release_class == 'released'? "{$external_release_base_url}released_data/{$transaction_id}" : "/view/{$transaction_id}"; ?>
 <?php $download_url = $release_class == 'released' ? "{$external_release_base_url}released_data/{$transaction_id}" : base_url()."view/{$transaction_id}"; ?>
@@ -62,11 +62,11 @@
             title="<?= $transaction_info['metadata']['instrument_name'] ?>" />
         <input
             type="hidden"
-            class="proposal_identifier"
-            id="proposal_identifier_<?= $transaction_id ?>"
-            name="proposal_identifier_<?= $transaction_id ?>"
-            value="<?= $proposal_id ?>"
-            title="<?= $transaction_info['metadata']['proposal_name'] ?>" />
+            class="project_identifier"
+            id="project_identifier_<?= $transaction_id ?>"
+            name="project_identifier_<?= $transaction_id ?>"
+            value="<?= $project_id ?>"
+            title="<?= $transaction_info['metadata']['project_name'] ?>" />
         <input
             type="hidden"
             class="submit_time_identifier"
@@ -158,7 +158,7 @@
               <div class="left">
                 <h4>Basic Metadata</h4>
                 <?php ksort($transaction_info['metadata']); ?>
-                <table class="metadata_description_table basic_metadata">
+                <table class="metadata_description_table">
                   <tbody>
                     <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
                       <?php if(stripos($md_name, "file") === 0) continue; ?>
@@ -177,7 +177,7 @@
               </div>
               <div class="right">
                 <h4>User-Specified Metadata</h4>
-                <table class="metadata_description_table user_metadata">
+                <table class="metadata_description_table">
                   <?php ksort($transaction_info['kv_pairs']); ?>
                   <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
                   <tr class="metadata_description_list">
@@ -203,7 +203,7 @@
                     <li id="treeData_<?= $transaction_id ?>" class="lazy folder">
                       <span>
                         <span style="font-weight:600;">
-                        <span class="proposal_ident">Proposal <?= $transaction_info['metadata']['proposal_id'] ?></span> /
+                        <span class="project_ident">Project <?= $transaction_info['metadata']['project_id'] ?></span> /
                         <span class="instrument_ident"><?= $transaction_info['metadata']['instrument_name'] ?></span>
                         <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
                           <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>
@@ -220,7 +220,7 @@
                 </div>
                 <?php endif; ?>
               </div>
-              <div class='full_width_block buttons dl_button_container' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
+              <div class='full_width_block buttons' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
                 <input type='hidden' id='cart_id_<?= $transaction_id ?>' class='cart_id_storage' value='' />
                 <div class="right_block button_container">
                   <input type="button" class="dl_button" id="dl_button_<?= $transaction_id ?>" style="position:relative;right:0;bottom:0;" value="Queue Selected Files for Download" />
