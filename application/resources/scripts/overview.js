@@ -30,15 +30,18 @@ $(function() {
         current_instrument_id = $("#instrument_selector").val() || initial_instrument_id;
         current_starting_date = $("#timeframe_selector").val() || initial_starting_date;
         current_ending_date = $("#timeframe_selector").val() || initial_ending_date;
+        items_per_page = 20;
+        page_offset = 0;
     }else{
         current_project_id = $.cookie(cookie_base + "project_selector") || initial_project_id;
         current_instrument_id = $.cookie(cookie_base + "instrument_selector") || initial_instrument_id;
         current_starting_date = $.cookie(cookie_base + "starting_date_selector") || initial_starting_date;
         current_ending_date = $.cookie(cookie_base + "ending_date_selector") || initial_ending_date;
+        items_per_page = $.cookie(cookie_base + "items_per_page") || 20;
+        page_offset = $.cookie(cookie_base + "page_offset") || 0;
     }
     current_project_id = current_project_id != "null" ? current_project_id : -1;
     current_instrument_id = current_instrument_id != "null" ? current_instrument_id : -1;
-    // current_timeframe = current_timeframe == undefined ? 2 : current_timeframe;
 
     setup_selectors(true);
     if ($("#project_selector").val()) {
@@ -46,7 +49,16 @@ $(function() {
         get_instrument_list(current_project_id);
     }
     setup_daterangepicker();
-    // cart_status();
+
+    $("#items_per_page").val(items_per_page);
+
+    $("#items_per_page").on("change", function(event) {
+        items_per_page = $(event.target).val();
+        $.cookie(cookie_base + "items_per_page", items_per_page);
+        // $("#bottom_pager_block").pagination("updateItemsOnPage", items_per_page);
+        update_content(event);
+    });
+
 });
 
 var setup_daterangepicker = function() {
@@ -83,9 +95,15 @@ var setup_daterangepicker = function() {
         current_ending_date = picker.endDate.format("YYYY-MM-DD");
         $.cookie(cookie_base + "starting_date_selector", current_starting_date);
         $.cookie(cookie_base + "ending_date_selector", current_ending_date);
+        reset_page_offset();
         update_content();
     });
     trc.enable();
+};
+
+var reset_page_offset = function() {
+    $.cookie(cookie_base + "page_offset", 0);
+    $.cookie(cookie_base + "page_number", 1);
 };
 
 var setup_selectors = function(initial_load) {
@@ -130,7 +148,10 @@ var setup_selectors = function(initial_load) {
             templateSelection: formatProjectSelection
         })
         .off("change")
-        .on("change", update_content);
+        .on("change", function() {
+            reset_page_offset();
+            update_content();
+        });
 };
 
 var formatProject = function(item) {
@@ -229,7 +250,12 @@ var get_instrument_list = function(project_id) {
             spinner.stop();
         }
     );
-    $("#instrument_selector").on("change", update_content);
+    $("#instrument_selector")
+        .on("change", function() {
+            reset_page_offset();
+            update_content();
+        });
+
 };
 
 var formatInstrument = function(item) {
@@ -302,14 +328,48 @@ var my_matcher = function(params, data) {
 
 };
 
+var update_pager_display = function(){
+    total_item_count = parseInt($.cookie(cookie_base + "total_item_count"), 10);
+    items_per_page = parseInt($.cookie(cookie_base + "items_per_page"), 10);
+    current_page = parseInt($.cookie(cookie_base + "page_number"), 10);
+    if(total_item_count > items_per_page){
+        // $("#items_per_page").show();
+        $("#bottom_pager_block").pagination({
+            items: total_item_count,
+            itemsOnPage: items_per_page,
+            cssStyle: "dark-theme",
+            displayedPages: 3,
+            edges: 3,
+            currentPage: current_page,
+            hrefTextPrefix: "",
+            selectOnClick: false,
+            onPageClick: function(pageNumber, event) {
+                page_offset = items_per_page * (pageNumber - 1);
+                $.cookie(cookie_base + "page_offset", page_offset);
+                $.cookie(cookie_base + "page_number", pageNumber);
+                update_content(event);
+                return false; //shorts out the new page load since we're using ajax
+            }
+        });
+    }else{
+        // debugger;
+        if($("#bottom_pager_block").pagination()){
+            $("#bottom_pager_block").pagination("destroy");
+        }
+    }
+
+};
+
 var update_content = function(event) {
+    if($("span.bottom_pager_block").text().length){
+        $("#bottom_pager_block").pagination("disable");
+    }
     var ts = moment().format("YYYYMMDDHHmmss");
     current_project_id = $("#project_selector").val() != null ? $("#project_selector").val() : current_project_id;
     current_instrument_id = $("#instrument_selector").val() != null ? $("#instrument_selector").val() : current_instrument_id;
     // current_timeframe = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : current_timeframe;
     // current_starting_date = $("#timeframe_selector").val() != null ? $("#timeframe_selector").val() : current_timeframe;
     setup_selectors(false);
-
     if (event) {
         var el = $(event.target);
         if (el.val() != null) {
@@ -338,6 +398,7 @@ var update_content = function(event) {
                                     $("#item_info_container").fadeIn(
                                         "slow",
                                         function() {
+                                            update_pager_display();
                                             setup_tree_data();
                                             setup_metadata_disclosure();
                                             get_doi_release_data();

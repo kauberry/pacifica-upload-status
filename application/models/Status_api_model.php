@@ -68,6 +68,7 @@ class Status_api_model extends CI_Model
      */
     public function get_transactions($instrument_id, $project_id, $start_time, $end_time, $submitter = -1)
     {
+        // echo "current page offset => ".$this->current_page_offset;
         $transactions_url = "{$this->policy_url_base}/status/transactions/search/details?";
         $url_args_array = array(
             'instrument' => isset($instrument_id) ? $instrument_id : -1,
@@ -75,7 +76,9 @@ class Status_api_model extends CI_Model
             'start' => local_time_to_utc($start_time, 'Y-m-d H:i:s'),
             'end' => local_time_to_utc($end_time, 'Y-m-d H:i:s'),
             'submitter' => isset($submitter) ? $submitter : -1,
-            'requesting_user' => $this->user_id
+            'requesting_user' => $this->user_id,
+            'page' => $this->current_page_number,
+            'item_count' => $this->current_items_per_page
         );
         $transactions_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($transactions_url, array('Accept' => 'application/json'));

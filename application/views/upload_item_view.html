@@ -243,5 +243,9 @@
   <?php endif; ?>
     <script type="application/javascript">
         var hash_list = <?=  json_encode($hash_list); ?>;
+        var page_offset = <?= $transaction_data['offset'] ?>;
+        var page_number = <?= $transaction_data['page'] ?>;
+        var items_per_page = <?= $transaction_data['items_per_page'] ?>;
+        $.cookie(cookie_base + "total_item_count", "<?= $transaction_data['total_count'] ?>");
         var originating_research_organizations = <?= json_encode($this->config->item('originating_research_organizations')) ?>;
     </script>

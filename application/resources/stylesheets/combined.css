@@ -400,12 +400,51 @@ button:hover, .buttons input[type="button"]:hover, .buttons button:hover {
     }
 }
 
-#last_update_timestamp {
-    float: right;
-    margin-right: 20px;
-    position: relative;
-    right: auto;
+.last_update_timestamp {
+    position: absolute;
+    right: 0.5em;
     bottom: auto;
+}
+
+.bottom_pager_block {
+    position:absolute !important;
+    left: 7em;
+    padding: 0 !important;
+}
+
+.pager_block_selector {
+    color: white;
+    border: 2px solid #555;
+    height: 2em;
+    background: #333;
+    position: absolute;
+    left: 1em;
+    top: 0.7em;
+    font-size: 1.15em;
+    text-align: center;
+    font-weight: 600;
+}
+
+.update_timestamp_text {
+    font-size: 1.2em;
+    opacity: 0;
+    padding-top: 0.5em;
+    padding-right: 0.5em
+}
+
+span.info-icon {
+    opacity: 0.4;
+}
+
+span.info-icon:hover {
+    opacity: 1.0;
+    transition: opacity 1.5s;
+}
+
+span.info-icon:hover + .update_timestamp_text {
+    display: block;
+    opacity: 1.0;
+    transition: all 1.5s;
 }
 
 .page_header {
@@ -559,8 +598,12 @@ footer {
     border-radius: 0;
 }
 
+.pager_section {
+    margin: 0 1em !important;
+}
+
 .short {
-    height: 0.5em;
+    height: 3.5em;
     position: fixed;
     left: 0;
     bottom: 0;
@@ -972,4 +1015,12 @@ div.form_container td {
     }
 
 
+}
+
+.info-icon-background-ring {
+    color: #d1d9ed;
+}
+
+.info-icon-background {
+    color: #0c3fc3;
 }
