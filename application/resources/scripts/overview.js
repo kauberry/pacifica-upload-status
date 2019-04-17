@@ -148,9 +148,9 @@ var setup_selectors = function(initial_load) {
             templateSelection: formatProjectSelection
         })
         .off("change")
-        .on("change", function() {
+        .on("change", function(event) {
             reset_page_offset();
-            update_content();
+            update_content(event);
         });
 };
 

@@ -25,9 +25,9 @@
     <div class="page_hider" id="page_hider_working">
         <div class="loading_status">
             <div class="spinner_message_container">
-                <div id="doi_loading_status_text">Contacting DRHub Servers...</div>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div id="doi_loading_status_text"></div>
             </div>
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
         <div class="page_hider_coverslip">&nbsp;</div>
     </div>

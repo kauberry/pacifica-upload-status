@@ -193,20 +193,20 @@ class Status_api extends Baseline_user_api_controller
 
         $full_user_info = $this->user_info;
 
-        $project_list = array();
-        if (array_key_exists('projects', $full_user_info)) {
-            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
-                if (array_key_exists('title', $prop_info)) {
-                    $project_list[$prop_id] = $prop_info['title'];
-                }
-            }
-            if (array_key_exists('project_list', $this->page_data)) {
-                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-            } else {
-                $this->page_data['project_list'] = $project_list;
-            }
-            ksort($this->page_data['project_list']);
-        }
+        // $project_list = array();
+        // if (array_key_exists('projects', $full_user_info)) {
+        //     foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
+        //         if (array_key_exists('title', $prop_info)) {
+        //             $project_list[$prop_id] = $prop_info['title'];
+        //         }
+        //     }
+        //     if (array_key_exists('project_list', $this->page_data)) {
+        //         $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+        //     } else {
+        //         $this->page_data['project_list'] = $project_list;
+        //     }
+        //     ksort($this->page_data['project_list']);
+        // }
         $js = "var initial_project_id = \"{$project_id}\";
                 var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
                 var initial_instrument_id = \"{$instrument_id}\";
@@ -315,6 +315,22 @@ class Status_api extends Baseline_user_api_controller
         }
         $this->referring_page = str_replace(base_url(), '', $this->input->server('HTTP_REFERER'));
         $time_period_empty = true;
+        $full_user_info = $this->user_info;
+        $project_list = array();
+        if (array_key_exists('projects', $full_user_info)) {
+            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $project_list[$prop_id] = $prop_info['title'];
+                }
+            }
+            if (array_key_exists('project_list', $this->page_data)) {
+                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+            } else {
+                $this->page_data['project_list'] = $project_list;
+            }
+            ksort($this->page_data['project_list']);
+        }
+
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($project_id) && intval($project_id) != 0
         ) {

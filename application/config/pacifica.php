@@ -60,7 +60,7 @@ if ($site_theme_name == 'external') {
     $config['ui_project_desc'] = 'Select a Project';
 }
 
-$config['application_version'] = "2.3.0";
+$config['application_version'] = "2.6.0";
 
 $config['cookie_encryption_key'] = "eus_rocks_2019!!!";
 $config['cookie_name'] = "EUS_ID";

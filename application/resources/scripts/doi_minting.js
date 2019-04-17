@@ -48,13 +48,27 @@ var setup_doi_staging_button = function(el) {
             setup_doi_linking_button,
             el.find(".site_url_identifier")
         );
+
+
         doi_staging_button.on("click", function(event){
             create_doi_data_resource($(event.target));
         });
     }
+
+    if(project_list && !project_list.includes(el.find(".project_identifier").val())){
+        doi_staging_button.attr({
+            "title": "You do not have permissions to submit a DOI for this transaction"
+        });
+        doi_staging_button
+            .prop("disabled", true)
+            .css("background-color", "rgb(200,200,200)")
+            .css("border-color", "rgb(150,150,150)");
+
+    }
     if(!doi_staging_button.is(":visible")){
         doi_staging_button.fadeIn("slow");
     }
+
 };
 
 var create_doi_data_resource = function(el) {

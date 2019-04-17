@@ -145,15 +145,23 @@ class Ajax_api extends Baseline_api_controller
         if (!in_array($release_state, array('released', 'not_released'))) {
             $release_state = 'not_released';
         }
+        $transaction_info = $this->status->get_transaction_details($transaction_id);
+        $associated_projects_list = array_map('strval', array_keys($this->user_info['projects']));
+        if (!in_array($transaction_info['project'], $associated_projects_list)) {
+            //user is not authorized to release this transaction
+            $this->output->set_status_header(403, "You are not authorized to release transaction {$transaction_id}");
+            return;
+        }
         $nowtime = new DateTime();
         $nowstring = $nowtime->format('Y-m-d H:i:s');
         $content = [
-            'authorized_person' => $this->user_id,
+            'user' => $this->user_id,
             'created' => $nowstring,
             'updated' => $nowstring,
+            'relationship' => '79fef956-9bc4-425b-aaa7-4bd2e8270aa5',
             'transaction' => $transaction_id,
         ];
-        $md_url = "{$this->metadata_url_base}/transaction_release";
+        $md_url = "{$this->metadata_url_base}/transaction_user";
         if ($release_state == 'released') {
             $query = Requests::put(
                 $md_url,

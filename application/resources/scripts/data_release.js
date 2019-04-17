@@ -20,6 +20,16 @@ var build_staging_button = function(transaction_id, el){
         "id" : "staging_" + transaction_id,
         "name": "staging_" + transaction_id
     });
+    if(project_list && !project_list.includes(el.find(".project_identifier").val())){
+        staging_button.attr({
+            "title": "You do not have permissions to release this transaction"
+        });
+        staging_button
+            .prop("disabled", true)
+            .css("background-color", "rgb(200,200,200)")
+            .css("border-color", "rgb(150,150,150)");
+
+    }
     content.empty().append(staging_button);
     return content;
 };
@@ -31,12 +41,13 @@ var submit_release_selections = function(event){
     var lb = $("#doi_loading_status_text");
     pg_hider.fadeIn();
     lb.text("Preparing Release Submission...");
+    var errored_transactions = [];
     setTimeout(function(){
         lb.text("Setting Release State...");
         table_rows.each(function(index, item){
             var transaction_id = parseInt($(item).find(".upload_id").text(), 10);
             var release_url = base_url + "ajax_api/set_release_state/" + transaction_id + "/released";
-            $.get(release_url, function(data){
+            var releaser = $.get(release_url, function(data){
                 var ribbon = $("#fieldset_container_" + transaction_id).find(".ribbon");
                 var oldBannerClass = _.difference(ribbon.attr("class").split(" "), ["ribbon"])[0];
                 if(oldBannerClass != data.release_state){
@@ -44,16 +55,38 @@ var submit_release_selections = function(event){
                     ribbon.find("span").remove();
                     ribbon.append($("<span>", {"text": data.display_state}));
                 }
+                setTimeout(function(){
+                    lb.text("Receiving Updated State Information...");
+                }, 1000);
+            });
+            releaser.fail(function(){
+                errored_transactions.push(transaction_id);
+            });
+            releaser.always(function(){
+                setTimeout(function(){
+                    var error_list_len = errored_transactions.length;
+                    if(error_list_len){
+                        var error_text = "You do not have proper permissions to release transaction";
+                        if(error_list_len > 1){
+                            error_text += "s";
+                        }
+                        error_text += ": " + errored_transactions.join(", ");
+                        $(".error_dialog_inner").text(error_text);
+                        $("#error_dialog")
+                            .find(".error_dialog_dismisser")
+                            .on("click", function(){
+                                $("#error_dialog").fadeOut("fast");
+                            });
+                        $("#error_dialog").fadeIn();
+                    }else{
+                        $("#error_dialog").hide();
+                    }
+                    clear_release_selections();
+                    setup_staging_buttons();
+                    pg_hider.fadeOut("slow");
+                }, 1000);
             });
         });
-        setTimeout(function(){
-            lb.text("Receiving Updated State Information...");
-            setTimeout(function(){
-                clear_release_selections();
-                setup_staging_buttons();
-            }, 1000);
-            pg_hider.fadeOut("slow");
-        }, 1000);
     }, 1000);
 };
 
@@ -67,23 +100,19 @@ var unstage_transaction = function(el){
     var release_state = release_state_presets.not_released;
     var container = $("#fieldset_" + txn_id).parents(".fieldset_container");
     var txn_id = parseInt($(el).parents("tr").find(".upload_id").text(),10);
-    var banner = container.find(".ribbon");
-    var oldBannerClass = _.difference(banner.attr("class").split(" "), ["ribbon"])[0];
-    if(oldBannerClass != release_state.span_class){
-        banner.removeClass(oldBannerClass).addClass(release_state.span_class);
-        banner.find("span").remove();
-        banner.append($("<span>", {
-            "text": release_state.display_text,
-            "title": release_state.link_text
-        }));
+    if(container){
+        var banner = container.find(".ribbon");
+        var oldBannerClass = _.difference(banner.attr("class").split(" "), ["ribbon"])[0];
+        if(oldBannerClass != release_state.span_class){
+            banner.removeClass(oldBannerClass).addClass(release_state.span_class);
+            banner.find("span").remove();
+            banner.append($("<span>", {
+                "text": release_state.display_text,
+                "title": release_state.link_text
+            }));
+        }
     }
     remove_transaction_from_staging(txn_id);
-    var current_session_contents = JSON.parse(sessionStorage.getItem("staged_releases"));
-    if(!_.size(current_session_contents)){
-        clear_release_selections();
-    }else{
-        update_staged_transactions_view();
-    }
 };
 
 var stage_transaction = function(el){
@@ -125,6 +154,7 @@ var remove_transaction_from_staging = function(transaction_id){
     if(!_.size(current_session_contents)){
         sessionStorage.removeItem("staged_releases");
     }
+    update_staged_transactions_view();
 };
 
 var update_staged_transactions_view = function(){

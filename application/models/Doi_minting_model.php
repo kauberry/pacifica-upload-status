@@ -62,11 +62,9 @@ class Doi_minting_model extends CI_Model
             json_encode($transaction_list)
         );
         $results = json_decode($query->body, true);
-        // $transient_info = [];
-        // foreach ($results as $result_item) {
-        //     $transient_info = $this->get_transient_records_for_transaction($result_item['transaction']);
-        //     $results[$result_item['transaction']]['transient_info'] = $transient_info;
-        // }
+
+
+        $associated_projects_list = $this->user_info['projects'];
         return $results;
     }
 
@@ -76,11 +74,4 @@ class Doi_minting_model extends CI_Model
         $success = $this->db->affected_rows() == 1;
         return $success;
     }
-
-    // public function get_transient_records_for_transaction($transaction_id, $dataset_id = "")
-    // {
-    //     $resource_query = $this->db->get_where($this->transient_table, ['transaction_id' => $transaction_id]);
-    //     $resource_results = $resource_query->num_rows() > 0 ? $resource_query->result_array() : [];
-    //     return $resource_results;
-    // }
 }

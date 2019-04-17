@@ -77,7 +77,9 @@ td.metadata_item {
 
 .lds-ellipsis {
   display: inline-block;
-  position: relative;
+  position: absolute;
+  left: 9.25em;
+  bottom: 0;
   width: 64px;
   height: 64px;
 }
@@ -139,7 +141,38 @@ td.metadata_item {
   }
 }
 
+.error_dialog {
+    border: 3px solid rgb(100, 0, 0);
+    background-color: rgb(200, 100, 100);
+    border-radius: 8px;
+    color: rgb(255, 255, 255);
+    padding: 0.5em;
+    position: relative;
+    min-height: 3.5em;
+}
 
+.error_dialog div {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.error_dialog_inner {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.error_dialog_dismisser {
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+    z-index: 10;
+    color: #fefefe;
+}
+
+.error_dialog_dismisser:hover {
+    color: rgb(230, 230, 230);
+}
 
 /*.glyphicon-calendar {
     background-image: url("/project_resources/images/glyphicons-46-calendar.png");
@@ -162,6 +195,7 @@ td.metadata_item {
 .loading_status span, .loading_status div {
     color: #216a38;
     font-size: 1.3em;
+    line-height: 1.1em;
     font-weight: bold;
     font-style: italic;
 }
@@ -338,7 +372,7 @@ button:hover, .buttons input[type="button"]:hover, .buttons button:hover {
 
 .page_hider .loading_status {
     top: 30%;
-    width: 40%;
+    width: 30em;
     margin: 0 auto;
     height: 15em;
     z-index: 25;
@@ -350,7 +384,7 @@ button:hover, .buttons input[type="button"]:hover, .buttons button:hover {
 .page_hider .spinner_message_container {
     font-size: 1.5em;
     width: 90%;
-    margin-top: 2.5em;
+    margin-top: 1.5em;
 }
 
 
