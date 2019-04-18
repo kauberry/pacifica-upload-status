@@ -80,6 +80,7 @@ $(function(){
 });
 
 var setup_file_download_links = function(parent_item) {
+    if(!enable_single_file_download) return false;
     parent_item = $(parent_item);
     var tx_id = parent_item.prop("id").replace("tree_","");
     var file_object_collection = parent_item.find(".item_link");
@@ -108,9 +109,11 @@ var check_download_authorization = function(event){
     getter.done(function(data){
         if (data) {
             proxied_user_id = data.eus_id;
-            if(proxied_user_id){
+            if(proxied_user_id && parseInt(proxied_user_id, 10) > 0){
                 update_header_user_info(data);
-                setup_download_cart_button(event, data);
+                setup_download_cart_button(event);
+            }else if(proxied_user_id === 0){
+                setup_download_cart_button(event);
             }else{
                 $("#cart-download-auth-dialog")
                     .data("redirect_url", data.redirect_url)
@@ -381,9 +384,6 @@ var setup_tree_data = function(){
                     {
                         checkbox:true,
                         selectMode: 3,
-                        activate: function(event, data){
-
-                        },
                         select: function(event, data){
                             if(data.node.selected){
                                 var user_id_string = check_download_authorization(event);
@@ -407,7 +407,7 @@ var setup_tree_data = function(){
                                 data: {mode: "children", parent: node.key},
                                 method:"POST",
                                 cache: false,
-                                complete: function(xhrobject, status){
+                                complete: function(){
                                     setup_file_download_links($(el));
                                 }
                             };
@@ -415,7 +415,7 @@ var setup_tree_data = function(){
                         loadChildren: function(event, ctx) {
                             ctx.node.fixSelection3AfterClick();
                         },
-                        expand: function(event, data){
+                        expand: function(){
                             setup_file_download_links($(el));
                         },
                         cookieId: "fancytree_tx_" + el_id,

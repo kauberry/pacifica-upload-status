@@ -66,3 +66,5 @@ $config['cookie_encryption_key'] = "eus_rocks_2019!!!";
 $config['cookie_name'] = "EUS_ID";
 $config['enable_cookie_redirect'] = false;
 $config['cookie_redirect_url'] = "https://d-eusi.emsl.pnl.gov/Portal";
+$config['enable_single_file_download'] = false;
+$config['enable_require_credentials_for_cart_download'] = false;

@@ -17,7 +17,7 @@ $(function() {
     //     });
     // });
 });
-
+var cookie_base = "myemsl_status_last_";
 var first_load = true;
 var ingest_check_interval = 5000;
 var display_ingest_status = function() {
