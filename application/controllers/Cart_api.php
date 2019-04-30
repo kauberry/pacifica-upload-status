@@ -125,16 +125,13 @@ class Cart_api extends Baseline_api_controller
             "eus_id" => null
         ];
         // $this->user_id = false;
-        if (!$this->config->item('enable_cookie_redirect')) {
-            $eus_id = $this->user_id;
-            $retval['eus_id'] = $eus_id;
+        if (!$this->config->item('enable_require_credentials_for_cart_download')) {
+            $retval['eus_id'] = 0;
+        } else if (!$this->config->item('enable_cookie_redirect')) {
+            $retval['eus_id'] = $this->user_id;
             $retval = array_merge($retval, $this->user_info);
-        } else if (empty(get_user_from_cookie())) {
-            //no id token cookie found, so let's call the redirect
-            if ($show_output) {
-                $this->output->set_status_header(302, "EUS Login Required");
-            }
-            $eus_id = null;
+        } else if (!$this->config->item('enable_require_credentials_for_cart_download')) {
+            $retval['eus_id'] = 0;
         } else {
             $eus_user_info = get_user_from_cookie();
             $this->user_info = $eus_user_info;
