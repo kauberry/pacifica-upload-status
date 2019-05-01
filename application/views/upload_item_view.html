@@ -243,6 +243,6 @@
   <?php endif; ?>
     <script type="application/javascript">
         var hash_list = <?=  json_encode($hash_list); ?>;
-        var enable_single_file_download = <?= $this->config->item('enable_single_file_download') ?>;
+        var enable_single_file_download = <?= var_export($this->config->item('enable_single_file_download'), TRUE) ?>;
         var originating_research_organizations = <?= json_encode($this->config->item('originating_research_organizations')) ?>;
     </script>
