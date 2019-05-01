@@ -247,7 +247,7 @@
         var page_number = <?= $transaction_data['page'] ?>;
         var items_per_page = <?= $transaction_data['items_per_page'] ?>;
         var project_list = <?= json_encode(array_map('strval', array_keys($project_list))); ?>;
-        var enable_single_file_download = <?= $sfd_enable ?>;
+        var enable_single_file_download = <?= var_export($this->config->item('enable_single_file_download'), TRUE) ?>;
         $.cookie(cookie_base + "total_item_count", "<?= $transaction_data['total_count'] ?>");
         var originating_research_organizations = <?= json_encode($this->config->item('originating_research_organizations')) ?>;
     </script>
