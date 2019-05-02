@@ -42,7 +42,7 @@ class Cart_api_model extends CI_Model
     /**
      *  Class constructor.
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function __construct()
     {
@@ -57,11 +57,11 @@ class Cart_api_model extends CI_Model
      *  Generates the an ID for the cart, then makes the appropriate entries
      *  in the cart status database.
      *
-     *  @param array $cart_submission_json Cart request JSON, converted to array
+     * @param array $cart_submission_json Cart request JSON, converted to array
      *
-     *  @return string  cart_uuid
+     * @return string  cart_uuid
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function cart_create($cart_owner_identifier, $cart_submission_json)
     {
@@ -88,11 +88,11 @@ class Cart_api_model extends CI_Model
                 if (preg_match('/(\d+)/i', $e->getMessage(), $matches)) {
                     $curl_error_num = intval($matches[1]);
                     switch ($curl_error_num) {
-                        case 6:
-                            $message = "Cart subsystem unavailable. This usually means that there is a problem with the cart servicing process.";
-                            break;
-                        default:
-                            $message = $e->getMessage();
+                    case 6:
+                        $message = "Cart subsystem unavailable. This usually means that there is a problem with the cart servicing process.";
+                        break;
+                    default:
+                        $message = $e->getMessage();
                     }
                 } else {
                     $message = $e->getMessage();
@@ -300,11 +300,18 @@ class Cart_api_model extends CI_Model
     {
         $cart_url = "{$this->cart_url_base}/{$cart_uuid}";
         $query = Requests::delete($cart_url);
+        $success = false;
         if ($query->status_code / 100 == 2) {
             //looks like it went through ok
             $success = true;
+        } elseif($query->status_code / 100 == 5) {
+            $status_message = $query->headers('X-Pacifica-Message');
+            if($status_message == 'No cart with uid {$cart_uuid} found') {
+                $success = true;
+            }
         } else {
             $success = false;
+
         }
         if ($success) {
             //gone in the cartd, now mark it in ours
@@ -349,11 +356,11 @@ class Cart_api_model extends CI_Model
      *  verifies that all the entries that it needs are present. Returns
      *  the object as an array, or FALSE if invalid.
      *
-     *  @param string $cart_submission_json Originally submitted cart request JSON
+     * @param string $cart_submission_json Originally submitted cart request JSON
      *
-     *  @return array   cleaned up cart submission object
+     * @return array   cleaned up cart submission object
      *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     private function _clean_cart_submission($cart_owner_identifier, $cart_submission_json)
     {
