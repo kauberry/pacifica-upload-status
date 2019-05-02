@@ -80,6 +80,12 @@ $(function(){
 });
 
 var setup_file_download_links = function(parent_item) {
+    var dl_button = $("#dl_button_" + tx_id);
+    dl_button.off("click").on("click",
+        function(){
+            cart_download(parent_item);
+        }
+    );
     if(!enable_single_file_download) return false;
     parent_item = $(parent_item);
     var tx_id = parent_item.prop("id").replace("tree_","");
@@ -90,13 +96,6 @@ var setup_file_download_links = function(parent_item) {
             file_object_data.name = escape(file_object_data.name);
         }
     );
-    var dl_button = $("#dl_button_" + tx_id);
-    dl_button.off("click").on("click",
-        function(){
-            cart_download(parent_item);
-        }
-    );
-
 };
 
 var update_header_user_info = function(user_info){
