@@ -80,6 +80,8 @@ $(function(){
 });
 
 var setup_file_download_links = function(parent_item) {
+    parent_item = $(parent_item);
+    var tx_id = parent_item.prop("id").replace("tree_","");
     var dl_button = $("#dl_button_" + tx_id);
     dl_button.off("click").on("click",
         function(){
@@ -87,8 +89,6 @@ var setup_file_download_links = function(parent_item) {
         }
     );
     if(!enable_single_file_download) return false;
-    parent_item = $(parent_item);
-    var tx_id = parent_item.prop("id").replace("tree_","");
     var file_object_collection = parent_item.find(".item_link");
     file_object_collection.off("click").on("click",
         function(e) {
