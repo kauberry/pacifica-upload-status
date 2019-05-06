@@ -20,6 +20,16 @@ var build_staging_button = function(transaction_id, el){
         "id" : "staging_" + transaction_id,
         "name": "staging_" + transaction_id
     });
+    if(project_list && !project_list.includes(el.find(".project_identifier").val())){
+        staging_button.attr({
+            "title": "You do not have permissions to release this transaction"
+        });
+        staging_button
+            .prop("disabled", true)
+            .css("background-color", "rgb(200,200,200)")
+            .css("border-color", "rgb(150,150,150)");
+
+    }
     content.empty().append(staging_button);
     return content;
 };
