@@ -21,7 +21,7 @@ $(function() {
 var first_load = true;
 var ingest_check_interval = 5000;
 var display_ingest_status = function() {
-    if(!ingest_complete){
+    if(typeof ingest_complete === "undefined" || !ingest_complete){
         var ingest_url = base_url + "ajax_api/get_ingest_status/" + transaction_id;
         $.get(ingest_url, function(data){
             if(!data.upload_present_on_mds || first_load) {
