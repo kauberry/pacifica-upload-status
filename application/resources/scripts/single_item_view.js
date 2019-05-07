@@ -17,7 +17,7 @@ $(function() {
     //     });
     // });
 });
-
+var ingest_complete = true;
 var first_load = true;
 var ingest_check_interval = 5000;
 var display_ingest_status = function() {
