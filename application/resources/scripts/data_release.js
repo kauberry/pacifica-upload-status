@@ -20,7 +20,7 @@ var build_staging_button = function(transaction_id, el){
         "id" : "staging_" + transaction_id,
         "name": "staging_" + transaction_id
     });
-    if(project_list && !project_list.includes(el.find(".project_identifier").val())){
+    if(project_list && !project_list.includes(el.find(".project_identifier").val()) || (project_list == null)){
         staging_button.attr({
             "title": "You do not have permissions to release this transaction"
         });
