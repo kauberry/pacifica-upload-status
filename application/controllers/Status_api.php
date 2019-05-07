@@ -312,6 +312,22 @@ class Status_api extends Baseline_user_api_controller
         }
         $this->referring_page = str_replace(base_url(), '', $this->input->server('HTTP_REFERER'));
         $time_period_empty = true;
+        $full_user_info = $this->user_info;
+        $project_list = array();
+        if (array_key_exists('proposals', $full_user_info)) {
+            foreach ($full_user_info['proposals'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $project_list[$prop_id] = $prop_info['title'];
+                }
+            }
+            if (array_key_exists('proposal_list', $this->page_data)) {
+                $this->page_data['proposal_list'] = $this->page_data['proposal_list'] + $project_list;
+            } else {
+                $this->page_data['proposal_list'] = $project_list;
+            }
+            ksort($this->page_data['proposal_list']);
+        }
+
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($proposal_id) && intval($proposal_id) != 0
         ) {
@@ -432,6 +448,22 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['view_mode'] = 'single';
         $this->page_data['js'] .= "var transaction_id = '{$id}';
 ";
+        $full_user_info = $this->user_info;
+        $project_list = array();
+        if (array_key_exists('projects', $full_user_info)) {
+            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $project_list[$prop_id] = $prop_info['title'];
+                }
+            }
+            if (array_key_exists('project_list', $this->page_data)) {
+                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+            } else {
+                $this->page_data['project_list'] = $project_list;
+            }
+            ksort($this->page_data['project_list']);
+        }
+
         if (!is_numeric($id) || $id < 0) {
             //that doesn't look like a real id
             //send to error page saying so
