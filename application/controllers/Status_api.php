@@ -465,7 +465,7 @@ class Status_api extends Baseline_user_api_controller
         }
 
         if (!is_numeric($id) || $id < 0) {
-            //that doesn't look like a real id
+            //that doesn't look like a real id 
             //send to error page saying so
             $err_msg = 'No '.ucwords($lookup_type_description)." with the an id of ".
                     "<strong>{$id}</strong> could be found in the system";
