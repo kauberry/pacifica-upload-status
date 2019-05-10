@@ -136,8 +136,10 @@ class Cart_api extends Baseline_api_controller
             $retval['eus_id'] = 0;
         } else {
             $eus_user_info = get_user_from_cookie();
-            $this->user_info = $eus_user_info;
-            $retval = array_merge($retval, $eus_user_info);
+            if($eus_user_info) {
+                $this->user_info = $eus_user_info;
+                $retval = array_merge($retval, $eus_user_info);
+            }
         }
         if ($show_output) {
             $this->output->set_content_type('application/json');
