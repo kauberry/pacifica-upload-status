@@ -157,7 +157,7 @@
               <div class="left">
                 <h4>Basic Metadata</h4>
                 <?php ksort($transaction_info['metadata']); ?>
-                <table class="metadata_description_table">
+                <table class="metadata_description_table basic_metadata">
                   <tbody>
                     <?php foreach($transaction_info['metadata'] as $md_name => $md_value): ?>
                       <?php if(stripos($md_name, "file") === 0) continue; ?>
@@ -176,7 +176,7 @@
               </div>
               <div class="right">
                 <h4>User-Specified Metadata</h4>
-                <table class="metadata_description_table">
+                <table class="metadata_description_table user_metadata">
                   <?php ksort($transaction_info['kv_pairs']); ?>
                   <?php foreach($transaction_info['kv_pairs'] as $md_name => $md_value): ?>
                   <tr class="metadata_description_list">
@@ -219,7 +219,7 @@
                 </div>
                 <?php endif; ?>
               </div>
-              <div class='full_width_block buttons' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
+              <div class='full_width_block buttons dl_button_container' id="dl_button_container_<?= $transaction_id ?>" style="margin-top:1em;display:none;">
                 <input type='hidden' id='cart_id_<?= $transaction_id ?>' class='cart_id_storage' value='' />
                 <div class="right_block button_container">
                   <input type="button" class="dl_button" id="dl_button_<?= $transaction_id ?>" style="position:relative;right:0;bottom:0;" value="Queue Selected Files for Download" />

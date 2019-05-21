@@ -120,7 +120,8 @@ class Status_api extends Baseline_user_api_controller
         $extra_scripts_array = [
             '/project_resources/scripts/single_item_view.js',
             '/project_resources/scripts/data_release.js',
-            '/project_resources/scripts/myemsl_file_download.js'
+            '/project_resources/scripts/myemsl_file_download.js',
+            '/project_resources/scripts/doi_notation.js'
         ];
 
         $js = "var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
@@ -193,20 +194,20 @@ class Status_api extends Baseline_user_api_controller
 
         $full_user_info = $this->user_info;
 
-        // $project_list = array();
-        // if (array_key_exists('projects', $full_user_info)) {
-        //     foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
-        //         if (array_key_exists('title', $prop_info)) {
-        //             $project_list[$prop_id] = $prop_info['title'];
-        //         }
-        //     }
-        //     if (array_key_exists('project_list', $this->page_data)) {
-        //         $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-        //     } else {
-        //         $this->page_data['project_list'] = $project_list;
-        //     }
-        //     ksort($this->page_data['project_list']);
-        // }
+        $project_list = array();
+        if (array_key_exists('projects', $full_user_info)) {
+            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $project_list[$prop_id] = $prop_info['title'];
+                }
+            }
+            if (array_key_exists('project_list', $this->page_data)) {
+                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+            } else {
+                $this->page_data['project_list'] = $project_list;
+            }
+            ksort($this->page_data['project_list']);
+        }
         $js = "var initial_project_id = \"{$project_id}\";
                 var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
                 var initial_instrument_id = \"{$instrument_id}\";
@@ -361,7 +362,7 @@ class Status_api extends Baseline_user_api_controller
 
             foreach ($transactions['transactions'] as $transaction_id => $transaction_info) {
                 $transaction_list['transactions'][$transaction_id]['metadata']['transaction_id'] =
-                    "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
+                "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
             }
 
             $file_size_totals = array();
@@ -372,15 +373,15 @@ class Status_api extends Baseline_user_api_controller
             }
             $transactions['file_size_totals'] = $file_size_totals;
             $results = array(
-                'transaction_list' => $transactions,
-                'time_period_empty' => $time_period_empty,
-                'message' => $message,
+            'transaction_list' => $transactions,
+            'time_period_empty' => $time_period_empty,
+            'message' => $message,
             );
         } else {
             $results = array(
-                'transaction_list' => array(),
-                'time_period_empty' => true,
-                'message' => 'No data available for this instrument and project',
+            'transaction_list' => array(),
+            'time_period_empty' => true,
+            'message' => 'No data available for this instrument and project',
             );
         }
         $this->page_data['cart_data'] = array('carts' => array());
@@ -432,22 +433,22 @@ class Status_api extends Baseline_user_api_controller
         $lookup_type = 'transaction';
         $instrument_id = -1;
         $this->page_data['css_uris']
-            = load_stylesheets(
-                $this->page_data['css_uris'],
-                array(
-                    '/project_resources/stylesheets/view.css'
-                )
-            );
+        = load_stylesheets(
+            $this->page_data['css_uris'],
+            array(
+                '/project_resources/stylesheets/view.css'
+            )
+        );
         $this->page_data['script_uris']
-            = load_scripts(
-                $this->page_data['script_uris'],
-                array(
-                    '/project_resources/scripts/single_item_view.js',
-                    '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
-                    '/project_resources/scripts/myemsl_file_download.js',
-                    '/project_resources/scripts/doi_notation.js'
-                )
-            );
+        = load_scripts(
+            $this->page_data['script_uris'],
+            array(
+                '/project_resources/scripts/single_item_view.js',
+                '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
+                '/project_resources/scripts/myemsl_file_download.js',
+                '/project_resources/scripts/doi_notation.js'
+            )
+        );
         $this->page_data['view_mode'] = 'single';
         $this->page_data['js'] .= "var transaction_id = '{$id}';
         ";
@@ -471,7 +472,7 @@ class Status_api extends Baseline_user_api_controller
             //that doesn't look like a real id
             //send to error page saying so
             $err_msg = 'No '.ucwords($lookup_type_description)." with the an id of ".
-                    "<strong>{$id}</strong> could be found in the system";
+                "<strong>{$id}</strong> could be found in the system";
             $this->page_data['page_header'] = "{$lookup_type_description} Not Found";
             $this->page_data['title'] = $this->page_data['page_header'];
             // $this->page_data['error_message'] = $err_msg;
@@ -489,8 +490,8 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
         $transaction_info = $this->status->get_formatted_transaction($id);
 
         $release_state = array_key_exists($id, $transaction_info['transactions'])
-            ? $transaction_info['transactions'][$id]['metadata']['release_state']
-            : "not_released";
+        ? $transaction_info['transactions'][$id]['metadata']['release_state']
+        : "not_released";
         if ($page_state == 'released_data' && $release_state != 'released') {
             $err_msg = 'This data resource has not been made publicly available.';
             $this->page_data['page_header'] = "Data Unavailable";
@@ -503,20 +504,20 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
         if (!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
             if ($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
-                    'times' => array(
-                        $ingest_info['updated'] => intval($ingest_info['job_id'])
-                    ),
-                    'transactions' => array(
-                        $id => array(
-                            'status' => array(),
-                            'metadata' => array(
-                                'instrument_id' => -1,
-                                'instrument_name' => ""
-                            ),
-                            'file_size_bytes' => -1,
-                            'informational_message' => "Upload in progress..."
-                        )
+                'times' => array(
+                    $ingest_info['updated'] => intval($ingest_info['job_id'])
+                ),
+                'transactions' => array(
+                    $id => array(
+                        'status' => array(),
+                        'metadata' => array(
+                            'instrument_id' => -1,
+                            'instrument_name' => ""
+                        ),
+                        'file_size_bytes' => -1,
+                        'informational_message' => "Upload in progress..."
                     )
+                )
                 );
                 if ($ingest_info['state'] == 'ok') {
                     $this->page_data['page_header'] = 'New Transaction';
@@ -558,7 +559,7 @@ var refresh = function(){
 
         $this->page_data['transaction_data'] = $transaction_info;
         $this->page_data['cart_data'] = array(
-            'carts' => array()
+        'carts' => array()
         );
         $this->page_data['request_type'] = 't';
         $this->page_data['enable_breadcrumbs'] = false;

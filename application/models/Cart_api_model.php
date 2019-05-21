@@ -300,9 +300,17 @@ class Cart_api_model extends CI_Model
     {
         $cart_url = "{$this->cart_url_base}/{$cart_uuid}";
         $query = Requests::delete($cart_url);
+        $success = false;
+        $status_code = $query->status_code;
         if ($query->status_code / 100 == 2) {
             //looks like it went through ok
             $success = true;
+        } elseif ($query->status_code / 100 == 5) {
+            $status_message = $query->headers('X-Pacifica-Message');
+            if ($status_message == 'No cart with uid {$cart_uuid} found') {
+                $success = true;
+                $status_code = 200;
+            }
         } else {
             $success = false;
         }
@@ -312,7 +320,7 @@ class Cart_api_model extends CI_Model
             $this->db->set('deleted', 'now()')->where('cart_uuid', $cart_uuid);
             $this->db->update('cart');
         }
-        return $query->status_code;
+        return $status_code;
     }
 
     /**
