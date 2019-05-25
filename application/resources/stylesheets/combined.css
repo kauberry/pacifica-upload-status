@@ -904,7 +904,7 @@ div.form_container td {
         width: 100%;
     }
     .underline {
-        border-radius: 0 0 0 0;
+        border-radius: 0 0 0 0 !important;
         transition: all 0.5s;
     }
     .fancytree-node, .ui-fancytree ul {

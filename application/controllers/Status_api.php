@@ -164,50 +164,36 @@ class Status_api extends Baseline_user_api_controller
         $ending_date = ''
     ) {
         $defaults = [
-            'project_id' => $project_id,
-            'instrument_id' => $instrument_id,
-            'starting_date' => $starting_date,
-            'ending_date' => $ending_date
+        'project_id' => $project_id,
+        'instrument_id' => $instrument_id,
+        'starting_date' => $starting_date,
+        'ending_date' => $ending_date
         ];
         $defaults = get_selection_defaults($defaults);
         extract($defaults);
         $view_name = $this->overview_template;
         $this->page_data['informational_message'] = '';
         $this->page_data['css_uris']
-            = load_stylesheets(
-                $this->page_data['css_uris'],
-                array(
-                    '/project_resources/stylesheets/selector.css',
-                )
-            );
+        = load_stylesheets(
+            $this->page_data['css_uris'],
+            array(
+                '/project_resources/stylesheets/selector.css',
+            )
+        );
         $extra_scripts_array = [
-            '/project_resources/scripts/overview.js',
-            '/project_resources/scripts/myemsl_file_download.js',
-            '/project_resources/scripts/doi_notation.js'
+        '/project_resources/scripts/overview.js',
+        '/project_resources/scripts/myemsl_file_download.js',
+        '/project_resources/scripts/doi_notation.js'
         ];
 
         $this->page_data['script_uris']
-            = load_scripts(
-                $this->page_data['script_uris'],
-                $extra_scripts_array
-            );
+        = load_scripts(
+            $this->page_data['script_uris'],
+            $extra_scripts_array
+        );
 
         $full_user_info = $this->user_info;
 
-        $project_list = array();
-        if (array_key_exists('projects', $full_user_info)) {
-            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
-                if (array_key_exists('title', $prop_info)) {
-                    $project_list[$prop_id] = $prop_info['title'];
-                }
-            }
-            if (array_key_exists('project_list', $this->page_data)) {
-                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-            } else {
-                $this->page_data['project_list'] = $project_list;
-            }
-            ksort($this->page_data['project_list']);
-        }
         $js = "var initial_project_id = \"{$project_id}\";
                 var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
                 var initial_instrument_id = \"{$instrument_id}\";
@@ -317,20 +303,14 @@ class Status_api extends Baseline_user_api_controller
         $this->referring_page = str_replace(base_url(), '', $this->input->server('HTTP_REFERER'));
         $time_period_empty = true;
         $full_user_info = $this->user_info;
-        $project_list = array();
-        if (array_key_exists('projects', $full_user_info)) {
-            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
-                if (array_key_exists('title', $prop_info)) {
-                    $project_list[$prop_id] = $prop_info['title'];
-                }
-            }
-            if (array_key_exists('project_list', $this->page_data)) {
-                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-            } else {
-                $this->page_data['project_list'] = $project_list;
-            }
-            ksort($this->page_data['project_list']);
+        $project_list = $this->_extract_project_list($this->user_info);
+
+        if (array_key_exists('project_list', $this->page_data)) {
+            $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+        } else {
+            $this->page_data['project_list'] = $project_list;
         }
+        ksort($this->page_data['project_list']);
 
         if (isset($instrument_id) && intval($instrument_id) != 0
             && isset($project_id) && intval($project_id) != 0
@@ -360,9 +340,11 @@ class Status_api extends Baseline_user_api_controller
                 }
             }
 
-            foreach ($transactions['transactions'] as $transaction_id => $transaction_info) {
-                $transaction_list['transactions'][$transaction_id]['metadata']['transaction_id'] =
+            foreach ($transaction_list['transactions'] as $transaction_id => $transaction_info) {
+                $transactions['transactions'][$transaction_id]['metadata']['transaction_id'] =
                 "<a href=\"/view/{$transaction_id}\" title=\"Transaction #{$transaction_id}\">{$transaction_id}</a>";
+                $transactions['transactions'][$transaction_id]['metadata']['visibility'] =
+                    $this->_evaluate_data_visibility($transaction_info);
             }
 
             $file_size_totals = array();
@@ -428,6 +410,7 @@ class Status_api extends Baseline_user_api_controller
             )
         )[0] ?: false;
 
+        $transaction_info = $this->status->get_formatted_transaction($id);
         $this->page_mode = 'cart';
         $lookup_type_description = 'Transaction';
         $lookup_type = 'transaction';
@@ -436,43 +419,55 @@ class Status_api extends Baseline_user_api_controller
         = load_stylesheets(
             $this->page_data['css_uris'],
             array(
-                '/project_resources/stylesheets/view.css'
-            )
-        );
-        $this->page_data['script_uris']
-        = load_scripts(
-            $this->page_data['script_uris'],
-            array(
-                '/project_resources/scripts/single_item_view.js',
-                '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
-                '/project_resources/scripts/myemsl_file_download.js',
-                '/project_resources/scripts/doi_notation.js'
+            '/project_resources/stylesheets/view.css'
             )
         );
         $this->page_data['view_mode'] = 'single';
         $this->page_data['js'] .= "var transaction_id = '{$id}';
         ";
-        $full_user_info = $this->user_info;
-        $project_list = array();
-        if (array_key_exists('projects', $full_user_info)) {
-            foreach ($full_user_info['projects'] as $prop_id => $prop_info) {
-                if (array_key_exists('title', $prop_info)) {
-                    $project_list[$prop_id] = $prop_info['title'];
-                }
-            }
-            if (array_key_exists('project_list', $this->page_data)) {
-                $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-            } else {
-                $this->page_data['project_list'] = $project_list;
-            }
-            ksort($this->page_data['project_list']);
+        if (!$this->_evaluate_data_visibility($transaction_info['transactions'][$id])) {
+            $err_msg = 'This data resource has not been made publicly available.';
+            $this->page_data['page_header'] = "Data Unavailable";
+            $this->page_data['title'] = $this->page_data['page_header'];
+            $this->page_data['error_message'] = $err_msg;
+            $this->page_data['lookup_type_desc'] = $lookup_type_description;
+            $this->page_data['lookup_type'] = $lookup_type;
+            $this->page_data['script_uris']
+            = load_scripts(
+                $this->page_data['script_uris'],
+                array(
+                    '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
+                    '/project_resources/scripts/doi_notation.js'
+                )
+            );
+            $this->load->view('status_error_page.html', $this->page_data);
         }
+
+        $this->page_data['script_uris']
+        = load_scripts(
+            $this->page_data['script_uris'],
+            [
+                '/resources/scripts/jquery-dateFormat/jquery-dateFormat.min.js',
+                '/project_resources/scripts/doi_notation.js',
+                '/project_resources/scripts/single_item_view.js',
+                '/project_resources/scripts/myemsl_file_download.js'
+            ]
+        );
+
+        $project_list = $this->_extract_project_list($this->user_info);
+
+        if (array_key_exists('project_list', $this->page_data)) {
+            $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
+        } else {
+            $this->page_data['project_list'] = $project_list;
+        }
+        ksort($this->page_data['project_list']);
 
         if (!is_numeric($id) || $id < 0) {
             //that doesn't look like a real id
             //send to error page saying so
             $err_msg = 'No '.ucwords($lookup_type_description)." with the an id of ".
-                "<strong>{$id}</strong> could be found in the system";
+            "<strong>{$id}</strong> could be found in the system";
             $this->page_data['page_header'] = "{$lookup_type_description} Not Found";
             $this->page_data['title'] = $this->page_data['page_header'];
             // $this->page_data['error_message'] = $err_msg;
@@ -487,36 +482,26 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
         $this->page_data['js'] .= $js;
         $ingest_info = $this->status->get_ingest_status($id);
         $ingest_completed = $ingest_info['upload_present_on_mds'] ? "true" : "false";
-        $transaction_info = $this->status->get_formatted_transaction($id);
 
-        $release_state = array_key_exists($id, $transaction_info['transactions'])
-        ? $transaction_info['transactions'][$id]['metadata']['release_state']
-        : "not_released";
-        if ($page_state == 'released_data' && $release_state != 'released') {
-            $err_msg = 'This data resource has not been made publicly available.';
-            $this->page_data['page_header'] = "Data Unavailable";
-            $this->page_data['title'] = $this->page_data['page_header'];
-            $this->page_data['error_message'] = $err_msg;
-            $this->page_data['lookup_type_desc'] = $lookup_type_description;
-            $this->page_data['lookup_type'] = $lookup_type;
-            $this->load->view('status_error_page.html', $this->page_data);
-        }
+        $this->page_data['js'] .= "var ingest_complete = {$ingest_completed};
+";
+
         if (!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
             if ($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
                 'times' => array(
-                    $ingest_info['updated'] => intval($ingest_info['job_id'])
+                $ingest_info['updated'] => intval($ingest_info['job_id'])
                 ),
                 'transactions' => array(
-                    $id => array(
-                        'status' => array(),
-                        'metadata' => array(
-                            'instrument_id' => -1,
-                            'instrument_name' => ""
-                        ),
-                        'file_size_bytes' => -1,
-                        'informational_message' => "Upload in progress..."
-                    )
+                $id => array(
+                    'status' => array(),
+                    'metadata' => array(
+                        'instrument_id' => -1,
+                        'instrument_name' => ""
+                    ),
+                    'file_size_bytes' => -1,
+                    'informational_message' => "Upload in progress..."
+                )
                 )
                 );
                 if ($ingest_info['state'] == 'ok') {
@@ -564,13 +549,60 @@ var refresh = function(){
         $this->page_data['request_type'] = 't';
         $this->page_data['enable_breadcrumbs'] = false;
         $this->page_data['js'] .= "var initial_inst_id = '{$inst_id}';
-                            var ingest_complete = {$ingest_completed};
                             var lookup_type = \"t\";
                             var email_address = \"{$this->email}\";
                             var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";
                             ";
         $this->page_data['show_instrument_data'] = true;
         $this->load->view('page_layouts/single_item_view.html', $this->page_data);
+    }
+
+    /**
+     * Helper to check whether a certain transaction's metadata should be visible to a user
+     *
+     * @param [type] $transaction_info [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _evaluate_data_visibility($transaction_info)
+    {
+        $authenticated = !empty($this->user_info['person_id']);
+        $my_project_list = $this->_extract_project_list($this->user_info);
+        $project_id = (string)$transaction_info['metadata']['project_id'];
+        $on_project_team = in_array($project_id, array_map('strval', array_keys($my_project_list)));
+        $released = $transaction_info['metadata']['release_state'] == 'released';
+        $emsl_staff = $this->user_info['emsl_employee'];
+        $authenticated = false;
+        // $emsl_staff = false;
+        $on_project_team = false;
+        $released = false;
+        $data_visible = ($authenticated && $on_project_team) || $emsl_staff || $released;
+
+        return $data_visible;
+    }
+
+    /**
+     * [_extract_project_list description]
+     *
+     * @param [type] $user_info [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _extract_project_list($user_info)
+    {
+        $project_list = array();
+        if (array_key_exists('projects', $user_info)) {
+            foreach ($user_info['projects'] as $prop_id => $prop_info) {
+                if (array_key_exists('title', $prop_info)) {
+                    $project_list[$prop_id] = $prop_info['title'];
+                }
+            }
+        }
+        return $project_list;
     }
 
     /**

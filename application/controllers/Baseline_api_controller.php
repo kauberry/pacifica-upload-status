@@ -66,7 +66,7 @@ class Baseline_api_controller extends CI_Controller
         $this->email = $user_info['email_address'];
         $this->fullname = "{$this->username} {$user_info['last_name']}";
         $user_info['full_name'] = $this->fullname;
-        $user_info['network_id'] = !empty($user_info['network_id']) ? $user_info['network_id'] : 'unknown';
+        $user_info['network_id'] = !empty($user_info['network_id']) ? $user_info['network_id'] : '';
         $this->user_info = $user_info;
 
         if (isset($_SERVER['PATH_INFO'])) {

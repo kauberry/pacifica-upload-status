@@ -70,7 +70,8 @@ function get_user_details($eus_id)
                 'last_name' => '',
                 'emsl_employee' => false,
                 'projects' => [],
-                'email_address' => ''
+                'email_address' => '',
+                'person_id' => false
             ];
         }
     }
@@ -123,6 +124,10 @@ function get_details($object_type, $object_id, $option = false)
         'project' => array('url' => 'projectinfo/by_project_id'),
         'user' => array('url' => 'userinfo/by_id')
     );
+    $results_body = "{}";
+    if (empty($object_id)) {
+        return json_decode($results_body, true);
+    }
     $url = $object_map[$object_type]['url'];
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
@@ -133,7 +138,6 @@ function get_details($object_type, $object_id, $option = false)
     if ($option) {
         $url_object[] = $option;
     }
-    $results_body = "{}";
     $query_url = implode('/', $url_object);
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     if ($query->status_code == 200) {

@@ -126,15 +126,15 @@ class Status_api_model extends CI_Model
     {
         $projects_url = "{$this->policy_url_base}/status/projects/search/{$terms}?";
         $url_args_array = array(
-            'user' => $this->user_id
+            'person_id' => $this->user_id
         );
         $projects_url .= http_build_query($url_args_array, '', '&');
         $results = [];
         try {
             $query = Requests::get($projects_url, array('Accept' => 'application/json'));
-            $results = json_decode($query->body, true);
+            $results = $query->status_code / 100 == 2 ? json_decode($query->body, true) : [];
         } catch (Exception $e) {
-            $results = array();
+            $results = [];
         }
         return $results;
     }

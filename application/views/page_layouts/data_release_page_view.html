@@ -1,7 +1,7 @@
 <?php
   $this->template_version = $this->config->item('template');
   $js = isset($js) ? $js : "";
-  $user_id_string = $this->nav_info['current_page_info']['logged_in_user_id'] ?
+  $user_id_string = !empty($this->nav_info['current_page_info']['logged_in_user_id']) ?
     "{$this->nav_info['current_page_info']['logged_in_user']} ({$this->nav_info['current_page_info']['logged_in_user_id']})" :
     "";
 ?>

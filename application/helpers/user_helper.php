@@ -69,7 +69,14 @@ function get_user()
 
     $query_url = "{$md_url}/users?";
     $query_url .= http_build_query($url_args_array, '', '&');
-    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+
+    try {
+        $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    } catch (Exception $e) {
+        $results = [];
+        return $results;
+    }
+
     $results_body = $query->body;
     $results_json = json_decode($results_body, true);
     if ($cookie_results) {

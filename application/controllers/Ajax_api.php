@@ -63,7 +63,7 @@ class Ajax_api extends Baseline_api_controller
             false
         );
         $results = array(
-            'total_count' => sizeof($prop_list),
+            'total_count' => $prop_list ? count($prop_list) : 0,
             'incomplete_results' => false,
             'more' => false,
             'items' => array()
