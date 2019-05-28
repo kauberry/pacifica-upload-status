@@ -568,16 +568,17 @@ var refresh = function(){
      */
     private function _evaluate_data_visibility($transaction_info)
     {
+        $data_visible = false;
         $authenticated = !empty($this->user_info['person_id']);
         $my_project_list = $this->_extract_project_list($this->user_info);
         $project_id = (string)$transaction_info['metadata']['project_id'];
         $on_project_team = in_array($project_id, array_map('strval', array_keys($my_project_list)));
         $released = $transaction_info['metadata']['release_state'] == 'released';
         $emsl_staff = $this->user_info['emsl_employee'];
-        $authenticated = false;
+        // $authenticated = false;
         // $emsl_staff = false;
-        $on_project_team = false;
-        $released = false;
+        // $on_project_team = false;
+        // $released = false;
         $data_visible = ($authenticated && $on_project_team) || $emsl_staff || $released;
 
         return $data_visible;
