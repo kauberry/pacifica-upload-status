@@ -126,7 +126,7 @@ class Status_api_model extends CI_Model
     {
         $projects_url = "{$this->policy_url_base}/status/projects/search/{$terms}?";
         $url_args_array = array(
-            'person_id' => $this->user_id
+            'user' => $this->user_id
         );
         $projects_url .= http_build_query($url_args_array, '', '&');
         $results = [];
