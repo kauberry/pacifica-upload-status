@@ -426,6 +426,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['js'] .= "var transaction_id = '{$id}';
         ";
         if (!$this->_evaluate_data_visibility($transaction_info['transactions'][$id])) {
+            $transaction_info['transactions'][$id]['metadata']['visibility'] = false;
             $err_msg = 'This data resource has not been made publicly available.';
             $this->page_data['page_header'] = "Data Unavailable";
             $this->page_data['title'] = $this->page_data['page_header'];
@@ -441,8 +442,9 @@ class Status_api extends Baseline_user_api_controller
                 )
             );
             $this->load->view('status_error_page.html', $this->page_data);
+        } else {
+            $transaction_info['transactions'][$id]['metadata']['visibility'] = true;
         }
-
         $this->page_data['script_uris']
         = load_scripts(
             $this->page_data['script_uris'],
