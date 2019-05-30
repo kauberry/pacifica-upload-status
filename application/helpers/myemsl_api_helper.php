@@ -122,7 +122,7 @@ function get_details($object_type, $object_id, $option = false)
     $object_map = array(
         'instrument' => array('url' => 'instrumentinfo/by_instrument_id'),
         'project' => array('url' => 'projectinfo/by_project_id'),
-        'user' => array('url' => 'userinfo/by_id')
+        'user' => array('url' => 'userinfo/search')
     );
     $results_body = "{}";
     if (empty($object_id)) {
@@ -142,6 +142,9 @@ function get_details($object_type, $object_id, $option = false)
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     if ($query->status_code == 200) {
         $results_body = $query->body;
+        if ($object_type == 'user' && count($results_body == 1)) {
+            $results_body = $results_body[0];
+        }
     }
     return json_decode($results_body, true);
 }

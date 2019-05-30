@@ -44,7 +44,7 @@ function get_user()
     $remote_user = !$remote_user && array_key_exists("PHP_AUTH_USER", $_SERVER) ? $_SERVER["PHP_AUTH_USER"] : $remote_user;
     $results = false;
     $cookie_results = false;
-    if ($CI->config->item('enable_cookie_redirect')) {
+    if ($CI->config->item('enable_cookie_redirect') && !$remote_user) {
         $cookie_results = get_user_from_cookie();
         if ($cookie_results && is_array($cookie_results) && array_key_exists('eus_id', $cookie_results)) {
             $cookie_results['id'] = $cookie_results['eus_id'];
