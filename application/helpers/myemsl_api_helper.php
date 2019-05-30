@@ -141,12 +141,12 @@ function get_details($object_type, $object_id, $option = false)
     $query_url = implode('/', $url_object);
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     if ($query->status_code == 200) {
-        $results_body = $query->body;
-        if ($object_type == 'user' && count($results_body == 1)) {
+        $results_body = json_decode($query->body, true);
+        if ($object_type == 'user' && count($results_body) == 1) {
             $results_body = $results_body[0];
         }
     }
-    return json_decode($results_body, true);
+    return $results_body;
 }
 
 /**
