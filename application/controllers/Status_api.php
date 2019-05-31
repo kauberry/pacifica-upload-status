@@ -90,6 +90,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
         $this->page_data['script_uris'][] = '/project_resources/scripts/doi_minting.js';
         $this->page_data['script_uris'][] = '/project_resources/scripts/doi_notation.js';
+        $this->page_data['script_uris'][] = '/project_resources/scripts/doi_data_transfer.js';
         $this->page_data['js'] = "
         var doi_ui_base = \"{$this->config->item('doi_ui_base')}\";
         var doi_url_base = \"{$this->config->item('doi_url_base')}\";
@@ -425,7 +426,7 @@ class Status_api extends Baseline_user_api_controller
         $this->page_data['view_mode'] = 'single';
         $this->page_data['js'] .= "var transaction_id = '{$id}';
         ";
-        if (!$this->_evaluate_data_visibility($transaction_info['transactions'][$id])) {
+        if (!empty($transaction_info['transactions']) && !$this->_evaluate_data_visibility($transaction_info['transactions'][$id])) {
             $transaction_info['transactions'][$id]['metadata']['visibility'] = false;
             $err_msg = 'This data resource has not been made publicly available.';
             $this->page_data['page_header'] = "Data Unavailable";
