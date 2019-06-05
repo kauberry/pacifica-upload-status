@@ -158,9 +158,10 @@ class Ajax_api extends Baseline_api_controller
             'user' => $this->user_id,
             'created' => $nowstring,
             'updated' => $nowstring,
-            'relationship' => '79fef956-9bc4-425b-aaa7-4bd2e8270aa5',
+            'relationship' => get_relationship_uuid('member_of'),
             'transaction' => $transaction_id,
         ];
+
         $md_url = "{$this->metadata_url_base}/transaction_user";
         if ($release_state == 'released') {
             $query = Requests::put(

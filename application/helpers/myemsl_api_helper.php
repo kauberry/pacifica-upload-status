@@ -177,6 +177,28 @@ function get_project_abstract($project_id)
     return $ret_array;
 }
 
+function get_relationship_uuid($relationship_name)
+{
+    $CI =& get_instance();
+    $CI->load->library('PHPRequests');
+    $md_url = $CI->metadata_url_base;
+
+    $url_args_array = [
+        'name' => 'member_of'
+    ];
+    $query_url = "{$md_url}/relationships?";
+    $query_url .= http_build_query($url_args_array, '', '&');
+    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    $results = json_decode($query->body, true);
+
+    if ($query->status_code == 200) {
+        return strtolower($results[0]['uuid']);
+    } else {
+        return false;
+    }
+}
+
+
 /**
  *  Read and parse the '*general.ini*' file to retrieve things
  *  like the database connection strings, etc.
