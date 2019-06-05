@@ -52,7 +52,7 @@ var setup_doi_staging_button = function(el) {
             create_doi_data_resource($(event.target));
         });
     }
-    if(project_list && !project_list.includes(el.find(".proposal_identifier").val()) || (project_list == null)){
+    if(project_list && !project_list.includes(el.find(".project_identifier").val()) || (project_list == null)){
         doi_staging_button.attr({
             "title": "You do not have permissions to submit a DOI for this transaction"
         });
