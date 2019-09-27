@@ -42,6 +42,7 @@ class Ajax_api extends Baseline_api_controller
         $this->load->model('Myemsl_api_model', 'myemsl');
         $this->load->helper('network');
         $this->load->library('PHPRequests');
+        $this->user_relationships = [];
     }
 
     /**
@@ -145,6 +146,9 @@ class Ajax_api extends Baseline_api_controller
         if (!in_array($release_state, array('released', 'not_released'))) {
             $release_state = 'not_released';
         }
+        if (empty($this->user_relationships)) {
+            $this->user_relationships = get_relationship_list();
+        }
         $transaction_info = $this->status->get_transaction_details($transaction_id);
         $associated_projects_list = array_map('strval', array_keys($this->user_info['projects']));
         if (!in_array($transaction_info['project'], $associated_projects_list)) {
@@ -158,7 +162,7 @@ class Ajax_api extends Baseline_api_controller
             'user' => $this->user_id,
             'created' => $nowstring,
             'updated' => $nowstring,
-            'relationship' => get_relationship_uuid('member_of'),
+            'relationship' => $this->user_relationships['authorized_releaser'],
             'transaction' => $transaction_id,
         ];
 

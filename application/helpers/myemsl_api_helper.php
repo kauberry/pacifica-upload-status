@@ -177,22 +177,34 @@ function get_project_abstract($project_id)
     return $ret_array;
 }
 
-function get_relationship_uuid($relationship_name)
+/**
+ * Grabs the list of possible relationship types from metadata
+ *
+ * @return array list of relationship names and their uuid's
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function get_relationship_list()
 {
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
 
     $url_args_array = [
-        'name' => 'member_of'
+        'recursion_depth' => 0
     ];
     $query_url = "{$md_url}/relationships?";
     $query_url .= http_build_query($url_args_array, '', '&');
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     $results = json_decode($query->body, true);
 
+    $relationships = [];
+
     if ($query->status_code == 200) {
-        return strtolower($results[0]['uuid']);
+        foreach ($results as $entry) {
+            $relationships[$entry['name']] = $entry['uuid'];
+        }
+        return $relationships;
     } else {
         return false;
     }

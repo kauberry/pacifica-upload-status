@@ -105,9 +105,7 @@ class Status_api extends Baseline_user_api_controller
             'page_header' => 'Data Release Interface',
             'title' => 'Data Release'
         ];
-        // $this->page_data['css_uris'][] = '/project_resources/stylesheets/doi_transfer_cart.css';
         $this->page_data = array_merge($this->page_data, $updated_page_info);
-        // $this->page_data['script_uris'][] = '/project_resources/scripts/data_release.js';
         $this->page_data['transaction_data'] = $this->status->get_formatted_transaction($transaction_id);
         $this->page_data['css_uris']
         = load_stylesheets(
