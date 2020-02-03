@@ -29,13 +29,13 @@ var release_state_presets = {
     },
     "not_released": {
         "span_class": "not_released",
-        "display_text": "Not Released",
-        "link_text": "Item awaiting release approval"
+        "display_text": "Project Team Access",
+        "link_text": "This data is only available to verified project team members. If you are authorized to release this item, click on 'Stage for Release' to make it publicly available."
     },
     "released": {
         "span_class": "released",
-        "display_text": "Released",
-        "link_text": "Item Released to Public"
+        "display_text": "Public Access",
+        "link_text": "This data has been made available to the Public"
     },
     "staged": {
         "span_class": "staged",

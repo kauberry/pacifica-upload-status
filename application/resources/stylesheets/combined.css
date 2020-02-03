@@ -843,7 +843,7 @@ div.form_container td {
   text-align: right;
 }
 .ribbon span {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   color: rgb(255, 255, 255);
   text-align: center;
@@ -864,7 +864,8 @@ div.form_container td {
 }
 
 .not_released span {
-    background: rgb(140, 20, 20);
+    font-size: 9px;
+    background: rgb(200, 140, 20);
     display:block;
     opacity: 1.0;
 }
@@ -876,7 +877,7 @@ div.form_container td {
 }
 
 .doi_minted span {
-    background: rgb(203, 137, 40);
+    background: rgb(121, 167, 10);
     display:block;
     opacity: 1.0;
 }

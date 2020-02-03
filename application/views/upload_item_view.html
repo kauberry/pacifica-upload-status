@@ -11,8 +11,7 @@
   $transaction_info = $transaction_data['transactions'][$transaction_id];
   if(!isset($transaction_info['metadata']['visibility']) || !$transaction_info['metadata']['visibility']) continue;
   $friendly_upload_time = utc_to_local_time($upload_time_string, 'D, M j Y g:ia T');
-  $release_class = $transaction_info['metadata']['release_state'] == 'not_released'
-    ? "" : $transaction_info['metadata']['release_state'];
+  $release_class = "placeholder";
   $release_name = empty($release_class) ? "": $transaction_info['metadata']['release_state_display'];
   $download_url = "";
   ?>
