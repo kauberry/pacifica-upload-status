@@ -53,18 +53,19 @@ class Doi_minting_model extends CI_Model
     public function get_release_states($transaction_list)
     {
         $md_url = "{$this->metadata_url_base}/transactioninfo/release_state";
-        $query = Requests::post(
-            $md_url,
-            array(
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
-            ),
-            json_encode($transaction_list)
-        );
-        $results = json_decode($query->body, true);
-
-
-        $associated_projects_list = $this->user_info['projects'];
+        try {
+            $query = Requests::post(
+                $md_url,
+                array(
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ),
+                json_encode($transaction_list)
+            );
+            $results = $query->status_code / 100 == 2 ? json_decode($query->body, true) : [];
+        } catch (Exception $e) {
+            $results = [];
+        }
         return $results;
     }
 

@@ -302,6 +302,22 @@ class Status_api_model extends CI_Model
         return $last_txn;
     }
 
+    private function _get_fake_ingest_status($transaction_id, $results_obj)
+    {
+        $task_percent = "40.0";
+        $task = "ingest_files";
+        $state = "OK";
+        $overall_percentage = "100.0";
+
+        $results_obj['task_percent'] = $task_percent;
+        $results_obj['task'] = $task;
+        $results_obj['state'] = $state;
+        $results_obj['overall_percentage'] = $overall_percentage;
+        $results_obj['upload_present_on_mds'] = true;
+        return $results_obj;
+    }
+
+
     /**
      * Retrieve real transaction in progress status from the ingester
      *
@@ -314,6 +330,9 @@ class Status_api_model extends CI_Model
     public function get_ingest_status($transaction_id)
     {
         $now = new DateTime();
+        $transaction_details = $this->get_transaction_details($transaction_id);
+        $upload_present_on_mds = !empty($transaction_details) ? true : false;
+
         $default_results_obj = array(
             'task_percent' => "0.000",
             'updated' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
@@ -321,11 +340,17 @@ class Status_api_model extends CI_Model
             'job_id' => $transaction_id,
             'created' => local_time_to_utc($now)->format('Y-m-d H:i:s'),
             'exception' => '',
-            'state' => 'fail'
+            'state' => 'fail',
+            'upload_present_on_mds' => $upload_present_on_mds,
+            'overall_percentage' => "0.0"
         );
-        $transaction_details = $this->get_transaction_details($transaction_id);
-        $upload_present_on_mds = !empty($transaction_details) ? true : false;
+
+        // return $this->_get_fake_ingest_status($transaction_id, $default_results_obj);
+
         $ingester_url = "{$this->ingester_url_base}/get_state/{$transaction_id}";
+
+
+
         try {
             $query = Requests::get($ingester_url, array('Accept' => 'application/json'));
             $results_obj = json_decode(stripslashes($query->body), true);

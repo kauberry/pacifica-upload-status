@@ -276,6 +276,7 @@ div.buttons input[type="button"], div.buttons button {
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.596) 0px 0px 2px;
     transition: all 0.25s;
+    height: 2em;
 }
 
 button:hover, .buttons input[type="button"]:hover, .buttons button:hover {
@@ -1005,6 +1006,14 @@ div.form_container td {
     .staging_button, .doi_staging_button {
         height: 3em;
         width: 125%;
+    }
+
+    div.buttons input[type="button"], div.buttons button {
+        height: 3em;
+    }
+
+    .instrument_ident {
+        display: none;
     }
     #login_id_container {
         bottom: 1px !important;

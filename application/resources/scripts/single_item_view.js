@@ -1,21 +1,23 @@
 $(function() {
-    setup_tree_data();
-    setup_metadata_disclosure();
-    display_ingest_status();
-    cart_status();
-    var tree = $(".tree_holder").fancytree("getTree");
-    tree.visit(function(node){
-        node.setExpanded();
-    });
-    get_doi_release_data();
+    if(ingest_complete) {
+        setup_tree_data();
+        setup_metadata_disclosure();
+        display_ingest_status();
+        cart_status();
+        var tree = $(".tree_holder").fancytree("getTree");
+        tree.visit(function(node){
+            node.setExpanded();
+        });
+        get_doi_release_data();
+        tree.on("fancyonloadchildren", function(event, data){
+            data.node.visit(function(subNode){
+                if( subNode.isUndefined() && subNode.isExpanded() ) {
+                    subNode.load();
+                }
+            });
+        });
+    }
 
-    // tree.on("fancyonloadchildren", function(event, data){
-    //     data.node.visit(function(subNode){
-    //         if( subNode.isUndefined() && subNode.isExpanded() ) {
-    //             subNode.load();
-    //         }
-    //     });
-    // });
 });
 var cookie_base = "myemsl_status_last_";
 var first_load = true;

@@ -127,6 +127,8 @@ class Status_api extends Baseline_user_api_controller
                 var lookup_type = \"t\";
                 var initial_instrument_list = [];
                 var data_identifier = 0;
+                var transaction_id = {$transaction_id};
+                var ingest_complete = false;
                 var ui_markup = {
                     \"instrument_selection_desc\": \"{$this->config->item('ui_instrument_desc')}\",
                     \"project_selection_desc\": \"{$this->config->item('ui_project_desc')}\"
@@ -489,45 +491,51 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
         if (!$ingest_info['upload_present_on_mds'] || empty($transaction_info['transactions'])) {
             if ($ingest_info && $id == $ingest_info['job_id']) {
                 $transaction_info = array(
-                'times' => array(
-                $ingest_info['updated'] => intval($ingest_info['job_id'])
-                ),
-                'transactions' => array(
-                $id => array(
-                    'status' => array(),
-                    'metadata' => array(
-                        'instrument_id' => -1,
-                        'instrument_name' => ""
+                    'times' => array(
+                    $ingest_info['updated'] => intval($ingest_info['job_id'])
                     ),
-                    'file_size_bytes' => -1,
-                    'informational_message' => "Upload in progress..."
-                )
-                )
+                    'transactions' => array(
+                        $id => array(
+                            'status' => array(),
+                            'metadata' => array(
+                                'instrument_id' => -1,
+                                'instrument_name' => ""
+                            ),
+                            'file_size_bytes' => -1,
+                            'informational_message' => "Upload in progress..."
+                        )
+                    )
                 );
                 if ($ingest_info['state'] == 'ok') {
                     $this->page_data['page_header'] = 'New Transaction';
                     $this->page_data['title'] = 'Transaction Pending';
                     $err_msg = "This transaction is still being processed by the uploader";
                 } else {
-                    $this->page_data['page_header'] = 'Missing Transaction';
-                    $this->page_data['title'] = 'Transaction not available';
+                    $this->page_data['page_header'] = 'Transaction Still In Progress';
+                    $this->page_data['title'] = 'Upload is still being processed by MyEMSL';
 
-                    $err_msg = "No transaction with an ID of {$id} could be found in the system";
-                    $this->page_data['force_refresh'] = false;
+                    $err_msg = "<p style=\"font-size: 1.2em\">Data for Upload {$id} has been received by the data repository and is currently being processed.</p>";
+                    $err_msg .= "<p>Once this process has completed, the data will be available on this page</p>";
+                    $err_msg .= "<p>This page should continue to refresh on its own,<br />";
+                    $err_msg .= "but it you're still seeing it after an unreasonable amount of time, <br />please contact ";
+                    $err_msg .= "<a href=\"mailto:myemsl_ingest_support@pnnl.gov?Subject=Question%20about%20MyEMSL%20upload%20of%20transaction%20{$id}\" target=\"_top\">MyEMSL Ingest Support</a>";
+
+                    $this->page_data['force_refresh'] = true;
                     $this->page_data['error_message'] = $err_msg;
+                    $this->page_data['js'] .= "
+    $(function(){
+        setInterval(function(){
+            refresh();
+        }, ingest_check_interval);
+    });
+    var refresh = function(){
+        display_ingest_status();
+    }
+    ";
+
                     $this->load->view('status_error_page.html', $this->page_data);
                 }
                 $transaction_info['transactions'][$id]['informational_message'] = $err_msg;
-                $this->page_data['js'] .= "
-$(function(){
-    setInterval(function(){
-        refresh();
-    }, ingest_check_interval);
-});
-var refresh = function(){
-    display_ingest_status();
-}
-";
             }
         }
 

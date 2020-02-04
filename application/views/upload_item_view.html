@@ -202,7 +202,8 @@
                     <li id="treeData_<?= $transaction_id ?>" class="lazy folder">
                       <span>
                         <span style="font-weight:600;">
-                        <span class="project_ident">Project <?= $transaction_info['metadata']['project_id'] ?></span> /
+                        <span class="project_ident" title="Project <?= $transaction_info['metadata']['project_id'] ?> / <?= $transaction_info['metadata']['instrument_name'] ?>">Project <?= $transaction_info['metadata']['project_id'] ?></span>
+                        <span class="instrument_ident"> / </span>
                         <span class="instrument_ident"><?= $transaction_info['metadata']['instrument_name'] ?></span>
                         <?php if(isset($transaction_sizes) && array_key_exists($transaction_id,$transaction_sizes)): ?>
                           <span class='folder_size_summary'>[Total Size: <?= format_bytes($transaction_sizes[$transaction_id]) ?>]</span>

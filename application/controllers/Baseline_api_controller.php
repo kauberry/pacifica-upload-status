@@ -85,6 +85,7 @@ class Baseline_api_controller extends CI_Controller
             'current_credentials' => $this->user_id,
             'full_name' => $this->fullname
         );
+        $this->page_data['project_list'] = $this->project_list;
         $this->page_data['username'] = $this->username;
         $this->page_data['fullname'] = $this->fullname;
         $this->page_data['load_prototype'] = false;
