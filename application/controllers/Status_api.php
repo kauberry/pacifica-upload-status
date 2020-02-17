@@ -512,13 +512,13 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
                     $err_msg = "This transaction is still being processed by the uploader";
                 } else {
                     $this->page_data['page_header'] = 'Transaction Still In Progress';
-                    $this->page_data['title'] = 'Upload is still being processed by MyEMSL';
+                    $this->page_data['title'] = 'Upload is still being processed';
 
                     $err_msg = "<p style=\"font-size: 1.2em\">Data for Upload {$id} has been received by the data repository and is currently being processed.</p>";
                     $err_msg .= "<p>Once this process has completed, the data will be available on this page</p>";
                     $err_msg .= "<p>This page should continue to refresh on its own,<br />";
                     $err_msg .= "but it you're still seeing it after an unreasonable amount of time, <br />please contact ";
-                    $err_msg .= "<a href=\"mailto:myemsl_ingest_support@pnnl.gov?Subject=Question%20about%20MyEMSL%20upload%20of%20transaction%20{$id}\" target=\"_top\">MyEMSL Ingest Support</a>";
+                    $err_msg .= "<a href=\"mailto:msc-consulting@emsl.pnl.gov?Subject=Question%20about%20MyEMSL%20upload%20of%20transaction%20{$id}\" target=\"_top\">MyEMSL Ingest Support</a>";
 
                     $this->page_data['force_refresh'] = true;
                     $this->page_data['error_message'] = $err_msg;
