@@ -213,7 +213,7 @@ var setup_staging_buttons = function(){
         )
         .fail(
             function(jqxhr, error, message){
-                alert("A problem occurred creating your cart.\n[" + message + "]");
+                console.error("A problem occurred getting release data for DOIs.\n[" + message + "]");
             }
         );
 

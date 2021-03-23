@@ -162,7 +162,7 @@ var create_cart = function(submission_object, transaction_container){
             function(data){
                 if(!data.success){
                     //looks like we had an error
-                    alert(data.message);
+                    console.error(data.message);
                 }
                 cart_status();
             }
@@ -170,7 +170,7 @@ var create_cart = function(submission_object, transaction_container){
         .fail(
             function(jqxhr){
                 var msg_string = jqxhr.responseJSON.message;
-                alert("A problem occurred creating your cart.\n[" + msg_string + "]");
+                console.error("A problem occurred creating your cart.\n[" + msg_string + "]");
             }
         )
         .always(

@@ -119,7 +119,8 @@ class Status_api extends Baseline_user_api_controller
             '/project_resources/scripts/single_item_view.js',
             '/project_resources/scripts/data_release.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            '/project_resources/scripts/doi_notation.js'
+            '/project_resources/scripts/doi_notation.js',
+            '/project_resources/scripts/doi_minting.js'
         ];
 
         $js = "var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";
@@ -518,7 +519,7 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
                     $err_msg .= "<p>Once this process has completed, the data will be available on this page</p>";
                     $err_msg .= "<p>This page should continue to refresh on its own,<br />";
                     $err_msg .= "but it you're still seeing it after an unreasonable amount of time, <br />please contact ";
-                    $err_msg .= "<a href=\"mailto:msc-consulting@emsl.pnl.gov?Subject=Question%20about%20MyEMSL%20upload%20of%20transaction%20{$id}\" target=\"_top\">MyEMSL Ingest Support</a>";
+                    $err_msg .= "<a href=\"mailto:nexus-support@emsl.pnl.gov?Subject=Question%20about%20MyEMSL%20upload%20of%20transaction%20{$id}\" target=\"_top\">NEXUS Support</a>";
 
                     $this->page_data['force_refresh'] = true;
                     $this->page_data['error_message'] = $err_msg;
