@@ -119,7 +119,8 @@ class Status_api extends Baseline_user_api_controller
             '/project_resources/scripts/single_item_view.js',
             '/project_resources/scripts/data_release.js',
             '/project_resources/scripts/myemsl_file_download.js',
-            '/project_resources/scripts/doi_notation.js'
+            '/project_resources/scripts/doi_notation.js',
+            '/project_resources/scripts/doi_minting.js'
         ];
 
         $js = "var external_release_base_url = \"{$this->config->item('external_release_base_url')}\";

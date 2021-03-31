@@ -63,7 +63,7 @@ var get_doi_release_data = function() {
         )
         .fail(
             function(jqxhr, error, message) {
-                alert("A problem occurred getting release data for DOIs.\n[" + message + "]");
+                console.error("A problem occurred getting release data for DOIs.\n[" + message + "]");
             }
         );
 

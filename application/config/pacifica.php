@@ -68,3 +68,4 @@ $config['enable_cookie_redirect'] = false;
 $config['cookie_redirect_url'] = "https://d-eusi.emsl.pnl.gov/Portal";
 $config['enable_single_file_download'] = false;
 $config['enable_require_credentials_for_cart_download'] = false;
+$config['nexus_backend_url'] = "https://nexus-dev-srv.emsl.pnl.gov";

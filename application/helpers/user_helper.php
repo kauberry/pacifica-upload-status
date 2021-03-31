@@ -40,6 +40,7 @@ function get_user()
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
+    $nexus_backend_url = $CI->nexus_backend_url;
     $remote_user = array_key_exists("REMOTE_USER", $_SERVER) ? $_SERVER["REMOTE_USER"] : false;
     $remote_user = !$remote_user && array_key_exists("PHP_AUTH_USER", $_SERVER) ? $_SERVER["PHP_AUTH_USER"] : $remote_user;
     $results = false;
@@ -67,23 +68,23 @@ function get_user()
         return $results;
     }
 
-    $query_url = "{$md_url}/users?";
-    $query_url .= http_build_query($url_args_array, '', '&');
+    $query_url = "{$nexus_backend_url}/get_nexus_user_id_for_identifier/";
+    $query_url .= urlencode($remote_user);
 
     try {
-        $query = Requests::get($query_url, array('Accept' => 'application/json'));
+        $options = ['verify' => false];
+        $query = Requests::get($query_url, array('Accept' => 'application/json'), $options);
     } catch (Exception $e) {
         $results = [];
         return $results;
     }
-
     $results_body = $query->body;
     $results_json = json_decode($results_body, true);
     if ($cookie_results) {
         array_merge($results_json, $cookie_results);
     }
     if ($query->status_code == 200 && !empty($results_json)) {
-        $results = strtolower($results_json[0]['_id']);
+        $results = $results_json['message']['eus_id'];
     }
     return $results;
 }

@@ -28,6 +28,9 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://github.com/EMSL-MSC/pacifica-upload-status
  */
+
+ini_set("default_socket_timeout", 30);
+
 class Baseline_api_controller extends CI_Controller
 {
     /**

@@ -9,13 +9,13 @@ $(function() {
             node.setExpanded();
         });
         get_doi_release_data();
-        tree.on("fancyonloadchildren", function(event, data){
+        /*tree.on("loadchildren", function(event, data){
             data.node.visit(function(subNode){
                 if( subNode.isUndefined() && subNode.isExpanded() ) {
                     subNode.load();
                 }
             });
-        });
+        });*/
     }
 
 });
