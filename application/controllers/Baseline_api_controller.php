@@ -49,6 +49,7 @@ class Baseline_api_controller extends CI_Controller
             ]
         );
         $this->output->enable_profiler(false);
+        $this->nexus_backend_url = $this->config->item('nexus_backend_url');
         $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
         $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
         $this->ingester_url_base = str_replace('tcp:', 'http:', getenv('INGESTER_PORT') ?: 'http://127.0.0.1:8066');
@@ -65,7 +66,6 @@ class Baseline_api_controller extends CI_Controller
         $user_info = get_user_details($this->user_id);
         $this->username = $user_info['first_name'] ?: 'Anonymous Stranger';
         $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;
-        $this->project_list = $user_info['projects'];
         $this->email = $user_info['email_address'];
         $this->fullname = "{$this->username} {$user_info['last_name']}";
         $user_info['full_name'] = $this->fullname;
@@ -88,7 +88,6 @@ class Baseline_api_controller extends CI_Controller
             'current_credentials' => $this->user_id,
             'full_name' => $this->fullname
         );
-        $this->page_data['project_list'] = $this->project_list;
         $this->page_data['username'] = $this->username;
         $this->page_data['fullname'] = $this->fullname;
         $this->page_data['load_prototype'] = false;

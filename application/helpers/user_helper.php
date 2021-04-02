@@ -40,7 +40,6 @@ function get_user()
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;
-    $nexus_backend_url = $CI->nexus_backend_url;
     $remote_user = array_key_exists("REMOTE_USER", $_SERVER) ? $_SERVER["REMOTE_USER"] : false;
     $remote_user = !$remote_user && array_key_exists("PHP_AUTH_USER", $_SERVER) ? $_SERVER["PHP_AUTH_USER"] : $remote_user;
     $results = false;
@@ -67,8 +66,7 @@ function get_user()
     if (empty($url_args_array)) {
         return $results;
     }
-
-    $query_url = "{$nexus_backend_url}/get_nexus_user_id_for_identifier/";
+    $query_url = "{$CI->nexus_backend_url}/get_nexus_user_id_for_identifier/";
     $query_url .= urlencode($remote_user);
 
     try {
@@ -84,7 +82,7 @@ function get_user()
         array_merge($results_json, $cookie_results);
     }
     if ($query->status_code == 200 && !empty($results_json)) {
-        $results = $results_json['message']['eus_id'];
+        $results = $results_json['message']['user_id'];
     }
     return $results;
 }

@@ -55,14 +55,14 @@ function get_user_details_simple($eus_id)
 function get_user_details($eus_id)
 {
     $results = [];
-    $results = get_details('user', $eus_id);
+    $results = get_details_nexus('user', $eus_id);
     if (empty($results)) {
         if (get_user_from_cookie()) {
             $results = get_user_from_cookie();
             $results['emsl_employee'] = false;
             $results['projects'] = [];
             $results['email_address'] = $results['email'];
-            $results['person_id'] = $results['eus_id'];
+            $results['person_id'] = $results['user_id'];
             $results['network_id'] = $results['eus_id'];
         } else {
             $results = [
@@ -75,6 +75,7 @@ function get_user_details($eus_id)
             ];
         }
     }
+
     return $results;
 }
 
@@ -145,6 +146,32 @@ function get_details($object_type, $object_id, $option = false)
         if ($object_type == 'user' && count($results_body) == 1) {
             $results_body = $results_body[0];
         }
+    }
+    return $results_body;
+}
+
+/**
+ *
+ */
+function get_details_nexus($object_type, $object_id, $option = false)
+{
+    $object_map = [
+        'user' => ['url' => 'get_nexus_user_id_for_identifier']
+    ];
+    $results_body = "{}";
+    if (empty($object_id)) {
+        return json_decode($results_body, true);
+    }
+    $url = $object_map[$object_type]['url'];
+    $CI =& get_instance();
+    $CI->load->library('PHPRequests');
+    $nexus_backend_url = $CI->nexus_backend_url;
+    $url_object = [$nexus_backend_url, $url, $object_id];
+    $query_url = implode('/', $url_object);
+    $options = ['verify' => false];
+    $query = Requests::get($query_url, array('Accept' => 'application/json'), $options);
+    if ($query->status_code == 200) {
+        $results_body = json_decode($query->body, true)['message'];
     }
     return $results_body;
 }

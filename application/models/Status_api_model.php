@@ -43,7 +43,7 @@ class Status_api_model extends CI_Model
         parent::__construct();
         $this->local_timezone = $this->config->item('local_timezone');
         $this->load->model('Myemsl_api_model', 'myemsl');
-        $this->load->helper(array('item', 'network', 'time'));
+        $this->load->helper(array('item', 'network', 'time', 'user'));
 
         $this->status_list = array(
             0 => 'Submitted', 1 => 'Received', 2 => 'Processing',
@@ -135,8 +135,14 @@ class Status_api_model extends CI_Model
         } catch (Exception $e) {
             $results = [];
         }
-        return $results;
+        $cleaned_results = [];
+        $used_ids = [];
+        foreach ($results as $id => $entry) {
+            $cleaned_results[$entry["id"]] = $entry;
+        }
+        return $cleaned_results;
     }
+
 
     /**
      *  More highly detailed transaction info with file lists, etc.

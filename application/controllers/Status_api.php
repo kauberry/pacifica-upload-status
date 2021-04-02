@@ -305,12 +305,7 @@ class Status_api extends Baseline_user_api_controller
         $time_period_empty = true;
         $full_user_info = $this->user_info;
         $project_list = $this->_extract_project_list($this->user_info);
-
-        if (array_key_exists('project_list', $this->page_data)) {
-            $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-        } else {
-            $this->page_data['project_list'] = $project_list;
-        }
+        $this->page_data['project_list'] = $project_list;
         ksort($this->page_data['project_list']);
 
         if (isset($instrument_id) && intval($instrument_id) != 0
@@ -459,11 +454,7 @@ class Status_api extends Baseline_user_api_controller
 
         $project_list = $this->_extract_project_list($this->user_info);
 
-        if (array_key_exists('project_list', $this->page_data)) {
-            $this->page_data['project_list'] = $this->page_data['project_list'] + $project_list;
-        } else {
-            $this->page_data['project_list'] = $project_list;
-        }
+        $this->page_data['project_list'] = $project_list;
         ksort($this->page_data['project_list']);
 
         if (!is_numeric($id) || $id < 0) {
@@ -616,11 +607,11 @@ var cart_access_url_base = \"{$this->config->item('external_cart_url')}\";";
      */
     private function _extract_project_list($user_info)
     {
-        $project_list = array();
+        $project_list = [];
         if (array_key_exists('projects', $user_info)) {
             foreach ($user_info['projects'] as $prop_id => $prop_info) {
                 if (array_key_exists('title', $prop_info)) {
-                    $project_list[$prop_id] = $prop_info['title'];
+                    $project_list[$prop_info["id"]] = $prop_info['title'];
                 }
             }
         }
